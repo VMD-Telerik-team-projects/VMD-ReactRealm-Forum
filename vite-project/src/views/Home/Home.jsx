@@ -3,13 +3,13 @@ import { Button } from "react-bootstrap";
 export default function Home() {
   return (
     <div className="container d-flex flex-column justify-content-xl-center align-items-xl-center justify-content-xxl-center align-items-xxl-center main-container">
-      <h1 className="fs-1 mb-5" style={{ color: "rgb(33,37,41)" }}>
+      <h1 className="fs-1 mb-5" style={{ color: "rgb(0, 0, 0)" }}>
         Sign in or register to access all posts
       </h1>
       <div>
         <Button
           variant="lg"
-          className="me-4"
+          className="me-4 bg-white"
           style={{ border: "1px solid #000000" }}
         >
           Sign In
@@ -25,7 +25,7 @@ export default function Home() {
           Sign Up
         </Button>
       </div>
-      <h5 className="fw-bold mt-4" style={{ color: "rgba(33,37,41,0.4)" }}>
+      <h5 className="fw-bold mt-4" style={{ color: "rgb(0, 0, 0)" }}>
         or browse our top posts anonymously
       </h5>
     </div>

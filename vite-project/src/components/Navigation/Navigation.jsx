@@ -8,7 +8,7 @@ export default function Navigation() {
       expand="md"
       bg="dark"
       variant="dark"
-      className="py-3"
+      className="py-3 bg-black"
     >
       <Navbar.Brand className="me-4">
         <img

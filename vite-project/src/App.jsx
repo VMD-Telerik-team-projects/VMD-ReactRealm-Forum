@@ -1,13 +1,25 @@
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
 import Layout from "./hoc/Layout";
 import Home from "./views/Home/Home";
+import Posts from './views/Posts/Posts';
+import About from './views/About/About';
+import SignIn from './views/SignIn/SignIn';
+import NotFound from './views/NotFound/NotFound';
 
 function App() {
   return (
     <>
       <Layout>
-        <Home></Home>
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route index path="/home" element={<Home />}></Route>
+          <Route path="/posts" element={<Posts />}></Route>
+          <Route path="/about" element={<About />}></Route>
+          <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="*" element={<NotFound />}/>
+        </Routes>
       </Layout>
     </>
   );
