@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 
-export default function MainContainer() {
+export default function Home() {
   return (
     <div className="container d-flex flex-column justify-content-xl-center align-items-xl-center justify-content-xxl-center align-items-xxl-center main-container">
       <h1 className="fs-1 mb-5" style={{ color: "rgb(33,37,41)" }}>
