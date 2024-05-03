@@ -11,7 +11,7 @@ export default function Navigation() {
     >
       <Navbar.Brand href="#" className="d-flex align-items-center me-4">
         <img
-          src="assets/img/logo-no-background.png"
+          src="../../assets/img/logo-no-background.png"
           width="190px"
           className="ms-4"
           alt="Logo"

@@ -1,6 +1,7 @@
 import { Navbar, Button, Nav } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 
+//  TODO: Change p tags to Links
 export default function NavigationSimple() {
   return (
     <Navbar
@@ -9,40 +10,46 @@ export default function NavigationSimple() {
       variant="dark"
       className="py-3"
     >
-      <Navbar.Brand href="#" className="d-flex align-items-center me-4">
+      <Navbar.Brand className="me-4">
         <img
-          src="assets/img/logo-no-background.png"
-          width="190px"
+          src="../../../../public/img/logo-no-background.png"
+          width="160px"
           className="ms-4"
           alt="Logo"
         />
       </Navbar.Brand>
+      <Navbar.Toggle aria-controls="navcol-1" className="me-4">
+        <span className="visually-hidden">Toggle navigation</span>
+        <span
+          className="navbar-toggler-icon"
+        ></span>
+      </Navbar.Toggle>
       <Navbar.Collapse>
-        <Nav className="me-auto fs-3">
-          <Link to="/home" className="fs-5 link-light me-3 ms-4"> 
+        <Nav className="me-auto">
+          <p className="fs-5 link-light me-3 ms-4">
             Home
-          </Link>
-          <Link to="/posts" className="fs-5 link-light me-3 ms-4"> 
+          </p>
+          <p className="fs-5 link-light me-3 ms-4"> 
             Posts
-          </Link>
-          <Link to="/about" className="fs-5 link-light me-3 ms-4"> 
+          </p>
+          <p className="fs-5 link-light me-3 ms-4"> 
             About
-          </Link>
+          </p>
         </Nav>
         <Nav className="d-flex flex-row flex-wrap">
           <Nav.Item className="d-flex me-4">
-            <Link to='/login'>
-              <Button style={{ border: "2px solid var(--bs-secondary-bg)" }}>
+            <p>
+              <Button className="light me-0 bg-transparent" style={{ border: "2px solid var(--bs-secondary-bg)" }}>
                 Sign In
               </Button>
-            </Link>
+            </p>
           </Nav.Item>
           <Nav.Item>
-            <Link to='/register'>
+            <p>
               <Button variant="light" className="me-4">
                 Sign Up
               </Button>
-            </Link>
+            </p>
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>
