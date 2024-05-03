@@ -1,5 +1,7 @@
 import { Navbar, Button, Nav } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 
+//  TODO: Change p tags to Links
 export default function Navigation() {
   return (
     <Navbar
@@ -7,64 +9,50 @@ export default function Navigation() {
       bg="dark"
       variant="dark"
       className="py-3"
-      style={{ "--bs-body-bg": "#000000" }}
     >
-      <Navbar.Brand href="#" className="d-flex align-items-center me-4">
+      <Navbar.Brand className="me-4">
         <img
-          src="../../assets/img/logo-no-background.png"
-          width="190px"
+          src="../../../../public/img/logo-no-background.png"
+          width="160px"
           className="ms-4"
           alt="Logo"
         />
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="navcol-1" className="text-bg-light">
+      <Navbar.Toggle aria-controls="navcol-1" className="me-4">
         <span className="visually-hidden">Toggle navigation</span>
         <span
           className="navbar-toggler-icon"
-          style={{ color: "var(--bs-secondary-bg)" }}
         ></span>
       </Navbar.Toggle>
-      <Navbar.Collapse id="navcol-1">
+      <Navbar.Collapse className="align-items-center">
         <Nav className="me-auto">
-          <Nav.Link
-            href="#"
-            className="active fs-5 link-light me-3 ms-4"
-            style={{ fontSize: "20px" }}
-          >
+          <Link to="/" className="fs-5 me-3 ms-4 text-white" style={{ textDecoration: 'none' }}>
             Home
-          </Nav.Link>
-          <Nav.Link
-            href="#"
-            className="fs-5 link-light me-3"
-            style={{ fontSize: "20px" }}
-          >
+          </Link>
+          <Link to="/posts" className="fs-5 me-3 ms-4 text-white" style={{ textDecoration: 'none' }}>
             Posts
-          </Nav.Link>
-          <Nav.Link
-            href="#"
-            className="fs-5 link-light"
-            style={{ fontSize: "20px" }}
-          >
+          </Link>
+          <Link to="/about" className="fs-5 me-3 ms-4 text-white" style={{ textDecoration: 'none' }}>
             About
-          </Nav.Link>
+          </Link>
         </Nav>
-        <Nav className="d-flex flex-row flex-wrap">
-          <Nav.Item className="d-flex me-4" style={{ marginRight: "0px" }}>
-            <Button
-              variant="link"
-              className="link-light me-0"
-              style={{ border: "2px solid var(--bs-secondary-bg)" }}
-            >
-              Sign In
-            </Button>
+        <Nav className="d-flex flex-row flex-wrap align-items-center">
+          <Nav.Item className="d-flex me-4">
+            <Link to="/signin">
+              <Button className="light me-0 bg-transparent" style={{ border: "2px solid var(--bs-secondary-bg)" }}>
+                Sign In
+              </Button>
+            </Link>
           </Nav.Item>
           <Nav.Item>
-            <Button variant="light" className="me-4">
-              Sign Up
-            </Button>
+            <Link to="/signup">
+              <Button variant="light" className="me-4">
+                Sign Up
+              </Button>
+            </Link>
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-  );
+  )
 }

@@ -1,7 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Navigation from "./components/Navigation/Navigation";
-import NavigationSimple from "./components/Navigation/Navigation-simple";
+import NavigationSimple from "./components/Navigation/Navigation"
 import MainContainer from "./views/Home/Home";
 
 function App() {
