@@ -1,13 +1,16 @@
+import CIcon from '@coreui/icons-react';
+import { cibGithub, cibGmail } from '@coreui/icons';
+import './Footer.css'
+
 export default function Footer() {
-  //  TODO: Replace <p> placeholders with links to social medias
+  //  TODO: Replace <p> placeholders with icons
   return (
     <div
-      className="d-flex flex-nowrap w-full flex-row justify-content-center dark text-white gap-5 mt-auto py-3 fs-5 fw-light"
+      className="d-flex flex-nowrap w-full flex-row justify-content-center dark text-white gap-5 mt-auto py-3 fs-5 fw-light border border-3"
       variant="dark"
-      style={{ background: '#000' }}
     >
-      <span>About us</span>
-      <span>Contacts</span>
+      <CIcon icon={cibGithub} className='icon-styles'/>
+      <CIcon icon={cibGmail} className='icon-styles'/>
       <span>More</span>
     </div>
   )

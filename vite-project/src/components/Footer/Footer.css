@@ -1,0 +1,7 @@
+.icon-styles {
+    max-width: 24px;
+}
+
+.icon-styles:hover {
+    opacity: 0.5;
+}
