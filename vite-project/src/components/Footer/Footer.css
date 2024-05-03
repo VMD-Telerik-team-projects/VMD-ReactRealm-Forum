@@ -1,5 +1,15 @@
-.icon-styles {
-    max-width: 24px;
+.icon-github {
+    width: 26px;
+}
+
+.icon-gmail {
+    width: 48px;
+    height: 24px;
+}
+
+.icon-phone {
+    width: 18px;
+    height: 24px;
 }
 
 .icon-styles:hover {

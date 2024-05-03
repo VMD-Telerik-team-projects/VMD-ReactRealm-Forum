@@ -12,7 +12,7 @@ export default function Navigation() {
     >
       <Navbar.Brand className="me-4">
         <img
-          src="../../../../public/img/logo-no-background.png"
+          src="/img/logo-no-background.png"
           width="160px"
           className="ms-4"
           alt="Logo"
