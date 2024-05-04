@@ -6,6 +6,7 @@ import Home from "./views/Home/Home";
 import Posts from './views/Posts/Posts';
 import About from './views/About/About';
 import SignIn from './views/SignIn/SignIn';
+import SignUp from './views/SignUp/SignUp';
 import NotFound from './views/NotFound/NotFound';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/posts" element={<Posts />}></Route>
           <Route path="/about" element={<About />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="/signup" element={<SignUp />}></Route>
           <Route path="*" element={<NotFound />}/>
         </Routes>
       </Layout>
