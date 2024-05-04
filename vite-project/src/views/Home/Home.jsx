@@ -1,4 +1,5 @@
 import { Button } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
         Sign in or register to access all posts
       </h1>
       <div>
+      <NavLink to="/signin">
         <Button
           variant="lg"
           className="me-4 bg-white"
@@ -14,6 +16,13 @@ export default function Home() {
         >
           Sign In
         </Button>
+        </NavLink>
+        <img
+         src="/img/PP.png"
+          width="300px"
+          style={{ marginRight: "20px" }} 
+          />
+        <NavLink to="/signup">
         <Button
           variant="lg"
           style={{
@@ -24,6 +33,7 @@ export default function Home() {
         >
           Sign Up
         </Button>
+        </NavLink>
       </div>
       <h5 className="fw-bold mt-4" style={{ color: "rgb(0, 0, 0)" }}>
         or browse our top posts anonymously
