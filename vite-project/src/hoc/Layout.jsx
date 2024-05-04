@@ -1,17 +1,21 @@
 import Navigation from '../components/Navigation/Navigation'
 import Footer from '../components/Footer/Footer'
 import './Layout.css'
+import '../index.css'
+import PropTypes from 'prop-types';
 
 export default function Layout({ children }) {
-  //  TODO: Create footer and stick under main section
-
   return (
-    <div className='d-flex flex-column min-vh-100 body-div'>
+    <div className='d-flex flex-column min-vh-100'>
       <Navigation />
-      <main className='d-flex flex-column h-full flex-grow d-flex justify-content-center align-items-center'>
+      <main className='d-flex flex-column h-full flex-grow d-flex justify-content-center align-items-center body-bg'>
         {children}
       </main>
       <Footer />
     </div>
   )
 }
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+};

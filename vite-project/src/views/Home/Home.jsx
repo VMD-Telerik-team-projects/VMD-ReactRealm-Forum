@@ -35,7 +35,7 @@ export default function Home() {
         </Button>
         </NavLink>
       </div>
-      <h5 className="fw-bold mt-4" style={{ color: "rgb(0, 0, 0)" }}>
+      <h5 className="fw-bold mt-4" style={{ color: "rgba(0, 0, 0, 0.7)" }}>
         or browse our top posts anonymously
       </h5>
     </div>
