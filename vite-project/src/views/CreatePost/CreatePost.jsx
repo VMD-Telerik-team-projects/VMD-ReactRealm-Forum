@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import AppContext from "../../context/AppContext";
 import { addPost } from "../../services/posts.service";
 import { Button } from "react-bootstrap";
+import './CreatePost.css';
 
 export default function CreatePost() {
   const [post, setPost] = useState({
@@ -45,7 +46,7 @@ const createPost = async () => {
         rows="10"
         value={post.content} onChange={e => updatePost(e.target.value, 'content')}
       ></textarea>
-      <Button onClick={createPost}>Create Post</Button>
+      <Button className="create-post-button" onClick={createPost}>Create Post</Button>
     </>
   );
 }

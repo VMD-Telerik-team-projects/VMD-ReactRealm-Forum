@@ -1,0 +1,16 @@
+.create-post-button {
+    background-color: rgb(5, 5, 5);
+    color: white;
+    padding: 16px 71px; 
+    font-size: 20px; 
+}
+
+@keyframes blink {
+    0% { background-color: rgb(5, 5, 5); }
+    50% { background-color: rgb(50, 50, 50); }
+    100% { background-color: rgb(5, 5, 5); }
+  }
+  
+  .create-post-button:hover {
+    animation: blink 1s linear infinite;
+  }
