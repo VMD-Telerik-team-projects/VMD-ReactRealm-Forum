@@ -1,15 +1,10 @@
 import { Navbar, Button, Nav } from "react-bootstrap";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 //  TODO: Change p tags to Links
 export default function Navigation() {
   return (
-    <Navbar
-      expand="md"
-      bg="dark"
-      variant="dark"
-      className="py-3 bg-black"
-    >
+    <Navbar expand="md" bg="dark" variant="dark" className="py-3 bg-black">
       <Navbar.Brand className="me-4">
         <img
           src="/img/logo-no-background.png"
@@ -20,26 +15,46 @@ export default function Navigation() {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="navcol-1" className="me-4">
         <span className="visually-hidden">Toggle navigation</span>
-        <span
-          className="navbar-toggler-icon"
-        ></span>
+        <span className="navbar-toggler-icon"></span>
       </Navbar.Toggle>
       <Navbar.Collapse className="align-items-center my-3 my-md-0">
         <Nav className="me-auto">
-          <Link to="/" className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white" style={{ textDecoration: 'none' }}>
+          <Link
+            to="/"
+            className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
+            style={{ textDecoration: "none" }}
+          >
             Home
           </Link>
-          <Link to="/posts" className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white" style={{ textDecoration: 'none' }}>
+          <Link
+            to="/posts"
+            className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
+            style={{ textDecoration: "none" }}
+          >
             Posts
           </Link>
-          <Link to="/about" className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white" style={{ textDecoration: 'none' }}>
+          <Link
+            to="/about"
+            className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
+            style={{ textDecoration: "none" }}
+          >
             About
+          </Link>
+          <Link
+            to="/create-post"
+            className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
+            style={{ textDecoration: "none" }}
+          >
+            Create post
           </Link>
         </Nav>
         <Nav className="d-flex flex-row flex-wrap align-items-center ms-4 mt-3 mt-md-0">
           <Nav.Item className="d-flex me-4">
             <Link to="/signin">
-              <Button className="light me-0 bg-transparent" style={{ border: "2px solid var(--bs-secondary-bg)" }}>
+              <Button
+                className="light me-0 bg-transparent"
+                style={{ border: "2px solid var(--bs-secondary-bg)" }}
+              >
                 Sign In
               </Button>
             </Link>
@@ -54,5 +69,5 @@ export default function Navigation() {
         </Nav>
       </Navbar.Collapse>
     </Navbar>
-  )
+  );
 }
