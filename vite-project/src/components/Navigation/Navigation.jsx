@@ -1,9 +1,13 @@
 import { Navbar, Button, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Header from "../Header/Header";
+import { useContext } from "react";
+import AppContext from "../../context/AppContext";
 
 //  TODO: Change p tags to Links
 export default function Navigation() {
+  const { user } = useContext(AppContext);
+  
   return (
     <Navbar expand="md" bg="dark" variant="dark" className="py-3 bg-black">
       <Navbar.Brand className="me-4">
@@ -48,26 +52,28 @@ export default function Navigation() {
           >
             Create a New Post
           </Link>
-        </Nav>
-        <Nav className="d-flex flex-row flex-wrap align-items-center ms-4 mt-3 mt-md-0">
-          <Nav.Item className="d-flex me-4">
-            <Link to="/signin">
-              <Button
-                className="light me-0 bg-transparent"
-                style={{ border: "2px solid var(--bs-secondary-bg)" }}
-              >
-                Sign In
-              </Button>
-            </Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/signup">
-              <Button variant="light" className="me-4">
-                Sign Up
-              </Button>
-            </Link>
-          </Nav.Item>
-        </Nav>
+          </Nav>
+        {user ? null : (
+          <Nav className="d-flex flex-row flex-wrap align-items-center ms-4 mt-3 mt-md-0">
+            <Nav.Item className="d-flex me-4">
+              <Link to="/signin">
+                <Button
+                  className="light me-0 bg-transparent"
+                  style={{ border: "2px solid var(--bs-secondary-bg)" }}
+                >
+                  Sign In
+                </Button>
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/signup">
+                <Button variant="light" className="me-4">
+                  Sign Up
+                </Button>
+              </Link>
+            </Nav.Item>
+          </Nav>
+        )}
       </Navbar.Collapse>
       <Header/>
     </Navbar>
