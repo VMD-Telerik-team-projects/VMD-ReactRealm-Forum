@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
@@ -8,10 +9,17 @@ import About from './views/About/About';
 import SignIn from './views/SignIn/SignIn';
 import SignUp from './views/SignUp/SignUp';
 import NotFound from './views/NotFound/NotFound';
+import { AppContext } from "./context/AppContext";
 
 function App() {
+  const [appState, setAppState] = useState({
+    user: null,
+    userData: null,
+  });
+
   return (
     <>
+    <AppContext.Provider value={{user: appState.user, userData: appState.userData, setAppState}}>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />}></Route>
@@ -23,6 +31,7 @@ function App() {
           <Route path="*" element={<NotFound />}/>
         </Routes>
       </Layout>
+      </AppContext.Provider>
     </>
   );
 }

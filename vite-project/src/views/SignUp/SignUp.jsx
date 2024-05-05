@@ -1,9 +1,25 @@
+import { useState } from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap"
+import { registerUser } from "../../services/auth.service";
 
 export default function SignIn() {
-  const updateForm = () => {};
-  const signup = () => {};
-  const form = {};
+  const [form, setForm] = useState({
+    userName: '',
+    password: '',
+    email: '',
+  })
+ 
+  const updateForm = prop => e => {
+    setForm({
+      ...form,
+      [prop]: e.target.value,
+    });
+  };
+
+  const signup = async() => {
+    const credential = await registerUser(form.email, form.password);
+    console.log(credential.user);
+  };
 
   return (
     <Card>
