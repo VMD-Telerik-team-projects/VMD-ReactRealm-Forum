@@ -2,6 +2,7 @@ import { Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
+import './Home.css';
 
 export default function Home() {
   const { user } = useContext(AppContext);
@@ -45,7 +46,7 @@ export default function Home() {
       )}
       {user && (
         <div className="d-flex align-items-center">
-          <img
+          <img className="coding-gif"
             src="/img/coding.gif"
             width="500px"
             style={{ marginRight: "50px" }} 
