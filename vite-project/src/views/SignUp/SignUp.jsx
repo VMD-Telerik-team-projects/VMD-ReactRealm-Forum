@@ -17,8 +17,19 @@ export default function SignIn() {
   };
 
   const signup = async() => {
-    const credential = await registerUser(form.email, form.password);
-    console.log(credential.user);
+    if (form.password.length < 6) {
+      alert('Password should be at least 6 characters long');
+      return;
+    }
+
+    try {
+      const credential = await registerUser(form.email, form.password);
+      console.log(credential.user);
+    } catch (error) {
+      if (error.message.includes('auth/email-already-in-use')) {
+        alert('User has already been registered!');
+      }
+    }
   };
 
   return (
