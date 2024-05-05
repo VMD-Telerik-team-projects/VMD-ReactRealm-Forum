@@ -3,11 +3,12 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./hoc/Layout";
 import Home from "./views/Home/Home";
-import Posts from './views/Posts/Posts';
-import About from './views/About/About';
-import SignIn from './views/SignIn/SignIn';
-import SignUp from './views/SignUp/SignUp';
-import NotFound from './views/NotFound/NotFound';
+import Posts from "./views/Posts/Posts";
+import About from "./views/About/About";
+import SignIn from "./views/SignIn/SignIn";
+import SignUp from "./views/SignUp/SignUp";
+import NotFound from "./views/NotFound/NotFound";
+import CreatePost from "./views/CreatePost/CreatePost";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <Route path="/about" element={<About />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
           <Route path="/signup" element={<SignUp />}></Route>
-          <Route path="*" element={<NotFound />}/>
+          <Route path="/create-post" element={<CreatePost />}></Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </>
