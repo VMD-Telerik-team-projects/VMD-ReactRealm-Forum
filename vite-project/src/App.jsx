@@ -11,12 +11,26 @@ import { AppContext } from "./context/AppContext";
 import CreatePost from "./views/CreatePost/CreatePost";
 import SignUp from './views/SignUp/SignUp';
 import NotFound from './views/NotFound/NotFound';
+import { useEffect } from "react";
+import { getUserData } from "./services/users.service";
+import Authenticated from "./hoc/Authenticated";
 
 function App() {
   const [appState, setAppState] = useState({
     user: null,
     userData: null,
   });
+
+  useEffect(() => {
+    if (!appState.user) return;
+
+    getUserData(appState.user.uid)
+      .then(snapshot => {
+        const userData = Object.values(snapshot.val())[0];
+        setAppState({...appState, userData});
+      });
+  }, [appState.user])
+
 
   return (
     <>
@@ -29,7 +43,7 @@ function App() {
           <Route path="/about" element={<About />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
           <Route path="/signup" element={<SignUp />}></Route>
-          <Route path="/create-post" element={<CreatePost />}></Route>
+          <Route path="/create-post" element={<Authenticated><CreatePost/></Authenticated>}></Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

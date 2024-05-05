@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 export default function Post({title, content, comments}) {
   return (
+    <div>
     <Card className='post-card border-3 border-info'>
       <Card.Body className="p-5 fs-5 fw-light">
         <Card.Title className="fs-3 mb-3">{title}</Card.Title>
@@ -24,6 +25,7 @@ export default function Post({title, content, comments}) {
         </Card.Text>
       </Card.Body>
     </Card>
+    </div>
   )
 }
 

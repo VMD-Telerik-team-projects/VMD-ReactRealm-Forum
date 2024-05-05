@@ -1,9 +1,36 @@
 import { Card, Container, Row, Col, Button } from "react-bootstrap"
+import { useState, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import AppContext from "../../context/AppContext";
+import { loginUser } from "../../services/auth.service";
 
 export default function SignIn() {
-  const updateForm = () => { };
-  const login = () => { };
-  const form = {};
+  const { setAppState } = useContext(AppContext);
+  const [form, setForm] = useState({
+      email: '',
+      password: '',
+  });
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const login = async() => {
+    try {
+    const credential = await loginUser(form.email, form.password);
+    setAppState({user: credential.user})
+   // setAppState({ user, userData: null });
+    navigate(location.state?.from.pathname || "/");
+  } catch (error) {
+   alert('Failed to log in');
+  }
+};
+
+const updateForm = prop => e => {
+    setForm({
+      ...form,
+      [prop]: e.target.value,
+    });
+  };
+
 
   return (
     <Card>

@@ -12,7 +12,7 @@ export default function NotFound() {
           alt="Error"
           />
       <p>Oops! The page you're looking for does not exist.</p>
-      <NavLink className={styles.link} to="/">
+      <NavLink to="/">
       <Button className={styles.button}>Go to Home Page</Button>
       </NavLink>
       

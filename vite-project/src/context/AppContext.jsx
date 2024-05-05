@@ -5,3 +5,5 @@ export const AppContext = createContext({
     userData: null,
     setAppState: () => {},
 })
+
+export default AppContext;

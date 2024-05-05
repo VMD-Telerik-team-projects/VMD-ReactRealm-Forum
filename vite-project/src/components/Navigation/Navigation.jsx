@@ -1,5 +1,6 @@
 import { Navbar, Button, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Header from "../Header/Header";
 
 //  TODO: Change p tags to Links
 export default function Navigation() {
@@ -45,7 +46,7 @@ export default function Navigation() {
             className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
             style={{ textDecoration: "none" }}
           >
-            Create post
+            Create a New Post
           </Link>
         </Nav>
         <Nav className="d-flex flex-row flex-wrap align-items-center ms-4 mt-3 mt-md-0">
@@ -68,6 +69,7 @@ export default function Navigation() {
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>
+      <Header/>
     </Navbar>
   );
 }
