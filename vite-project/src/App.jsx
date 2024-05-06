@@ -16,6 +16,7 @@ import { useEffect } from "react";
 import { getUserData } from "./services/users.service";
 import Authenticated from "./hoc/Authenticated";
 import AuthenticatedAdmin from "./hoc/AuthenticatedAdmin";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -33,10 +34,23 @@ function App() {
       });
   }, [appState.user])
 
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDataSnapshot = await getUserData(user.uid);
+        const userData = userDataSnapshot.val();
+        setAppState({ user, userData });
+      } else {
+        setAppState({ user: null, userData: null });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <>
-    <AppContext.Provider value={{user: appState.user, userData: appState.userData, setAppState}}>
+    <AppContext.Provider value={{ user: appState.user, userData: appState.userData, setAppState }}>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />}></Route>
