@@ -10,6 +10,7 @@ export default function SignIn() {
     username: '',
     password: '',
     email: '',
+    priviliges: 0
   });
 
   const { user, setAppState } = useContext(AppContext);
@@ -39,7 +40,7 @@ export default function SignIn() {
         return alert('User with this username already exists!');
       }
       const credential = await registerUser(form.email, form.password);
-      await createUserHandle(form.username, credential.user.uid, credential.user.email);
+      await createUserHandle(form.username, credential.user.uid, credential.user.email, 2);
       setAppState({ user: credential.user, userData: null });
       console.log('about to redirect');
       navigate('/Home'||'/'); 

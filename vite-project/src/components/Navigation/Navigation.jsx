@@ -4,9 +4,8 @@ import Header from "../Header/Header";
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
 
-//  TODO: Change p tags to Links
 export default function Navigation() {
-  const { user } = useContext(AppContext);
+  const { user, userData } = useContext(AppContext);
   
   return (
     <Navbar expand="md" bg="dark" variant="dark" className="py-3 bg-black">
@@ -45,13 +44,20 @@ export default function Navigation() {
           >
             About
           </Link>
-          <Link
+          {user && <Link
             to="/create-post"
             className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
             style={{ textDecoration: "none" }}
           >
             Create a New Post
-          </Link>
+          </Link>}
+          {user && userData && userData.priviliges === 0 && <Link
+            to="/dashboard"
+            className="fs-5 me-3 ms-4 mb-2 mb-md-0 text-white"
+            style={{ textDecoration: "none" }}
+          >
+            Dashboard
+          </Link>}
           </Nav>
         {user ? null : (
           <Nav className="d-flex flex-row flex-wrap align-items-center ms-4 mt-3 mt-md-0">
