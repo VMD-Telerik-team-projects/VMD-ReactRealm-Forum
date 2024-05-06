@@ -30,7 +30,7 @@ function App() {
     getUserData(appState.user.uid)
       .then(snapshot => {
         const userData = Object.values(snapshot.val())[0];
-        setAppState({...appState, userData});
+        setAppState({ ...appState, userData });
       });
   }, [appState.user])
 
@@ -50,20 +50,20 @@ function App() {
 
   return (
     <>
-    <AppContext.Provider value={{ user: appState.user, userData: appState.userData, setAppState }}>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route index path="/home" element={<Home />}></Route>
-          <Route path="/posts" element={<Posts />}></Route>
-          <Route path="/about" element={<About />}></Route>
-          <Route path="/signin" element={<SignIn />}></Route>
-          <Route path="/signup" element={<SignUp />}></Route>
-          <Route path="/create-post" element={<Authenticated><CreatePost/></Authenticated>}></Route>
-          <Route path="/dashboard" element={<AuthenticatedAdmin><AdminDashboard/></AuthenticatedAdmin>}></Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
+      <AppContext.Provider value={{ user: appState.user, userData: appState.userData, setAppState }}>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />}></Route>
+            <Route index path="/home" element={<Home />}></Route>
+            <Route path="/posts" element={<Posts />}></Route>
+            <Route path="/about" element={<About />}></Route>
+            <Route path="/signin" element={<SignIn />}></Route>
+            <Route path="/signup" element={<SignUp />}></Route>
+            <Route path="/create-post" element={<Authenticated><CreatePost /></Authenticated>}></Route>
+            <Route path="/dashboard" element={<AuthenticatedAdmin><AdminDashboard /></AuthenticatedAdmin>}></Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
       </AppContext.Provider>
     </>
   );
