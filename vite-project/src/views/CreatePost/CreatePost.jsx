@@ -6,7 +6,9 @@ import './CreatePost.css';
 
 export default function CreatePost() {
   const [post, setPost] = useState({
+    title: '',
     content: '',
+    comments: []
 });
 const { userData } = useContext(AppContext);
 
@@ -26,10 +28,12 @@ const createPost = async () => {
         return alert('Content must be at least 5 characters long');
     }
 
-    await addPost(userData.handle, post.content);
+    await addPost(userData.handle, post.title, post.content, post.comments);
 
     setPost({
+        title: '',
         content: '',
+        comments: []
     });
 };
 
