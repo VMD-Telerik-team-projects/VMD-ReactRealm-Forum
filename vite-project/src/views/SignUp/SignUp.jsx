@@ -4,6 +4,7 @@ import { registerUser } from "../../services/auth.service";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { getUserByHandle, createUserHandle } from "../../services/users.service";
+import Loader from "../../components/Loader/Loader";
 
 export default function SignIn() {
   const [form, setForm] = useState({
@@ -15,6 +16,7 @@ export default function SignIn() {
 
   const { user, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   if (user) {
     //alert('registration completed');
@@ -29,6 +31,7 @@ export default function SignIn() {
   };
 
   const signup = async() => {
+    setLoading(true);
     if (form.password.length < 6) {
       alert('Password should be at least 6 characters long');
       return;
@@ -49,7 +52,13 @@ export default function SignIn() {
         alert('User has already been registered!');
       }
     }
+
+    setLoading(false);
   };
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <Card>

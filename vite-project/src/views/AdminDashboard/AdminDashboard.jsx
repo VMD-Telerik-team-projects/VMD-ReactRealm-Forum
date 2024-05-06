@@ -1,23 +1,29 @@
 import { useEffect, useState } from 'react';
 import { getAllUsers } from "../../services/admin.service"
+import Loader from '../../components/Loader/Loader';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setLoading(true);
+
       const usersSnapshot = await getAllUsers();
-      // Convert the snapshot to a JavaScript object
       const usersData = usersSnapshot.val();
-      // Convert the object to an array of user objects
       const usersArray = Object.keys(usersData).map(key => ({ uid: key, ...usersData[key] }));
+      
       setUsers(usersArray);
+      setLoading(false);
     };
   
     fetchUsers();
   }, []);
 
-  console.log(users);
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <>

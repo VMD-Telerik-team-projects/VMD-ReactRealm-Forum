@@ -3,34 +3,42 @@ import { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppContext from "../../context/AppContext";
 import { loginUser } from "../../services/auth.service";
+import Loader from "../../components/Loader/Loader";
 
 export default function SignIn() {
   const { setAppState } = useContext(AppContext);
   const [form, setForm] = useState({
-      email: '',
-      password: '',
+    email: '',
+    password: '',
   });
   const navigate = useNavigate();
   const location = useLocation();
-  
-  const login = async() => {
-    try {
-    const credential = await loginUser(form.email, form.password);
-    setAppState({user: credential.user})
-   // setAppState({ user, userData: null });
-    navigate(location.state?.from.pathname || "/");
-  } catch (error) {
-   alert('Failed to log in');
-  }
-};
+  const [loading, setLoading] = useState(false);
 
-const updateForm = prop => e => {
+  const login = async () => {
+    setLoading(true);
+    try {
+      const credential = await loginUser(form.email, form.password);
+      setAppState({ user: credential.user })
+      // setAppState({ user, userData: null });
+      navigate(location.state?.from.pathname || "/");
+    } catch (error) {
+      alert('Failed to log in');
+    }
+
+    setLoading(false);
+  };
+
+  const updateForm = prop => e => {
     setForm({
       ...form,
       [prop]: e.target.value,
     });
   };
 
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <Card>

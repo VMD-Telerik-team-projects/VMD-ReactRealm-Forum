@@ -6,7 +6,6 @@ import './Home.css';
 
 export default function Home() {
   const { user } = useContext(AppContext);
- 
 
   return (
     <div className="container d-flex flex-column justify-content-xl-center align-items-xl-center justify-content-xxl-center align-items-xxl-center main-container">

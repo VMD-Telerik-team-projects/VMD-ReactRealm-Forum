@@ -3,39 +3,49 @@ import AppContext from "../../context/AppContext";
 import { addPost } from "../../services/posts.service";
 import { Button } from "react-bootstrap";
 import './CreatePost.css';
+import Loader from "../../components/Loader/Loader";
 
 export default function CreatePost() {
   const [post, setPost] = useState({
     title: '',
     content: '',
     comments: []
-});
-const { userData } = useContext(AppContext);
+  });
+  const { userData } = useContext(AppContext);
+  const [loading, setLoading] = useState(false);
 
-const updatePost = (value, key) => {
+  const updatePost = (value, key) => {
     setPost({
-        ...post,
-        [key]: value,
+      ...post,
+      [key]: value,
     })
-}
+  }
 
-const createPost = async () => {
-  if (!userData) {
-    return alert('You must be signed in to create a post');
-}
+  const createPost = async () => {
+    setLoading(true);
 
-    if(post.content.length < 5) {
-        return alert('Content must be at least 5 characters long');
+    if (!userData) {
+      return alert('You must be signed in to create a post');
+    }
+
+    if (post.content.length < 5) {
+      return alert('Content must be at least 5 characters long');
     }
 
     await addPost(userData.handle, post.title, post.content, post.comments);
 
     setPost({
-        title: '',
-        content: '',
-        comments: []
+      title: '',
+      content: '',
+      comments: []
     });
-};
+
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <>
