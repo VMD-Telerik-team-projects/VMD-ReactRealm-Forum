@@ -12,7 +12,26 @@ export const addPost = async(author, content) => {
     console.log(result.key);
 };
 
-export const getAllPosts = async(search) => {
+//  All posts means no search
+
+// export const getAllPosts = async(search) => {
+//     const snapshot = await get(ref(db, 'posts'));
+//     if (!snapshot.exists()) return [];
+
+//     return Object
+//         .entries(snapshot.val())
+//         .map(([key, value]) => {
+//             return {
+//                 ...value,
+//                 id: key,
+//                 likedBy: value.likedBy ? Object.keys(value.likedBy) : [],
+//                 createdOn: new Date(value.createdOn).toString(),
+//             }
+//         })
+//         .filter(t => t.content.toLowerCase().includes(search.toLowerCase()));
+// };
+
+export const getAllPosts = async () => {
     const snapshot = await get(ref(db, 'posts'));
     if (!snapshot.exists()) return [];
 
@@ -26,8 +45,7 @@ export const getAllPosts = async(search) => {
                 createdOn: new Date(value.createdOn).toString(),
             }
         })
-        .filter(t => t.content.toLowerCase().includes(search.toLowerCase()));
-};
+}
 
 export const getPostById = async(id) => {
     const snapshot = await get(ref(db, `posts/${id}`));
