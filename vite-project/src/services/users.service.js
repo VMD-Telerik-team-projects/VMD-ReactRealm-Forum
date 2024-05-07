@@ -27,3 +27,20 @@ export const createUserHandle = (
 export const getUserData = (uid) => {
   return get(query(ref(db, "users"), orderByChild("uid"), equalTo(uid)));
 };
+
+//Add isBlocked field to all the users in the database
+
+// const updateUserDatabase = (async () => {
+//   await get(query(ref(db, "users")))
+//     .then((snapshot) => {
+//       Object.values(snapshot.val()).map((eachUser) => {
+//         set(ref(db, `users/${eachUser.handle}`), {
+//           ...eachUser,
+//           isBlocked: false,
+//         });
+//       });
+//     })
+//     .catch((error) => {
+//       console.error("Error retrieving user data:", error);
+//     });
+// })();
