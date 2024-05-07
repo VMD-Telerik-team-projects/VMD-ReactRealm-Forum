@@ -17,6 +17,7 @@ export default function SignIn() {
     password: "",
     email: "",
     priviliges: 0,
+    isBlocked: false,
   });
 
   const { user, setAppState } = useContext(AppContext);
@@ -65,7 +66,8 @@ export default function SignIn() {
         form.username,
         credential.user.uid,
         credential.user.email,
-        2
+        2,
+        false
       );
       setAppState({ user: credential.user, userData: null });
       console.log("about to redirect");

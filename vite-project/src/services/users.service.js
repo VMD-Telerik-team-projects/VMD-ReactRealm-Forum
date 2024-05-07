@@ -11,7 +11,8 @@ export const createUserHandle = (
   handle,
   uid,
   email,
-  priviliges
+  priviliges,
+  isBlocked
 ) => {
   return set(ref(db, `users/${handle}`), {
     firstName,
@@ -21,6 +22,7 @@ export const createUserHandle = (
     email,
     createdOn: new Date(),
     priviliges,
+    isBlocked,
   });
 };
 
