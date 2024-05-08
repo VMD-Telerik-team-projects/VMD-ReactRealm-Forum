@@ -45,6 +45,7 @@ export default function Posts() {
                 content={post.content}
                 comments={[]}
                 createdOn={post.createdOn}
+                postId={post.id}
               />
             );
           })}

@@ -26,10 +26,7 @@ export default function Footer() {
     }
 
     setShow(true);
-
-    setTimeout(() => {
-      location.replace(pageLink);
-    }, 3000);
+    location.replace(pageLink);
   }
 
   return (

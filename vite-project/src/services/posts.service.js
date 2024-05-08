@@ -77,3 +77,11 @@ export const dislikePost = async(postId, handle) => {
 
     update(ref(db), updateVal);
 };
+
+export const comment = async(postId, handle, content) => {
+    const updateVal = {};
+    updateVal[`users/${handle}/commentedPosts/${postId}/${Date.now()}`] = content;
+    updateVal[`posts/${postId}/comments/${Date.now()}/${handle}`] = content;
+
+    update(ref(db), updateVal);
+}
