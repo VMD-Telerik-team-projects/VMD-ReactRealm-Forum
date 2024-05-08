@@ -30,6 +30,10 @@ export const getUserData = (uid) => {
   return get(query(ref(db, "users"), orderByChild("uid"), equalTo(uid)));
 };
 
+export const getLikedPosts = (handle) => {
+  return get(ref(db, `users/${handle}/likedPosts`));
+}
+
 //Add isBlocked field to all the users in the database
 
 // const updateUserDatabase = (async () => {

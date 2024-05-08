@@ -72,7 +72,7 @@ export const likePost = async(postId, handle) => {
 
 export const dislikePost = async(postId, handle) => {
     const updateVal = {};
-    updateVal[`users/${handle}/likedTweets/${postId}`] = null;
+    updateVal[`users/${handle}/likedPosts/${postId}`] = null;
     updateVal[`posts/${postId}/likedBy/${handle}`] = null;
 
     update(ref(db), updateVal);

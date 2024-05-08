@@ -44,6 +44,7 @@ export default function Posts() {
                 title={post.title}
                 content={post.content}
                 comments={post.comments ? Object.values(post.comments) : []}
+                likes={post.likedBy ? post.likedBy.length : 0}
                 createdOn={post.createdOn}
                 postId={post.id}
                 onUpdate={setPosts}

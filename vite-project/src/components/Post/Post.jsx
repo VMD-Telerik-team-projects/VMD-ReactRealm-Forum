@@ -3,11 +3,13 @@ import AppContext from "../../context/AppContext";
 import { Card, Row, Col } from "react-bootstrap";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
+import { Heart, HeartFill } from 'react-bootstrap-icons';
 import "./Post.css";
 import PropTypes from "prop-types";
-import { getAllPosts, comment } from "../../services/posts.service";
+import { getAllPosts, comment, likePost, dislikePost } from "../../services/posts.service";
+import { getLikedPosts } from "../../services/users.service";
 
-export default function Post({author, title, content, comments, createdOn, postId, onUpdate}) {
+export default function Post({author, title, content, comments, likes, createdOn, postId, onUpdate}) {
   const { user, userData } = useContext(AppContext);
   
   const addComment = async (e) => {
@@ -28,6 +30,27 @@ export default function Post({author, title, content, comments, createdOn, postI
     }
   }
 
+  const handleLike = async () => {
+    if (!userData) {
+      return alert("You must be signed in to like a post");
+    }
+    
+    const likedPosts = (await getLikedPosts(userData.handle)).val();
+
+    if (likedPosts) {
+      if (Object.keys(likedPosts).includes(postId)) {
+        await dislikePost(postId, userData.handle);
+      } else {
+        await likePost(postId, userData.handle);
+      }
+    } else {
+      await likePost(postId, userData.handle);
+    }
+
+    const postsData = await getAllPosts();
+    onUpdate(postsData);
+  }
+
   return (
     <div>
     <Card className='post-card border-3 border-info'>
@@ -40,12 +63,18 @@ export default function Post({author, title, content, comments, createdOn, postI
               <p>{content}</p>
             </Col>
           </Row>
-          <Row>
-            <Col xs={4}>
-              <CIcon icon={cilCommentSquare} className="comment-bubble me-2" />
-              <span className="fs-5">{comments.length} comments</span>
+          <Row className="mb-1">
+            <Col>
+              <Heart className="heart-icon me-2" onClick={handleLike}/>
+              <span className="fs-5">{likes}</span>
             </Col>
-            {user && <Col xs={8}>
+          </Row>
+          <Row>
+            <Col xs={2}>
+              <CIcon icon={cilCommentSquare} className="comment-bubble me-2" />
+              <span className="fs-5">{comments.length}</span>
+            </Col>
+            {user && <Col xs={10}>
               <input type="text" placeholder="Leave a comment" className="form-control border border-secondary rounded" onKeyDown={addComment} />
             </Col>}
           </Row>
@@ -66,6 +95,7 @@ Post.propTypes = {
   title: PropTypes.string,
   content: PropTypes.string,
   comments: PropTypes.array,
+  likes: PropTypes.number,
   createdOn: PropTypes.string,
   postId: PropTypes.string,
   onUpdate: PropTypes.func
