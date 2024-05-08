@@ -8,7 +8,7 @@ export default function Navigation() {
   const { user, userData } = useContext(AppContext);
   
   return (
-    <Navbar expand="md" bg="dark" variant="dark" className="py-3 bg-black">
+    <Navbar expand="xl" bg="dark" variant="dark" className="py-3 bg-black">
       <Navbar.Brand className="me-4">
         <img
           src="/img/logo-no-background.png"
@@ -80,8 +80,8 @@ export default function Navigation() {
             </Nav.Item>
           </Nav>
         )}
+        <Header/>
       </Navbar.Collapse>
-      <Header/>
     </Navbar>
   );
 }
