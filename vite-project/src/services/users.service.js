@@ -1,5 +1,6 @@
+import { getDownloadURL } from "firebase/storage";
 import { get, set, ref, query, equalTo, orderByChild } from "firebase/database";
-import { db } from "../config/firebase-config";
+import { db, storage } from "../config/firebase-config";
 
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
@@ -32,6 +33,12 @@ export const getUserData = (uid) => {
 
 export const getLikedPosts = (handle) => {
   return get(ref(db, `users/${handle}/likedPosts`));
+}
+
+//  TODO: Retrieve profile pictures from firebase storage
+export const getProfilePic = (handle) => {
+  const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
+  const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
 }
 
 //Add isBlocked field to all the users in the database
