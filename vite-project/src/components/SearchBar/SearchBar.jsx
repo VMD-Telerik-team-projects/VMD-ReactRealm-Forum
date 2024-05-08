@@ -1,17 +1,31 @@
+import { Search } from "react-bootstrap-icons";
+import { Button, Container } from "react-bootstrap";
+import PropTypes from "prop-types";
+
+/**
+ *
+ * @param {{ value: String, onChange: Function }} props
+ * @returns
+ */
 export default function SearchBar({ value, onChange }) {
   return (
-    <div className="input-group" style={{ maxWidth: "700px" }}>
+    <Container className="input-group" style={{ width: "50dvw" }} fluid>
       <input
         type="search"
-        className="form-control rounded"
+        className="form-control p-2"
         placeholder="Search"
         aria-label="Search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <button type="button" className="btn btn-primary btn-floating" data-mdb-ripple-init>
-        Search
-      </button>
-    </div>
+      <Button variant="outline-none" className="bg-white">
+        <Search />
+      </Button>
+    </Container>
   );
 }
+
+SearchBar.propTypes = {
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};

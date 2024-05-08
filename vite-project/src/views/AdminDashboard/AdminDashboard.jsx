@@ -41,7 +41,7 @@ export default function AdminDashboard() {
       <h1 className='my-4'>Admin Dashboard</h1>
       <h3 className='mb-4'>Registered users: </h3>
       <SearchBar value={searchTerm} onChange={handleSearchChange} />
-      <div className='bg-white'>
+      <div className='bg-white my-4'>
         {filteredUsers.map(user => {
           return (
             <div key={user.uid}>
