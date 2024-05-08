@@ -5,9 +5,9 @@ import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
 import "./Post.css";
 import PropTypes from "prop-types";
-import { comment } from "../../services/posts.service";
+import { getAllPosts, comment } from "../../services/posts.service";
 
-export default function Post({author, title, content, comments, createdOn, postId}) {
+export default function Post({author, title, content, comments, createdOn, postId, onUpdate}) {
   const { user, userData } = useContext(AppContext);
   
   const addComment = async (e) => {
@@ -20,6 +20,11 @@ export default function Post({author, title, content, comments, createdOn, postI
       }
 
       await comment(postId, userData.handle, e.target.value);
+    
+      e.target.value = '';
+      
+      const postsData = await getAllPosts();
+      onUpdate(postsData);
     }
   }
 
@@ -62,5 +67,6 @@ Post.propTypes = {
   content: PropTypes.string,
   comments: PropTypes.array,
   createdOn: PropTypes.string,
-  postId: PropTypes.string
+  postId: PropTypes.string,
+  onUpdate: PropTypes.func
 }

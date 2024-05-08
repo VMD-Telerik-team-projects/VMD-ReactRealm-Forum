@@ -43,9 +43,10 @@ export default function Posts() {
                 author={post.author}
                 title={post.title}
                 content={post.content}
-                comments={[]}
+                comments={post.comments ? Object.values(post.comments) : []}
                 createdOn={post.createdOn}
                 postId={post.id}
+                onUpdate={setPosts}
               />
             );
           })}
