@@ -99,6 +99,9 @@ export default function CreatePost() {
           value={post.content}
           onChange={(e) => updatePost(e.target.value, "content")}
         ></textarea>
+        <small className="form-text text-muted">
+          {post.content.length} / 8196 characters (Minimum 32 characters)
+        </small>
       </Row>
       <Row>
         <Button className="create-post-button mt-3" onClick={createPost}>
