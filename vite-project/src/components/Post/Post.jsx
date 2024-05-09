@@ -13,6 +13,9 @@ import {
   dislikePost,
 } from "../../services/posts.service";
 import { getLikedPosts } from "../../services/users.service";
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 export default function Post({
   author,
@@ -64,15 +67,92 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
+  ///////////////////////////////////////////////////////////////////////
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleShowDetails = () => {
+    setShowDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setShowDetails(false);
+  };
+  //////////////////////////////////////////////////////////////////////////
+
+  const renderSinglePost = () => {
+    return (
+      <>
+        <Modal
+          show={showDetails}
+          onHide={handleCloseDetails}
+          backdrop="static"
+          keyboard={false}
+          scrollable={true}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Post title</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div>
+              <Row className="mb-1">
+                <Col>
+                  <p>{content}</p>
+                </Col>
+              </Row>
+              <Row className="mb-1">
+                <Col>
+                  <Heart className="heart-icon me-2" onClick={handleLike} />
+                  <span className="fs-5">{likes}</span>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={2}>
+                  <CIcon
+                    icon={cilCommentSquare}
+                    className="comment-bubble me-2"
+                  />
+                  <span className="fs-5">{comments.length}</span>
+                </Col>
+                {user && (
+                  <Col xs={10}>
+                    <input
+                      type="text"
+                      placeholder="Leave a comment"
+                      className="form-control border border-secondary rounded"
+                      onKeyDown={addComment}
+                    />
+                  </Col>
+                )}
+              </Row>
+              <Row className="mt-5">
+                <Col>
+                  <p>
+                    <i>
+                      Created on: {new Date(createdOn).toLocaleString("en-US")}
+                    </i>
+                  </p>
+                </Col>
+              </Row>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseDetails}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    );
+  };
 
   return (
     <div>
       <Card className="post-card border-3 border-info">
         <Card.Body className="p-5 fs-5 fw-light">
-          <Card.Title className="fs-3 mb-3 fw-bold">
+          <Card.Title className="fs-3 mb-1 fw-bold">
             Author: {author}
           </Card.Title>
-          <Card.Title className="fs-3 mb-5 fw-normal">
+          <Card.Title className="fs-3 mb-4 fw-normal">
             Title: {title}
           </Card.Title>
           <div>
@@ -81,32 +161,7 @@ export default function Post({
                 <p>{content}</p>
               </Col>
             </Row>
-            <Row className="mb-1">
-              <Col>
-                <Heart className="heart-icon me-2" onClick={handleLike} />
-                <span className="fs-5">{likes}</span>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={2}>
-                <CIcon
-                  icon={cilCommentSquare}
-                  className="comment-bubble me-2"
-                />
-                <span className="fs-5">{comments.length}</span>
-              </Col>
-              {user && (
-                <Col xs={10}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
-              )}
-            </Row>
-            <Row className="mt-5">
+            <Row className="mt-1">
               <Col>
                 <p>
                   <i>
@@ -115,9 +170,11 @@ export default function Post({
                 </p>
               </Col>
             </Row>
+            <Button onClick={handleShowDetails}>Show post details</Button>
           </div>
         </Card.Body>
       </Card>
+      {renderSinglePost()}
     </div>
   );
 }
