@@ -1,11 +1,15 @@
 import { getDownloadURL } from "firebase/storage";
-import { get, set, ref, query, equalTo, orderByChild } from "firebase/database";
+import { get, set, ref, query, equalTo, orderByChild, remove } from "firebase/database";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
 import { Navigate } from "react-router-dom";
 
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
+};
+
+export const deleteUserByHandle = (handle) => {
+  return remove(ref(db, `users/${handle}`));
 };
 
 export const createUserHandle = (

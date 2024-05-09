@@ -4,6 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
+import { deleteUserByHandle } from "../../services/users.service";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -27,6 +28,15 @@ export default function AdminDashboard() {
 
     fetchUsers();
   }, []);
+
+  const handleDeleteUser = async (handle) => {
+    try {
+      await deleteUserByHandle(handle);
+      setUsers(users.filter((u) => u.handle !== handle));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
 
   if (loading) {
     return <Loader />;
@@ -60,7 +70,9 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <Trash className="text-danger" />
+                    <button>
+                  <Trash className="text-danger" onClick={() => handleDeleteUser(user.handle)} />
+                  </button>
                   </Col>
                 </Row>
                 <Row className="my-2">
