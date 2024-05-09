@@ -12,11 +12,18 @@ export default function MyProfile() {
 
     if (user && userData) {
       newData = { ...userData };
+
       ref.current = document.getElementById("new-email").value;
-      newData.email = ref.current;
+      if (ref.current) newData.email = ref.current;
 
       ref.current = document.getElementById("new-password").value;
       newData.password = ref.current;
+
+      ref.current = document.getElementById("new-first-name").value;
+      if (ref.current) newData.firstName = ref.current;
+
+      ref.current = document.getElementById("new-last-name").value;
+      if (ref.current) newData.lastName = ref.current;
 
       await updateUserData(userData.handle, newData);
     }
@@ -73,10 +80,10 @@ export default function MyProfile() {
         </Col>
         <Col xs={4}>
           <input
-            type="password"
+            type="text"
             className="form-control"
             id="new-last-name"
-            placeholder="Last name"
+            placeholder="Last name" 
           />
         </Col>
       </Row>

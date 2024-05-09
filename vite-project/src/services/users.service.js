@@ -2,6 +2,7 @@ import { getDownloadURL } from "firebase/storage";
 import { get, set, ref, query, equalTo, orderByChild } from "firebase/database";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
+import { Navigate } from "react-router-dom";
 
 export const getUserByHandle = (handle) => {
   return get(ref(db, `users/${handle}`));
@@ -56,6 +57,7 @@ export const updateUserData = async (handle, userData) => {
     delete dataWithoutPassword.password;
 
     set(ref(db, `users/${handle}`), dataWithoutPassword);
+    window.location.replace('/')
   } catch (e) {
     return alert(`Failed to update user data: ${e.message}`);
   }
@@ -68,6 +70,8 @@ export const updateUserData = async (handle, userData) => {
 //   const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
 //   const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
 // }
+
+// 
 
 //Add isBlocked field to all the users in the database
 
