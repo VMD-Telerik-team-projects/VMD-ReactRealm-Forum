@@ -65,6 +65,7 @@ export const getPostById = async(id) => {
 export const deletePostById = async(id) => {
     const postRef = ref(db, `posts/${id}`);
     await remove(postRef);
+    alert('Post deleted!');
 };
 
 export const likePost = async(postId, handle) => {

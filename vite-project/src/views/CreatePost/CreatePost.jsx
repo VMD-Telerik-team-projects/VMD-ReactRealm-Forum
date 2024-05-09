@@ -36,7 +36,7 @@ export default function CreatePost() {
 
     if (
       post.title.length < POST_TITLE_MIN_LENGTH ||
-      post.content.length > POST_TITLE_MAX_LENGTH
+      post.title.length > POST_TITLE_MAX_LENGTH
     ) {
       alert("The title must be 16-64 characters long!");
       return setLoading(false);
