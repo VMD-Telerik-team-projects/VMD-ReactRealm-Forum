@@ -5,6 +5,7 @@ import Post from "../../components/Post/Post";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { deletePostById } from "../../services/posts.service";
+import './Posts.css';
 
 export default function Posts() {
   const { user, userData } = useContext(AppContext);
@@ -46,6 +47,7 @@ export default function Posts() {
       {user ? (
         <>
           <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
+          <div className="posts-container">
           {filteredPosts.map((post) => {
             return (
               <div key={post.id}>
@@ -63,6 +65,7 @@ export default function Posts() {
             </div>
             );
           })}
+          </div>
         </>
       ) : (
         <h1 className="fs-1 fw-light">Login to see all posts!</h1>
