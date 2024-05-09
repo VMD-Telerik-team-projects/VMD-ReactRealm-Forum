@@ -71,7 +71,7 @@ export default function CreatePost() {
         {!user ? (
           <h1>Sign in to create posts</h1>
         ) : (
-          <h1 className="mb-3">Create a new post</h1>
+          <h1 className="mb-3 post-titles">Create a new post 👨‍💻 </h1>
         )}
       </Card.Title>
       <Row className="mt-1 mb-3">
