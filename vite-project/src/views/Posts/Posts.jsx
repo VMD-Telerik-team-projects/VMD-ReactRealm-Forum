@@ -4,9 +4,10 @@ import AppContext from "../../context/AppContext"
 import Post from "../../components/Post/Post";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import { deletePostById } from "../../services/posts.service";
 
 export default function Posts() {
-  const { user } = useContext(AppContext);
+  const { user, userData } = useContext(AppContext);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +23,15 @@ export default function Posts() {
     fetchPosts();
   }, []);
 
+  const handleDeletePost = async (id) => {
+    try {
+      await deletePostById(id);
+      setPosts(posts.filter(post => post.id !== id));
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
+  
   if (loading) {
     return <Loader />
   }
@@ -38,8 +48,8 @@ export default function Posts() {
           <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
           {filteredPosts.map((post) => {
             return (
+              <div key={post.id}>
               <Post
-                key={post.id}
                 author={post.author}
                 title={post.title}
                 content={post.content}
@@ -49,6 +59,8 @@ export default function Posts() {
                 postId={post.id}
                 onUpdate={setPosts}
               />
+             {userData.priviliges === 0 && <button className="btn btn-danger" onClick={() => handleDeletePost(post.id)}>DELETE POST: {post.title} </button>}
+            </div>
             );
           })}
         </>

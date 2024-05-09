@@ -4,7 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
-import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle} from "../../services/users.service";
+import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle } from "../../services/admin.service";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
