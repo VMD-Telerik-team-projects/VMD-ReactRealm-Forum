@@ -1,9 +1,6 @@
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import CIcon from "@coreui/icons-react";
-import { cilCommentSquare } from "@coreui/icons";
-import { Heart } from "react-bootstrap-icons";
 import "./Post.css";
 import PropTypes from "prop-types";
 import {
@@ -15,7 +12,7 @@ import {
 import { getLikedPosts } from "../../services/users.service";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import RenderSinglePost from "./PostDetails";
 
 export default function Post({
   author,
@@ -79,75 +76,16 @@ export default function Post({
   };
   //////////////////////////////////////////////////////////////////////////
 
-  const renderSinglePost = () => {
-    return (
-      <>
-        <Modal
-          show={showDetails}
-          onHide={handleCloseDetails}
-          backdrop="static"
-          keyboard={false}
-          scrollable={true}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Post title</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <Row className="mb-1">
-                <Col>
-                  <p>{content}</p>
-                </Col>
-              </Row>
-              <Row className="mb-1">
-                <Col>
-                  <Heart className="heart-icon me-2" onClick={handleLike} />
-                  <span className="fs-5">{likes}</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={2}>
-                  <CIcon
-                    icon={cilCommentSquare}
-                    className="comment-bubble me-2"
-                  />
-                  <span className="fs-5">{comments.length}</span>
-                </Col>
-                {user && (
-                  <Col xs={10}>
-                    <input
-                      type="text"
-                      placeholder="Leave a comment"
-                      className="form-control border border-secondary rounded"
-                      onKeyDown={addComment}
-                    />
-                  </Col>
-                )}
-              </Row>
-              <Row className="mt-5">
-                <Col>
-                  <p>
-                    <i>
-                      Created on: {new Date(createdOn).toLocaleString("en-US")}
-                    </i>
-                  </p>
-                </Col>
-              </Row>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseDetails}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </>
-    );
-  };
-
   return (
-    <Container className="d-flex flex-row justify-content-center align-items-center mb-2" style={{width: '90dvw'}} fluid>
-      <Card className="post-card border-3 border-info" style={{width: '90dvw'}}>
+    <Container
+      className="d-flex flex-row justify-content-center align-items-center mb-2"
+      style={{ width: "90dvw" }}
+      fluid
+    >
+      <Card
+        className="post-card border-3 border-info"
+        style={{ width: "90dvw" }}
+      >
         <Card.Body className="p-5 fs-5 fw-light">
           <Card.Title className="fs-3 mb-1 fw-bold">
             Author: {author}
@@ -174,7 +112,21 @@ export default function Post({
           </div>
         </Card.Body>
       </Card>
-      {renderSinglePost()}
+      <RenderSinglePost
+        showDetails={showDetails}
+        handleShowDetails={handleShowDetails}
+        handleCloseDetails={handleCloseDetails}
+        title={title}
+        content={content}
+        likes={likes}
+        comments={comments}
+        createdOn={createdOn}
+        postId={postId}
+        handleLike={handleLike}
+        addComment={addComment}
+        user={user}
+        userData={userData}
+      />
     </Container>
   );
 }
