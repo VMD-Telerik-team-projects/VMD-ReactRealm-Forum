@@ -1,10 +1,10 @@
-import Navigation from '../components/Navigation/Navigation'
-import Footer from '../components/Footer/Footer'
-import './Layout.css'
-import '../index.css'
+import Navigation from '../../components/Navigation/Navigation'
+import Footer from '../../components/Footer/Footer'
+import '../Layout.css'
+import '../../index.css'
 import PropTypes from 'prop-types';
 
-export default function Layout({ children }) {
+export default function LayoutCentered({ children }) {
   return (
     <div className='d-flex flex-column min-vh-100'>
       <Navigation />
@@ -16,6 +16,6 @@ export default function Layout({ children }) {
   )
 }
 
-Layout.propTypes = {
+LayoutCentered.propTypes = {
   children: PropTypes.node.isRequired,
 };

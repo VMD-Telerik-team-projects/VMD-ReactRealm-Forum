@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AppContext from "../../context/AppContext";
-import { Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col, Container } from "react-bootstrap";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
 import { Heart } from "react-bootstrap-icons";
@@ -146,8 +146,8 @@ export default function Post({
   };
 
   return (
-    <div>
-      <Card className="post-card border-3 border-info">
+    <Container className="d-flex flex-row justify-content-center align-items-center mb-2" style={{width: '90dvw'}} fluid>
+      <Card className="post-card border-3 border-info" style={{width: '90dvw'}}>
         <Card.Body className="p-5 fs-5 fw-light">
           <Card.Title className="fs-3 mb-1 fw-bold">
             Author: {author}
@@ -175,7 +175,7 @@ export default function Post({
         </Card.Body>
       </Card>
       {renderSinglePost()}
-    </div>
+    </Container>
   );
 }
 

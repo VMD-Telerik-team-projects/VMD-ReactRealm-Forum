@@ -5,7 +5,7 @@ import { AppContext } from '../context/AppContext';
 
 /**
  * 
- * @param {{children: any }} props 
+ * @param {{children: React.ReactNode }} props 
  * @returns 
  */
 export default function Authenticated({ children }) {
@@ -24,5 +24,5 @@ export default function Authenticated({ children }) {
 }
 
 Authenticated.propTypes = {
-    children: PropTypes.any.isRequired,
+    children: PropTypes.node.isRequired,
 }

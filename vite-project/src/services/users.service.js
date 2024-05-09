@@ -36,10 +36,15 @@ export const getLikedPosts = (handle) => {
 }
 
 //  TODO: Retrieve profile pictures from firebase storage
+//  TODO: Move bucket link to an env file
 export const getProfilePic = (handle) => {
   const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
   const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
 }
+
+//  TODO: Track online users:
+//  https://firebase.google.com/docs/database/web/offline-capabilities
+//  https://www.quora.com/How-do-I-show-list-of-other-logged-in-users-to-a-user-when-he-she-logs-in-to-the-app-in-firebase-Android
 
 //Add isBlocked field to all the users in the database
 

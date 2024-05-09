@@ -1,5 +1,5 @@
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 const auth = getAuth();
 
 export const loginUser = async (email, password) => {
@@ -24,9 +24,9 @@ export const getUserFromLocalStorage = () => {
   return userData ? JSON.parse(userData) : null;
 };
 
-useEffect(() => {
-    const userData = getUserFromLocalStorage();
-    if (userData) {
-      setUser(userData);
-    }
-  }, []);
+// useEffect(() => {
+//     const userData = getUserFromLocalStorage();
+//     if (userData) {
+//       setUser(userData);
+//     }
+//   }, []);

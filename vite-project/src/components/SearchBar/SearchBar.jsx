@@ -4,12 +4,14 @@ import PropTypes from "prop-types";
 
 /**
  *
- * @param {{ value: String, onChange: Function }} props
+ * @param {{ value: String, onChange: Function, className: string }} props
  * @returns
  */
-export default function SearchBar({ value, onChange }) {
+export default function SearchBar({ value, onChange, className }) {
+  const containerClassName = className ? `input-group ${className}` : "input-group";
+  
   return (
-    <Container className="input-group" style={{ width: "50dvw" }} fluid>
+    <Container className={containerClassName} style={{ width: "50dvw" }} fluid>
       <input
         type="search"
         className="form-control p-2"
@@ -28,4 +30,5 @@ export default function SearchBar({ value, onChange }) {
 SearchBar.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };

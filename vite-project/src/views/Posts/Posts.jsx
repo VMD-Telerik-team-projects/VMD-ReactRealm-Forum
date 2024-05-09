@@ -33,7 +33,7 @@ export default function Posts() {
 
   return (
     <>
-      <SearchBar value={searchTerm} onChange={setSearchTerm} />
+      <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
       {user ? (
         <div>
           {filteredPosts.map((post) => {
