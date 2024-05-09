@@ -5,6 +5,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
 import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle } from "../../services/admin.service";
+import './AdminDashboard.css';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -89,8 +90,8 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <button>
-                  <Trash className="text-danger" onClick={() => handleDeleteUser(user.handle)} />
+                  <button title="Delete User" className="border-0 bg-transparent">
+                  <Trash className="icon text-danger" onClick={() => handleDeleteUser(user.handle)} />
                   </button>
                   </Col>
                 </Row>
@@ -101,8 +102,8 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                  <button onClick={() => user.isBlocked ? handleUnblockUser(user.handle) : handleBlockUser(user.handle)}>
-                    {user.isBlocked ? <span className="text-success">Unblock</span> : <Ban className="text-danger" />}
+                  <button title={user.isBlocked ? "Unblock User" : "Block User"} className="border-0 bg-transparent" onClick={() => user.isBlocked ? handleUnblockUser(user.handle) : handleBlockUser(user.handle)}>
+                    {user.isBlocked ? <span className=" text-success">Unblock</span> : <Ban className=" icon text-danger" />}
                     </button>
                   </Col>
                 </Row>
