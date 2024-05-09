@@ -21,13 +21,13 @@ import Authenticated from "./hoc/Authenticated";
 import AuthenticatedAdmin from "./hoc/AuthenticatedAdmin";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import LayoutAdminDashboard from "./hoc/LayoutAdminDashboard/LayoutAdminDashboard";
+import RenderSinglePost from "./components/Post/PostDetails";
 
 function App() {
   const [appState, setAppState] = useState({
     user: null,
     userData: null,
   });
-
 
   //  comment
   useEffect(() => {
@@ -87,8 +87,15 @@ function App() {
                 <Posts />
               </LayoutPosts>
             }
-          >
-          </Route>
+          ></Route>
+          <Route
+            path="/post/:postId"
+            element={
+              <LayoutPosts>
+                <RenderSinglePost />
+              </LayoutPosts>
+            }
+          ></Route>
           <Route
             path="/about"
             element={

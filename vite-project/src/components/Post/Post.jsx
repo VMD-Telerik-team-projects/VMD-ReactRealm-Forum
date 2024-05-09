@@ -3,15 +3,19 @@ import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import "./Post.css";
 import PropTypes from "prop-types";
+import { cilCommentSquare } from "@coreui/icons";
 import {
   getAllPosts,
   comment,
   likePost,
   dislikePost,
 } from "../../services/posts.service";
+import { Heart, HeartFill } from "react-bootstrap-icons";
+import CIcon from "@coreui/icons-react";
 import { getLikedPosts } from "../../services/users.service";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 import RenderSinglePost from "./PostDetails";
 
 export default function Post({
@@ -65,15 +69,15 @@ export default function Post({
     onUpdate(postsData);
   };
   ///////////////////////////////////////////////////////////////////////
-  const [showDetails, setShowDetails] = useState(false);
+  // const [showDetails, setShowDetails] = useState(false);
 
-  const handleShowDetails = () => {
-    setShowDetails(true);
-  };
+  // const handleShowDetails = () => {
+  //   setShowDetails(true);
+  // };
 
-  const handleCloseDetails = () => {
-    setShowDetails(false);
-  };
+  // const handleCloseDetails = () => {
+  //   setShowDetails(false);
+  // };
   //////////////////////////////////////////////////////////////////////////
 
   return (
@@ -82,6 +86,43 @@ export default function Post({
       style={{ width: "90dvw" }}
       fluid
     >
+      {/* //////
+      <div>
+    <Card className='post-card border-3 border-info'>
+      <Card.Body className="p-5 fs-5 fw-light">
+        <Card.Title className="fs-3 mb-3 fw-bold">Author: {author}</Card.Title>
+        <Card.Title className="fs-3 mb-5 fw-normal">Title: {title}</Card.Title>
+        <div>
+          <Row className="mb-1">
+            <Col>
+              <p>{content}</p>
+            </Col>
+          </Row>
+          <Row className="mb-1">
+            <Col>
+              <Heart className="heart-icon me-2" onClick={handleLike}/>
+              <span className="fs-5">{likes}</span>
+            </Col>
+          </Row>
+          <Row>
+          <Col xs={2}>
+              <CIcon icon={cilCommentSquare} className="comment-bubble me-2" />
+              <span className="fs-5">{comments.length}</span>
+            </Col>
+            {user && <Col xs={10}>
+              <input type="text" placeholder="Leave a comment" className="form-control border border-secondary rounded" onKeyDown={addComment} />
+            </Col>}
+          </Row>
+          <Row className="mt-5">
+            <Col>
+              <p><i>Created on: {new Date(createdOn).toLocaleString('en-US')}</i></p>
+            </Col>
+          </Row>
+        </div>
+      </Card.Body>
+    </Card>
+    </div>
+      ////// */}
       <Card
         className="post-card border-3 border-info"
         style={{ width: "90dvw" }}
@@ -99,6 +140,31 @@ export default function Post({
                 <p>{content}</p>
               </Col>
             </Row>
+            <Row className="mb-1">
+              <Col>
+                <Heart className="heart-icon me-2" onClick={handleLike} />
+                <span className="fs-5">{likes}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={2}>
+                <CIcon
+                  icon={cilCommentSquare}
+                  className="comment-bubble me-2"
+                />
+                <span className="fs-5">{comments.length}</span>
+              </Col>
+              {/* {user && (
+                <Col xs={10}>
+                  <input
+                    type="text"
+                    placeholder="Leave a comment"
+                    className="form-control border border-secondary rounded"
+                    onKeyDown={addComment}
+                  />
+                </Col>
+              )} */}
+            </Row>
             <Row className="mt-1">
               <Col>
                 <p>
@@ -108,11 +174,13 @@ export default function Post({
                 </p>
               </Col>
             </Row>
-            <Button onClick={handleShowDetails}>Show post details</Button>
+            <Link to={`/post/${postId}`}>
+              <Button>Show post details</Button>
+            </Link>
           </div>
         </Card.Body>
       </Card>
-      <RenderSinglePost
+      {/* <RenderSinglePost
         showDetails={showDetails}
         handleShowDetails={handleShowDetails}
         handleCloseDetails={handleCloseDetails}
@@ -126,7 +194,7 @@ export default function Post({
         addComment={addComment}
         user={user}
         userData={userData}
-      />
+      /> */}
     </Container>
   );
 }
