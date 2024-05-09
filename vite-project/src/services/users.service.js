@@ -1,5 +1,6 @@
 import { getDownloadURL } from "firebase/storage";
 import { get, set, ref, query, equalTo, orderByChild } from "firebase/database";
+import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
 
 export const getUserByHandle = (handle) => {
@@ -33,18 +34,40 @@ export const getUserData = (uid) => {
 
 export const getLikedPosts = (handle) => {
   return get(ref(db, `users/${handle}/likedPosts`));
-}
+};
 
-//  TODO: Retrieve profile pictures from firebase storage
-//  TODO: Move bucket link to an env file
-export const getProfilePic = (handle) => {
-  const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
-  const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
-}
+export const updateUserData = async (handle, userData) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-//  TODO: Track online users:
-//  https://firebase.google.com/docs/database/web/offline-capabilities
-//  https://www.quora.com/How-do-I-show-list-of-other-logged-in-users-to-a-user-when-he-she-logs-in-to-the-app-in-firebase-Android
+  try {
+    if (user) {
+      if (userData.email) {
+        await updateEmail(user, userData.email);
+      }
+
+      if (userData.password) {
+        await updatePassword(user, userData.password);
+      }
+    }
+
+    //  for security reasons, we don't want to store the password in the database
+    const dataWithoutPassword = { ...userData };
+    delete dataWithoutPassword.password;
+
+    set(ref(db, `users/${handle}`), dataWithoutPassword);
+  } catch (e) {
+    return alert(`Failed to update user data: ${e.message}`);
+  }
+
+  return alert(`User ${handle}'s data updated successfully`);
+};
+
+// //  TODO: Retrieve profile pictures from firebase storage
+// export const getProfilePic = (handle) => {
+//   const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
+//   const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
+// }
 
 //Add isBlocked field to all the users in the database
 
