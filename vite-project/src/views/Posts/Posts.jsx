@@ -33,9 +33,9 @@ export default function Posts() {
 
   return (
     <>
-      <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
       {user ? (
-        <div>
+        <>
+          <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
           {filteredPosts.map((post) => {
             return (
               <Post
@@ -51,9 +51,9 @@ export default function Posts() {
               />
             );
           })}
-        </div>
+        </>
       ) : (
-        <h1>Login to see all posts!</h1>
+        <h1 className="fs-1 fw-light">Login to see all posts!</h1>
       )}
     </>
   );

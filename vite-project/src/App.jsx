@@ -20,6 +20,7 @@ import { getUserData } from "./services/users.service";
 import Authenticated from "./hoc/Authenticated";
 import AuthenticatedAdmin from "./hoc/AuthenticatedAdmin";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import LayoutAdminDashboard from "./hoc/LayoutAdminDashboard/LayoutAdminDashboard";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -79,9 +80,6 @@ function App() {
               </LayoutCentered>
             }
           ></Route>
-          {
-            //  TODO: Create posts page layout and wrap component
-          }
           <Route
             path="/posts"
             element={
@@ -150,9 +148,11 @@ function App() {
             path="/dashboard"
             element={
               // TODO: Create dashboard layout and wrap component
-              <AuthenticatedAdmin>
-                <AdminDashboard />
-              </AuthenticatedAdmin>
+              <LayoutAdminDashboard>
+                <AuthenticatedAdmin>
+                  <AdminDashboard />
+                </AuthenticatedAdmin>
+              </LayoutAdminDashboard>
             }
           ></Route>
           <Route path="*" element={<NotFound />} />
