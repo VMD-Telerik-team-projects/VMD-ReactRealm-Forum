@@ -1,5 +1,5 @@
 import { getDownloadURL } from "firebase/storage";
-import { get, set, ref, query, equalTo, orderByChild, remove } from "firebase/database";
+import { get, set, ref, query, equalTo, orderByChild, remove, update, getDatabase } from "firebase/database";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
 import { Navigate } from "react-router-dom";
@@ -10,6 +10,18 @@ export const getUserByHandle = (handle) => {
 
 export const deleteUserByHandle = (handle) => {
   return remove(ref(db, `users/${handle}`));
+};
+
+export const blockUserByHandle = async (handle) => {
+  try {
+    const db = getDatabase();
+    const userRef = ref(db, `users/${handle}`);
+    await update(userRef, { isBlocked: true });
+    alert("User blocked successfully");
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const createUserHandle = (

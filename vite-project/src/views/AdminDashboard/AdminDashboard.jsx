@@ -4,7 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
-import { deleteUserByHandle } from "../../services/users.service";
+import { deleteUserByHandle, blockUserByHandle } from "../../services/users.service";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -33,8 +33,18 @@ export default function AdminDashboard() {
     try {
       await deleteUserByHandle(handle);
       setUsers(users.filter((u) => u.handle !== handle));
+      alert('Deleted user');
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error('Deleting user: error');
+    }
+  };
+
+  const handleBlockUser = async (handle) => {
+    try {
+      await blockUserByHandle(handle);
+      setUsers(users.map((u) => u.handle === handle ? { ...u, isBlocked: true } : u));
+    } catch (error) {
+      console.error("Blocking user: error");
     }
   };
 
@@ -82,7 +92,9 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <Ban className="text-danger" />
+                    <button>
+                  <Ban className="text-danger" onClick={() => handleBlockUser(user.handle)} />
+                  </button>
                   </Col>
                 </Row>
                 <Row className="my-2">
