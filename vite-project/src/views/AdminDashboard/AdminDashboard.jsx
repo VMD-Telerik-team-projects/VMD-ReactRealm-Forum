@@ -4,7 +4,7 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
-import { deleteUserByHandle, blockUserByHandle } from "../../services/users.service";
+import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle} from "../../services/users.service";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
       setUsers(users.filter((u) => u.handle !== handle));
       alert('Deleted user');
     } catch (error) {
-      console.error('Deleting user: error');
+      console.error('Deleting user: error', error);
     }
   };
 
@@ -44,7 +44,16 @@ export default function AdminDashboard() {
       await blockUserByHandle(handle);
       setUsers(users.map((u) => u.handle === handle ? { ...u, isBlocked: true } : u));
     } catch (error) {
-      console.error("Blocking user: error");
+      console.error("Blocking user: error", error);
+    }
+  };
+
+  const handleUnblockUser = async (handle) => {
+    try {
+      await unblockUserByHandle(handle);
+      setUsers(users.map((u) => u.handle === handle ? { ...u, isBlocked: false } : u));
+    } catch (error) {
+      console.error("Unblocking user: error", error);
     }
   };
 
@@ -92,9 +101,9 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <button>
-                  <Ban className="text-danger" onClick={() => handleBlockUser(user.handle)} />
-                  </button>
+                  <button onClick={() => user.isBlocked ? handleUnblockUser(user.handle) : handleBlockUser(user.handle)}>
+                    {user.isBlocked ? <span className="text-success">Unblock</span> : <Ban className="text-danger" />}
+                    </button>
                   </Col>
                 </Row>
                 <Row className="my-2">
