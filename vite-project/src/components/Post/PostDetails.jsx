@@ -31,10 +31,21 @@ export default function RenderSinglePost({}) {
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
-  console.log(currentPost);
+ 
   const url = window.location.href;
   const match = url.match(/\/post\/([^\/]+)$/);
   const postId = match ? match[1] : null;
+
+  useEffect(() => {
+    const fetchLikedPosts = async () => {
+      const likedPosts = (await getLikedPosts(userData.handle)).val();
+      setIsLiked(likedPosts && postId in likedPosts);
+    };
+
+    if (userData) {
+      fetchLikedPosts();
+    }
+  }, [userData, postId]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -99,8 +110,6 @@ export default function RenderSinglePost({}) {
     setCurrentPost(postsData);
   };
 
-  
-
   return (
     <Container
       className="d-flex flex-row justify-content-center align-items-center p-2 min-vh-100"
@@ -126,12 +135,18 @@ export default function RenderSinglePost({}) {
             </Row>
             <Row className="mb-1">
               <Col>
-                {isLiked ? (<HeartFill
-                      className="heart-icon me-2 text-danger"
-                      onClick={handleLike}
-                    />) : (<Heart className="heart-icon me-2" onClick={handleLike} />)}
+                {isLiked ? (
+                  <HeartFill
+                    className="heart-icon me-2 text-danger"
+                    onClick={handleLike}
+                  />
+                ) : (
+                  <Heart className="heart-icon me-2" onClick={handleLike} />
+                )}
                 <span className="fs-5">
-                  {currentPost.likedBy ? Object.keys(currentPost.likedBy).length : 0}
+                  {currentPost.likedBy
+                    ? Object.keys(currentPost.likedBy).length
+                    : 0}
                 </span>
               </Col>
             </Row>
@@ -142,7 +157,9 @@ export default function RenderSinglePost({}) {
                   className="comment-bubble me-2"
                 />
                 <span className="fs-5">
-                  {currentPost.comments ? Object.keys(currentPost.comments).length : 0}
+                  {currentPost.comments
+                    ? Object.keys(currentPost.comments).length
+                    : 0}
                 </span>
               </Col>
             </Row>
@@ -157,7 +174,7 @@ export default function RenderSinglePost({}) {
               </Col>
             </Row>
             <Row>
-            <p className="fw-normal fs-3 mt-4 mb-2">Comments:</p>
+              <p className="fw-normal fs-3 mt-4 mb-2">Comments:</p>
               {user && (
                 <Col xs={12}>
                   <input
@@ -170,15 +187,19 @@ export default function RenderSinglePost({}) {
               )}
             </Row>
             <Row className="mt-4">
-              {currentPost.comments && Object.values(currentPost.comments).map((comment, index) => {
-                return (
-                  <div key={index} className="bg-white my-1">
-                    <p>
-                      <i><b>{Object.keys(comment)[0]}:</b></i> {Object.values(comment)[0]}
-                    </p>
-                  </div>
-                );
-              })}
+              {currentPost.comments &&
+                Object.values(currentPost.comments).map((comment, index) => {
+                  return (
+                    <div key={index} className="bg-white my-1">
+                      <p>
+                        <i>
+                          <b>{Object.keys(comment)[0]}:</b>
+                        </i>{" "}
+                        {Object.values(comment)[0]}
+                      </p>
+                    </div>
+                  );
+                })}
             </Row>
           </div>
         </Card.Body>
