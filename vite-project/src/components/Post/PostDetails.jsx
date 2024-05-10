@@ -1,5 +1,5 @@
 import Modal from "react-bootstrap/Modal";
-import { Heart } from "react-bootstrap-icons";
+import { Heart, HeartFill } from "react-bootstrap-icons";
 import { useContext } from "react";
 
 import AppContext from "../../context/AppContext";
@@ -24,10 +24,12 @@ import { getLikedPosts } from "../../services/users.service";
 import { likePost, dislikePost } from "../../services/posts.service";
 import { getAllPosts } from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
+import Loader from "../Loader/Loader";
 
 export default function RenderSinglePost({}) {
   const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
 
   console.log(currentPost);
   const url = window.location.href;
@@ -42,18 +44,6 @@ export default function RenderSinglePost({}) {
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        const dataPost = {
-          ...snapshot.val(),
-          postId,
-          likedBy: snapshot.val().likedBy
-            ? Object.keys(snapshot.val().likedBy)
-            : [],
-          createdOn: new Date(snapshot.val().createdOn).toString(),
-        };
-
-        // const snapshot = await getPostById(postId);
-        // console.log(`snapshot: ${snapshot}`);
-        // const postData = snapshot.data();
         setCurrentPost(snapshot.val());
       } catch (error) {
         console.error("Error fetching post:", error);
@@ -64,10 +54,8 @@ export default function RenderSinglePost({}) {
   }, []);
 
   if (!currentPost) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
-
-  //////////
 
   const addComment = async (e) => {
     if (e.key === "Enter") {
@@ -82,19 +70,9 @@ export default function RenderSinglePost({}) {
 
       e.target.value = "";
 
-      // const postsData = await getAllPosts();
       const postsData = await getPostById(postId);
       setCurrentPost(postsData);
-      // onUpdate(postsData);
     }
-  };
-
-  const isLiked = async () => {
-    console.log(userData);
-    if (Object.keys(currentPost.likedBy).contains(userData.handle)) {
-      return true;
-    }
-    return false;
   };
 
   const handleLike = async () => {
@@ -107,19 +85,22 @@ export default function RenderSinglePost({}) {
     if (likedPosts) {
       if (Object.keys(likedPosts).includes(postId)) {
         await dislikePost(postId, userData.handle);
+        setIsLiked(false);
       } else {
         await likePost(postId, userData.handle);
+        setIsLiked(true);
       }
     } else {
       await likePost(postId, userData.handle);
+      setIsLiked(true);
     }
 
     const postsData = await getPostById(postId);
     setCurrentPost(postsData);
-    // location.reload();
-    // const postsData = await getAllPosts();
-    // onUpdate(postsData);
   };
+
+  
+
   return (
     <Container
       className="d-flex flex-row justify-content-center align-items-center mb-2"
@@ -146,14 +127,10 @@ export default function RenderSinglePost({}) {
             <Row className="mb-1">
               <Col>
                 {/* <Heart className="heart-icon me-2" onClick={handleLike} /> */}
-                {isLiked() ? (
-                  <HeartFill
-                    className="heart-icon me-2 text-danger"
-                    onClick={handleLike}
-                  />
-                ) : (
-                  <Heart className="heart-icon me-2" onClick={handleLike} />
-                )}
+                {isLiked ? (<HeartFill
+                      className="heart-icon me-2 text-danger"
+                      onClick={handleLike}
+                    />) : (<Heart className="heart-icon me-2" onClick={handleLike} />)}
                 {/* <span className="fs-5">{currentPost.likes}</span> */}
                 <span className="fs-5">
                   {Object.keys(currentPost.likedBy).length}
