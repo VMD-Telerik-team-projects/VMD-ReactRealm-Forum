@@ -57,7 +57,8 @@ export default function SignIn() {
     try {
       const user = await getUserByHandle(form.username);
       if (user.exists()) {
-        return alert("User with this username already exists!");
+        alert("User with this username already exists!");
+        return setLoading(false);
       }
       const credential = await registerUser(form.email, form.password);
       await createUserHandle(
@@ -70,15 +71,14 @@ export default function SignIn() {
         false
       );
       setAppState({ user: credential.user, userData: null });
-      console.log("about to redirect");
+      // console.log("about to redirect");
       navigate("/Home" || "/");
     } catch (error) {
-      if (error.message.includes("auth/email-already-in-use")) {
-        alert("User has already been registered!");
-      }
+        alert(error.message);
+        setLoading(false);
     }
 
-    setLoading(false);
+    return setLoading(false);
   };
 
   if (loading) {

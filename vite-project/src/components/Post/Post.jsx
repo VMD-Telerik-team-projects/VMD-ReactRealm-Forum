@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import "./Post.css";
@@ -30,11 +30,21 @@ export default function Post({
   onUpdate,
 }) {
   const { user, userData } = useContext(AppContext);
-  const [isLiked, setIsLiked] = useState(userData.likedPosts && postId in userData.likedPosts);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    const fetchLikedPosts = async () => {
+      const likedPosts = (await getLikedPosts(userData.handle)).val();
+      setIsLiked(likedPosts && postId in likedPosts);
+    };
+  
+    if (userData) {
+      fetchLikedPosts();
+    }
+  }, [userData, postId]);
 
   const addComment = async (e) => {
     if (e.key === "Enter") {
-      console.log(postId);
       e.preventDefault();
 
       if (!userData) {
@@ -51,8 +61,6 @@ export default function Post({
   };
 
   const handleLike = async () => {
-    setIsLiked(!isLiked);
-    
     if (!userData) {
       return alert("You must be signed in to like a post");
     }
@@ -62,11 +70,14 @@ export default function Post({
     if (likedPosts) {
       if (Object.keys(likedPosts).includes(postId)) {
         await dislikePost(postId, userData.handle);
+        setIsLiked(false);
       } else {
         await likePost(postId, userData.handle);
+        setIsLiked(true);
       }
     } else {
       await likePost(postId, userData.handle);
+      setIsLiked(true);
     }
 
     const postsData = await getAllPosts();
