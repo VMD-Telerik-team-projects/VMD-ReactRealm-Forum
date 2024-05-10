@@ -9,6 +9,7 @@ import {
   orderByChild,
   orderByKey,
   remove,
+  onValue
 } from "firebase/database";
 import { db } from "../config/firebase-config";
 
@@ -95,3 +96,29 @@ export const comment = async (postId, handle, content) => {
 
   update(ref(db), updateVal);
 };
+
+export async function getNumberOfPosts() {
+  const postsRef = ref(db, 'posts');
+
+  try {
+    const snapshot = await get(postsRef);
+    const posts = snapshot.val();
+    const numberOfPosts = posts ? Object.keys(posts).length : 0;
+    return numberOfPosts;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getNumberOfUsers() {
+  const usersRef = ref(db, 'users');
+
+  try {
+    const snapshot = await get(usersRef);
+    const users = snapshot.val();
+    const numberOfUsers = users ? Object.keys(users).length : 0;
+    return numberOfUsers;
+  } catch (error) {
+    console.error(error);
+  }
+}
