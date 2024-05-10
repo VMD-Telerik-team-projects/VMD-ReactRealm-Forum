@@ -10,3 +10,12 @@
     margin: 4px 2px;
     cursor: pointer;
   }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
