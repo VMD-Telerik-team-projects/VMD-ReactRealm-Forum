@@ -1,7 +1,7 @@
 import Modal from "react-bootstrap/Modal";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import { useContext } from "react";
-
+import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import {
   ref,
@@ -163,7 +163,7 @@ export default function RenderSinglePost({}) {
                 </span>
               </Col>
             </Row>
-            <Row className="mt-5">
+            <Row className="mt-4">
               <Col>
                 <p>
                   <i>
@@ -173,8 +173,7 @@ export default function RenderSinglePost({}) {
                 </p>
               </Col>
             </Row>
-            <Row>
-              <p className="fw-normal fs-3 mt-4 mb-2">Comments:</p>
+            <Row className="mt-3">
               {user && (
                 <Col xs={12}>
                   <input
@@ -187,19 +186,11 @@ export default function RenderSinglePost({}) {
               )}
             </Row>
             <Row className="mt-4">
-              {currentPost.comments &&
-                Object.values(currentPost.comments).map((comment, index) => {
-                  return (
-                    <div key={index} className="bg-white my-1">
-                      <p>
-                        <i>
-                          <b>{Object.keys(comment)[0]}:</b>
-                        </i>{" "}
-                        {Object.values(comment)[0]}
-                      </p>
-                    </div>
-                  );
-                })}
+              {currentPost.comments && Object.values(currentPost.comments).map((comment, index) => {
+                return (
+                  <Comment key={index} author={Object.keys(comment)[0]} content={Object.values(comment)[0]} likes={0} />
+                );
+              })}
             </Row>
           </div>
         </Card.Body>
