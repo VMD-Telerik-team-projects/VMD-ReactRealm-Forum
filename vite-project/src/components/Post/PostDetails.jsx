@@ -103,12 +103,12 @@ export default function RenderSinglePost({}) {
 
   return (
     <Container
-      className="d-flex flex-row justify-content-center align-items-center mb-2"
+      className="d-flex flex-row justify-content-center align-items-center p-2 min-vh-100"
       style={{ width: "90dvw" }}
       fluid
     >
       <Card
-        className="post-card border-3 border-info"
+        className="post-card border-3 border-info h-100"
         style={{ width: "90dvw" }}
       >
         <Card.Body className="p-5 fs-5 fw-light">
@@ -116,7 +116,7 @@ export default function RenderSinglePost({}) {
             Author: {currentPost.author}
           </Card.Title>
           <Card.Title className="fs-3 mb-4 fw-normal">
-            Title: {currentPost.title}
+            {currentPost.title}
           </Card.Title>
           <div>
             <Row className="mb-1">
@@ -126,14 +126,12 @@ export default function RenderSinglePost({}) {
             </Row>
             <Row className="mb-1">
               <Col>
-                {/* <Heart className="heart-icon me-2" onClick={handleLike} /> */}
                 {isLiked ? (<HeartFill
                       className="heart-icon me-2 text-danger"
                       onClick={handleLike}
                     />) : (<Heart className="heart-icon me-2" onClick={handleLike} />)}
-                {/* <span className="fs-5">{currentPost.likes}</span> */}
                 <span className="fs-5">
-                  {Object.keys(currentPost.likedBy).length}
+                  {currentPost.likedBy ? Object.keys(currentPost.likedBy).length : 0}
                 </span>
               </Col>
             </Row>
@@ -143,23 +141,12 @@ export default function RenderSinglePost({}) {
                   icon={cilCommentSquare}
                   className="comment-bubble me-2"
                 />
-                {/* <span className="fs-5">{currentPost.comments.length}</span> */}
                 <span className="fs-5">
-                  {Object.keys(currentPost.comments).length}
+                  {currentPost.comments ? Object.keys(currentPost.comments).length : 0}
                 </span>
               </Col>
-              {user && (
-                <Col xs={10}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
-              )}
             </Row>
-            <Row className="mt-1">
+            <Row className="mt-5">
               <Col>
                 <p>
                   <i>
@@ -169,25 +156,33 @@ export default function RenderSinglePost({}) {
                 </p>
               </Col>
             </Row>
-            {/* <Button onClick={handleShowDetails}>Show post details</Button> */}
+            <Row>
+            <p className="fw-normal fs-3 mt-4 mb-2">Comments:</p>
+              {user && (
+                <Col xs={12}>
+                  <input
+                    type="text"
+                    placeholder="Leave a comment"
+                    className="form-control border border-secondary rounded"
+                    onKeyDown={addComment}
+                  />
+                </Col>
+              )}
+            </Row>
+            <Row className="mt-4">
+              {currentPost.comments && Object.values(currentPost.comments).map((comment, index) => {
+                return (
+                  <div key={index} className="bg-white my-1">
+                    <p>
+                      <i><b>{Object.keys(comment)[0]}:</b></i> {Object.values(comment)[0]}
+                    </p>
+                  </div>
+                );
+              })}
+            </Row>
           </div>
         </Card.Body>
       </Card>
-      {/* <RenderSinglePost
-        showDetails={showDetails}
-        handleShowDetails={handleShowDetails}
-        handleCloseDetails={handleCloseDetails}
-        title={title}
-        content={content}
-        likes={likes}
-        comments={comments}
-        createdOn={createdOn}
-        postId={postId}
-        handleLike={handleLike}
-        addComment={addComment}
-        user={user}
-        userData={userData}
-      /> */}
     </Container>
   );
 }

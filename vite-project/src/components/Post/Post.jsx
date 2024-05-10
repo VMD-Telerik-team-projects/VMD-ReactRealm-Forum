@@ -168,7 +168,7 @@ export default function Post({
                 )}
                 <span className="fs-5">{likes}</span>
               </Col>
-              {user && (
+              {/* {user && (
                 <Col xs={10}>
                   <input
                     type="text"
@@ -177,7 +177,7 @@ export default function Post({
                     onKeyDown={addComment}
                   />
                 </Col>
-              )}
+              )} */}
             </Row>
             <Row>
               <Col xs={2}>
