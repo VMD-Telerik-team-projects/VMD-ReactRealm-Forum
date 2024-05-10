@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getAllUsers } from "../../services/admin.service";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -6,11 +6,15 @@ import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
 import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle } from "../../services/admin.service";
 import './AdminDashboard.css';
+import { auth } from "../../config/firebase-config";
+import { deleteUser, getAuth, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import AppContext from "../../context/AppContext";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { user, setUser } = useContext(AppContext);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,6 +33,150 @@ export default function AdminDashboard() {
 
     fetchUsers();
   }, []);
+
+  /*const handleDeleteAccount = async (uid) => {
+    console.log("Deleting user with UID:", uid);
+    if (user) {
+      try {
+        await deleteUser(auth, uid);
+        console.log("User deleted");
+        setUser(null);
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    }
+  }; */
+
+  /*const handleDeleteAccount = async (uid) => {
+    console.log("Deleting user with UID:", uid);
+    try {
+      const response = await fetch(`/deleteUser/${uid}`, { method: 'DELETE' });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+        setUser(null);
+      } else {
+        const error = await response.text();
+        throw new Error(error);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }; */
+  /*const handleDeleteAccount = async () => {
+   
+  
+    try {
+      await deleteUser(auth);
+      console.log("Successfully deleted user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }; */
+
+ 
+
+/*const handleDeleteAccount = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      await deleteUser(user);
+      console.log("Successfully deleted user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  } else {
+    console.log("No user is currently signed in");
+  }
+}; */
+
+/*const handleDeleteAccount = async (email, password) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (user) {
+    const credential = EmailAuthProvider.credential(email, password);
+
+    try {
+      await reauthenticateWithCredential(user, credential);
+      await deleteUser(user);
+      console.log("Successfully deleted user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  } else {
+    console.log("No user is currently signed in");
+  }
+}; */
+
+
+
+/*auth
+  .deleteUser(uid) 
+  .then(() => {
+    console.log('Successfully deleted user');
+  })
+  .catch((error) => {
+    console.log('Error deleting user:', error);
+  }); */
+
+ /* const handleDeleteAccount = async (uid) => {
+    try {
+      await deleteUser(auth, uid);
+      console.log("Successfully deleted user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }; */
+
+  /*const handleDeleteAccount = async (uid) => {
+    console.log("Deleting user with UID:", uid);
+    try {
+      await auth.deleteUser(uid);
+      console.log("User deleted");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  }; */
+
+
+
+/*const handleDeleteAccount = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      await deleteUser(user);
+      console.log("Successfully deleted user");
+      setUser(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  } else {
+    console.log("No user is currently signed in");
+  }
+}; */
+
+const handleDeleteAccount = async (uid) => {
+  console.log("Deleting user with UID:", uid);
+  try {
+    await deleteUser(auth, uid);
+    console.log("User deleted");
+    setUser(null);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+  
 
   const handleDeleteUser = async (handle) => {
     try {
@@ -94,6 +242,7 @@ export default function AdminDashboard() {
                   <button title="Delete User" className="border-0 bg-transparent">
                   <Trash className="icon text-danger" onClick={() => handleDeleteUser(user.handle)} />
                   </button>
+                  <button onClick={() => handleDeleteAccount(user.uid)}>Delete Account</button>
                   </Col>
                 </Row>
                 <Row className="my-2">
