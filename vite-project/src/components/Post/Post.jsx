@@ -28,6 +28,8 @@ export default function Post({
   createdOn,
   postId,
   onUpdate,
+  onDelete,
+  userPriviliges,
 }) {
   const { user, userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
@@ -83,6 +85,7 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
+
   ///////////////////////////////////////////////////////////////////////
   // const [showDetails, setShowDetails] = useState(false);
 
@@ -113,15 +116,20 @@ export default function Post({
               </Card.Title>
             </Col>
             <Col xs={3} md={1}>
-              <div className="d-flex flex-row gap-3">
-                <Button className="bg-transparent border-0 p-0 fs-6">
-                  <Pencil className="text-secondary" />
+            <div className="d-flex flex-row gap-3">
+              <Button className="bg-transparent border-0 p-0 fs-6">
+                <Pencil className="text-secondary" />
                 </Button>
-                <Button className="bg-transparent border-0 p-0 fs-6">
-                  <Trash className="text-danger" />
-                </Button>
-                
-              </div>
+                {userPriviliges === 0 && (
+                <Button
+                title="Delete Post"
+                className="bg-transparent border-0 p-0 fs-6"
+                onClick={() => onDelete(postId)}
+                >
+                  <Trash className="trash-icon text-danger" />
+                  </Button>
+                )}
+                </div>
             </Col>
           </Row>
           <Card.Title className="fs-3 mb-4 fw-normal">

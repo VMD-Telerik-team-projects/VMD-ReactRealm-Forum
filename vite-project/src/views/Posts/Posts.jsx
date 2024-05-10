@@ -31,7 +31,7 @@ export default function Posts() {
     } catch (error) {
       console.error('Failed to delete post:', error);
     }
-  };
+  }; 
   
   if (loading) {
     return <Loader />
@@ -50,8 +50,8 @@ export default function Posts() {
           <div className="posts-container">
           {filteredPosts.map((post) => {
             return (
-              <div key={post.id}>
               <Post
+                key={post.id}
                 author={post.author}
                 title={post.title}
                 content={post.content}
@@ -60,9 +60,9 @@ export default function Posts() {
                 createdOn={post.createdOn}
                 postId={post.id}
                 onUpdate={setPosts}
+                onDelete={() => handleDeletePost(post.id)}
+                userPriviliges={userData.priviliges}
               />
-             {userData.priviliges === 0 && <button className="btn btn-danger" onClick={() => handleDeletePost(post.id)}>DELETE POST: {post.title} </button>}
-            </div>
             );
           })}
           </div>
