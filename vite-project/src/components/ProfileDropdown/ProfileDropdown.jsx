@@ -29,7 +29,7 @@ export default function ProfileDropdown() {
           <h4>{userData ? userData.handle : ""}</h4>
         </DropdownItem>
 
-        <DropdownItem>
+        <DropdownItem as="div">
           <Link
             to="/my-profile"
             className="link-underline link-underline-opacity-0 text-black"
@@ -38,7 +38,7 @@ export default function ProfileDropdown() {
           </Link>
         </DropdownItem>
 
-        <DropdownItem>
+        <DropdownItem as="div">
           <Link
             to="/my-posts"
             className="link-underline link-underline-opacity-0 text-black"

@@ -24,9 +24,9 @@ export default function Posts() {
     fetchPosts();
   }, []);
 
-  const handleDeletePost = async (id) => {
+  const handleDeletePost = async (author, id) => {
     try {
-      await deletePostById(id);
+      await deletePostById(author, id);
       setPosts(posts.filter(post => post.id !== id));
     } catch (error) {
       console.error('Failed to delete post:', error);
@@ -60,7 +60,7 @@ export default function Posts() {
                 createdOn={post.createdOn}
                 postId={post.id}
                 onUpdate={setPosts}
-                onDelete={() => handleDeletePost(post.id)}
+                onDelete={() => handleDeletePost(post.author, post.id)}
                 userPriviliges={userData.priviliges}
               />
             );

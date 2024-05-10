@@ -39,7 +39,7 @@ export default function Post({
       const likedPosts = (await getLikedPosts(userData.handle)).val();
       setIsLiked(likedPosts && postId in likedPosts);
     };
-  
+
     if (userData) {
       fetchLikedPosts();
     }
@@ -116,20 +116,22 @@ export default function Post({
               </Card.Title>
             </Col>
             <Col xs={3} md={1}>
-            <div className="d-flex flex-row gap-3">
-              <Button className="bg-transparent border-0 p-0 fs-6">
-                <Pencil className="text-secondary" />
-                </Button>
-                {userPriviliges === 0 && (
-                <Button
-                title="Delete Post"
-                className="bg-transparent border-0 p-0 fs-6"
-                onClick={() => onDelete(postId)}
-                >
-                  <Trash className="trash-icon text-danger" />
+              <div className="d-flex flex-row gap-3">
+                {userData.handle === author && (
+                  <Button className="bg-transparent border-0 p-0 fs-6">
+                    <Pencil className="text-secondary" />
                   </Button>
                 )}
-                </div>
+                {(userData.handle === author || userPriviliges === 0) && (
+                  <Button
+                    title="Delete Post"
+                    className="bg-transparent border-0 p-0 fs-6"
+                    onClick={() => onDelete(postId)}
+                  >
+                    <Trash className="trash-icon text-danger" />
+                  </Button>
+                )}
+              </div>
             </Col>
           </Row>
           <Card.Title className="fs-3 mb-4 fw-normal">
@@ -143,11 +145,9 @@ export default function Post({
             </Row>
             <Row className="mb-1">
               <Col>
-                {isLiked ?
-                (
+                {isLiked ? (
                   <HeartFill className="heart-icon me-2" onClick={handleLike} />
-                ) :
-                (
+                ) : (
                   <Heart className="heart-icon me-2" onClick={handleLike} />
                 )}
                 <span className="fs-5">{likes}</span>
@@ -171,7 +171,6 @@ export default function Post({
                 />
                 <span className="fs-5">{comments.length}</span>
               </Col>
-              
             </Row>
             <Row className="mt-4">
               <div className="d-flex flex-row w-full justify-content-center align-items-center">
@@ -183,9 +182,14 @@ export default function Post({
               </div>
             </Row>
             <Row>
-              <Link to={`/post/${postId}`} className="link-underline link-underline-opacity-0">
+              <Link
+                to={`/post/${postId}`}
+                className="link-underline link-underline-opacity-0"
+              >
                 <div className="d-flex flex-row w-full justify-content-center align-items-center">
-                  <Button className="bg-transparent" variant="outline-none">View details: <ForwardFill /></Button>
+                  <Button className="bg-transparent" variant="outline-none">
+                    View details: <ForwardFill />
+                  </Button>
                 </div>
               </Link>
             </Row>
