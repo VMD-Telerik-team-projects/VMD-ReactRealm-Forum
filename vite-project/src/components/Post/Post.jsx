@@ -162,7 +162,7 @@ export default function Post({
             <Row className="mb-1">
               <Col>
                 {isLiked ? (
-                  <HeartFill className="heart-icon me-2" onClick={handleLike} />
+                  <HeartFill className="heart-icon me-2 text-danger" onClick={handleLike} />
                 ) : (
                   <Heart className="heart-icon me-2" onClick={handleLike} />
                 )}
