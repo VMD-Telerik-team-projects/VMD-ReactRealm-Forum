@@ -18,6 +18,7 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 // import RenderSinglePost from "./PostDetails";
 import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
+import EditPostModal from "../EditPostModal/EditPostModal";
 
 export default function Post({
   author,
@@ -98,6 +99,21 @@ export default function Post({
   // };
   //////////////////////////////////////////////////////////////////////////
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  
+  
+  const handleShowEditModal = (e) => {
+    if (e.key === "Escape") {
+      setShowEditModal(false);
+    } else {
+      setShowEditModal(true);
+    }
+  };
+  
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+  };
+  
   return (
     <Container
       className="d-flex flex-row justify-content-center align-items-center mb-2"
@@ -118,7 +134,7 @@ export default function Post({
             <Col xs={3} md={1}>
               <div className="d-flex flex-row gap-3">
                 {userData.handle === author && (
-                  <Button className="bg-transparent border-0 p-0 fs-6">
+                  <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
                     <Pencil className="text-secondary" />
                   </Button>
                 )}
@@ -196,6 +212,7 @@ export default function Post({
           </>
         </Card.Body>
       </Card>
+      <EditPostModal isShown={showEditModal} closeHandler={handleCloseEditModal} postId={postId} />
     </Container>
   );
 }
