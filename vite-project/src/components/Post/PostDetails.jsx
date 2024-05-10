@@ -1,5 +1,5 @@
 import Modal from "react-bootstrap/Modal";
-import { Heart } from "react-bootstrap-icons";
+import { Heart, HeartFill } from "react-bootstrap-icons";
 import { useContext } from "react";
 
 import AppContext from "../../context/AppContext";
@@ -17,37 +17,34 @@ import {
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
-import Button from "react-bootstrap/Button";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
+import { getLikedPosts } from "../../services/users.service";
+import { likePost, dislikePost } from "../../services/posts.service";
+import { getAllPosts } from "../../services/posts.service";
+import { comment } from "../../services/posts.service";
+import Loader from "../Loader/Loader";
+
 export default function RenderSinglePost({}) {
+  const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
+
+  console.log(currentPost);
+  const url = window.location.href;
+  const match = url.match(/\/post\/([^\/]+)$/);
+  const postId = match ? match[1] : null;
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const url = window.location.href;
-        const match = url.match(/\/post\/([^\/]+)$/);
-        const postId = match ? match[1] : null;
-
         const snapshot = await get(ref(db, `posts/${postId}`));
 
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        const dataPost = {
-          ...snapshot.val(),
-          postId,
-          likedBy: snapshot.val().likedBy
-            ? Object.keys(snapshot.val().likedBy)
-            : [],
-          createdOn: new Date(snapshot.val().createdOn).toString(),
-        };
-
-        // const snapshot = await getPostById(postId);
-        // console.log(`snapshot: ${snapshot}`);
-        // const postData = snapshot.data();
-        setCurrentPost(dataPost);
+        setCurrentPost(snapshot.val());
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -57,11 +54,8 @@ export default function RenderSinglePost({}) {
   }, []);
 
   if (!currentPost) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
-
-  //////////
-  const { user, userData } = useContext(AppContext);
 
   const addComment = async (e) => {
     if (e.key === "Enter") {
@@ -76,8 +70,8 @@ export default function RenderSinglePost({}) {
 
       e.target.value = "";
 
-      const postsData = await getAllPosts();
-      onUpdate(postsData);
+      const postsData = await getPostById(postId);
+      setCurrentPost(postsData);
     }
   };
 
@@ -91,24 +85,30 @@ export default function RenderSinglePost({}) {
     if (likedPosts) {
       if (Object.keys(likedPosts).includes(postId)) {
         await dislikePost(postId, userData.handle);
+        setIsLiked(false);
       } else {
         await likePost(postId, userData.handle);
+        setIsLiked(true);
       }
     } else {
       await likePost(postId, userData.handle);
+      setIsLiked(true);
     }
 
-    const postsData = await getAllPosts();
-    onUpdate(postsData);
+    const postsData = await getPostById(postId);
+    setCurrentPost(postsData);
   };
+
+  
+
   return (
     <Container
-      className="d-flex flex-row justify-content-center align-items-center mb-2"
+      className="d-flex flex-row justify-content-center align-items-center p-2 min-vh-100"
       style={{ width: "90dvw" }}
       fluid
     >
       <Card
-        className="post-card border-3 border-info"
+        className="post-card border-3 border-info h-100"
         style={{ width: "90dvw" }}
       >
         <Card.Body className="p-5 fs-5 fw-light">
@@ -116,7 +116,7 @@ export default function RenderSinglePost({}) {
             Author: {currentPost.author}
           </Card.Title>
           <Card.Title className="fs-3 mb-4 fw-normal">
-            Title: {currentPost.title}
+            {currentPost.title}
           </Card.Title>
           <div>
             <Row className="mb-1">
@@ -126,8 +126,13 @@ export default function RenderSinglePost({}) {
             </Row>
             <Row className="mb-1">
               <Col>
-                <Heart className="heart-icon me-2" onClick={handleLike} />
-                <span className="fs-5">{currentPost.likes}</span>
+                {isLiked ? (<HeartFill
+                      className="heart-icon me-2 text-danger"
+                      onClick={handleLike}
+                    />) : (<Heart className="heart-icon me-2" onClick={handleLike} />)}
+                <span className="fs-5">
+                  {currentPost.likedBy ? Object.keys(currentPost.likedBy).length : 0}
+                </span>
               </Col>
             </Row>
             <Row>
@@ -136,20 +141,12 @@ export default function RenderSinglePost({}) {
                   icon={cilCommentSquare}
                   className="comment-bubble me-2"
                 />
-                <span className="fs-5">{currentPost.comments.length}</span>
+                <span className="fs-5">
+                  {currentPost.comments ? Object.keys(currentPost.comments).length : 0}
+                </span>
               </Col>
-              {user && (
-                <Col xs={10}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
-              )}
             </Row>
-            <Row className="mt-1">
+            <Row className="mt-5">
               <Col>
                 <p>
                   <i>
@@ -159,25 +156,33 @@ export default function RenderSinglePost({}) {
                 </p>
               </Col>
             </Row>
-            {/* <Button onClick={handleShowDetails}>Show post details</Button> */}
+            <Row>
+            <p className="fw-normal fs-3 mt-4 mb-2">Comments:</p>
+              {user && (
+                <Col xs={12}>
+                  <input
+                    type="text"
+                    placeholder="Leave a comment"
+                    className="form-control border border-secondary rounded"
+                    onKeyDown={addComment}
+                  />
+                </Col>
+              )}
+            </Row>
+            <Row className="mt-4">
+              {currentPost.comments && Object.values(currentPost.comments).map((comment, index) => {
+                return (
+                  <div key={index} className="bg-white my-1">
+                    <p>
+                      <i><b>{Object.keys(comment)[0]}:</b></i> {Object.values(comment)[0]}
+                    </p>
+                  </div>
+                );
+              })}
+            </Row>
           </div>
         </Card.Body>
       </Card>
-      {/* <RenderSinglePost
-        showDetails={showDetails}
-        handleShowDetails={handleShowDetails}
-        handleCloseDetails={handleCloseDetails}
-        title={title}
-        content={content}
-        likes={likes}
-        comments={comments}
-        createdOn={createdOn}
-        postId={postId}
-        handleLike={handleLike}
-        addComment={addComment}
-        user={user}
-        userData={userData}
-      /> */}
     </Container>
   );
 }
