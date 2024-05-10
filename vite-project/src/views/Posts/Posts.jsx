@@ -12,6 +12,7 @@ export default function Posts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState('date');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,11 +43,28 @@ export default function Posts() {
     (post.content && post.content.toLowerCase().includes(searchTerm.toLowerCase()))
   ) : [];
 
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  const sortedPosts = filteredPosts.sort((a, b) => {
+    if (sortOption === 'date') {
+      return new Date(b.date) - new Date(a.date);
+    } else if (sortOption === 'title') {
+      const titleA = a.title || "";
+      const titleB = b.title || "";
+      return titleA.localeCompare(titleB); 
+ } });
+
   return (
     <>
       {user ? (
         <>
           <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
+          <select className="select-dropdown" value={sortOption} onChange={handleSortChange}>
+          <option value="date">Oldest posts</option>
+          <option value="title">Alphabetical order</option>
+        </select>
           <div className="posts-container">
           {filteredPosts.map((post) => {
             return (

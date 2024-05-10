@@ -18,5 +18,22 @@
     height: 700px;
     overflow-y: scroll;
     scrollbar-width: thin;
-    scrollbar-color: #baecf7 #4e4e4e;
+    scrollbar-color: #a3ebfc #379de1;
+  }
+
+  .select-dropdown {
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #9de8ff;
+    background-color: #f8f8f8;
+    color: #4d4e4f;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .select-dropdown:focus {
+    outline: none;
+    border-color: #62e2ff;
   }
