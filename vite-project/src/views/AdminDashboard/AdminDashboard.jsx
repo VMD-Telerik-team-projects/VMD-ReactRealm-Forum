@@ -4,7 +4,8 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
 import { Ban, Trash } from "react-bootstrap-icons";
-import { deleteUserByHandle } from "../../services/users.service";
+import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle } from "../../services/admin.service";
+import './AdminDashboard.css';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -33,8 +34,27 @@ export default function AdminDashboard() {
     try {
       await deleteUserByHandle(handle);
       setUsers(users.filter((u) => u.handle !== handle));
+      alert('Deleted user');
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error('Deleting user: error', error);
+    }
+  };
+
+  const handleBlockUser = async (handle) => {
+    try {
+      await blockUserByHandle(handle);
+      setUsers(users.map((u) => u.handle === handle ? { ...u, isBlocked: true } : u));
+    } catch (error) {
+      console.error("Blocking user: error", error);
+    }
+  };
+
+  const handleUnblockUser = async (handle) => {
+    try {
+      await unblockUserByHandle(handle);
+      setUsers(users.map((u) => u.handle === handle ? { ...u, isBlocked: false } : u));
+    } catch (error) {
+      console.error("Unblocking user: error", error);
     }
   };
 
@@ -57,6 +77,7 @@ export default function AdminDashboard() {
       <h1 className="my-4">Admin Dashboard</h1>
       <h3 className="mb-4">Registered users: </h3>
       <SearchBar value={searchTerm} onChange={handleSearchChange} />
+      <div className="content-container">
       <div className="bg-white my-4">
         {filteredUsers.map((user) => {
           return (
@@ -70,8 +91,8 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <button>
-                  <Trash className="text-danger" onClick={() => handleDeleteUser(user.handle)} />
+                  <button title="Delete User" className="border-0 bg-transparent">
+                  <Trash className="icon text-danger" onClick={() => handleDeleteUser(user.handle)} />
                   </button>
                   </Col>
                 </Row>
@@ -82,7 +103,9 @@ export default function AdminDashboard() {
                     </Card.Text>
                   </Col>
                   <Col xs={1}>
-                    <Ban className="text-danger" />
+                  <button title={user.isBlocked ? "Unblock User" : "Block User"} className="border-0 bg-transparent" onClick={() => user.isBlocked ? handleUnblockUser(user.handle) : handleBlockUser(user.handle)}>
+                    {user.isBlocked ? <span className=" text-success">Unblock</span> : <Ban className=" icon text-danger" />}
+                    </button>
                   </Col>
                 </Row>
                 <Row className="my-2">
@@ -94,6 +117,7 @@ export default function AdminDashboard() {
             </Card>
           );
         })}
+        </div>
       </div>
     </>
   );

@@ -14,3 +14,14 @@
   .create-post-button:hover {
     animation: blink 1s linear infinite;
   }
+
+  .post-titles {
+    color: #151414; 
+    font-size: 2em;
+    text-align: center;
+    background-color: #fdfdfd;
+    border: 1px solid #d4d2d2;
+    border-radius: 10px;
+    padding: 10px;
+    text-shadow: -1px 0 rgb(142, 140, 140), 0 1px rgb(255, 254, 254), 1px 0 rgb(255, 245, 245), 0 -1px rgb(255, 250, 250);
+  }

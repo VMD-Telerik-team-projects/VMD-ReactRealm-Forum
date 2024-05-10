@@ -20,7 +20,7 @@ export default function SearchBar({ value, onChange, className }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <Button variant="outline-none" className="bg-white">
+      <Button variant="outline-none" className="bg-white" style={{ border: "2px solid lightblue", cursor: "default"}}>
         <Search />
       </Button>
     </Container>

@@ -36,7 +36,7 @@ export default function CreatePost() {
 
     if (
       post.title.length < POST_TITLE_MIN_LENGTH ||
-      post.content.length > POST_TITLE_MAX_LENGTH
+      post.title.length > POST_TITLE_MAX_LENGTH
     ) {
       alert("The title must be 16-64 characters long!");
       return setLoading(false);
@@ -71,7 +71,7 @@ export default function CreatePost() {
         {!user ? (
           <h1>Sign in to create posts</h1>
         ) : (
-          <h1 className="mb-3">Create a new post</h1>
+          <h1 className="mb-3 post-titles">Create a new post 👨‍💻 </h1>
         )}
       </Card.Title>
       <Row className="mt-1 mb-3">
@@ -99,6 +99,9 @@ export default function CreatePost() {
           value={post.content}
           onChange={(e) => updatePost(e.target.value, "content")}
         ></textarea>
+        <small className="form-text text-muted">
+          {post.content.length} / 8196 characters (Minimum 32 characters)
+        </small>
       </Row>
       <Row>
         <Button className="create-post-button mt-3" onClick={createPost}>

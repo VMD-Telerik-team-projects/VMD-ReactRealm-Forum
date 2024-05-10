@@ -1,4 +1,4 @@
-import { ref, push, get, set, update, query, equalTo, orderByChild, orderByKey } from 'firebase/database';
+import { ref, push, get, set, update, query, equalTo, orderByChild, orderByKey, remove } from 'firebase/database';
 import { db } from '../config/firebase-config';
 
 export const addPost = async(author, title, content, comments) => {
@@ -60,6 +60,12 @@ export const getPostById = async(id) => {
         likedBy: snapshot.val().likedBy ? Object.keys(snapshot.val().likedBy) : [],
         createdOn: new Date(snapshot.val().createdOn).toString(),
     }
+};
+
+export const deletePostById = async(id) => {
+    const postRef = ref(db, `posts/${id}`);
+    await remove(postRef);
+    alert('Post deleted!');
 };
 
 export const likePost = async(postId, handle) => {
