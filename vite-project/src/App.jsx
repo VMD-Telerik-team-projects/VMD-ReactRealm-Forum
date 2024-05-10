@@ -23,6 +23,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import LayoutAdminDashboard from "./hoc/LayoutAdminDashboard/LayoutAdminDashboard";
 import RenderSinglePost from "./components/Post/PostDetails";
 import UserBlocked from "./views/UserBlocked/UserBlocked";
+import { updateUserOnlineStatus } from "./services/auth.service";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -47,7 +48,14 @@ function App() {
         const userDataSnapshot = await getUserData(user.uid);
         const userData = userDataSnapshot.val();
         setAppState({ user, userData });
+
+        // console.log(userData.values());
+
+        await updateUserOnlineStatus(Object.values(userData)[0].handle, true); // Update the online status using the correct user data
       } else {
+        if (appState.userData) {
+          await updateUserOnlineStatus(appState.userData.handle, false); // Update the online status using the correct user data
+        }
         setAppState({ user: null, userData: null });
       }
     });

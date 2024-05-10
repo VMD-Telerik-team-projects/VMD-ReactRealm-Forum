@@ -19,6 +19,7 @@ export default function SignIn() {
     setLoading(true);
     try {
       const credential = await loginUser(form.email, form.password);
+      
       setAppState({ user: credential.user })
       // setAppState({ user, userData: null });
       navigate(location.state?.from.pathname || "/");

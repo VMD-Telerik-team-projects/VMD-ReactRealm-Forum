@@ -7,10 +7,10 @@ import "./Header.css";
 import ProfileDropdown from "../ProfileDropdown/ProfileDropdown";
 
 export default function Header() {
-  const { user, setAppState } = useContext(AppContext);
+  const { user, userData, setAppState } = useContext(AppContext);
 
-  const logout = async () => {
-    await logoutUser();
+  const logout = () => {
+    logoutUser(userData.handle);
     setAppState({ user: null, userData: null });
   };
 

@@ -26,6 +26,7 @@ export const createUserHandle = (
     createdOn: new Date(),
     priviliges,
     isBlocked,
+    isOnline: false
   });
 };
 
