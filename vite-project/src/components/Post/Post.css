@@ -12,3 +12,7 @@
   width: 24px;
   display: inline;
 }
+
+.heart-icon:hover {
+  scale: 1.1;
+}

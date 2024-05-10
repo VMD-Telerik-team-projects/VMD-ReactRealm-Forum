@@ -12,6 +12,8 @@ export const addPost = async(author, title, content, comments) => {
 
     const result = await push(ref(db, 'posts'), post);
     console.log(result.key);
+
+    await set(ref(db, `users/${author}/posts/${result.key}`), true);
 };
 
 //  All posts means no search
@@ -62,9 +64,13 @@ export const getPostById = async(id) => {
     }
 };
 
-export const deletePostById = async(id) => {
+export const deletePostById = async(author, id) => {
     const postRef = ref(db, `posts/${id}`);
     await remove(postRef);
+
+    const userPostsRef = ref(db, `users/${author}/posts/${id}`);
+    await remove(userPostsRef);
+    
     alert('Post deleted!');
 };
 

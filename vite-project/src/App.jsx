@@ -22,6 +22,7 @@ import AuthenticatedAdmin from "./hoc/AuthenticatedAdmin";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import LayoutAdminDashboard from "./hoc/LayoutAdminDashboard/LayoutAdminDashboard";
 import RenderSinglePost from "./components/Post/PostDetails";
+import UserBlocked from "./views/UserBlocked/UserBlocked";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -133,7 +134,6 @@ function App() {
           <Route
             path="/my-posts"
             element={
-              // TODO: Create correct "MyPosts" component and switch to it
               <LayoutCentered>
                 <Authenticated>
                   <CreatePost />
@@ -154,7 +154,6 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              // TODO: Create dashboard layout and wrap component
               <LayoutAdminDashboard>
                 <AuthenticatedAdmin>
                   <AdminDashboard />
@@ -162,6 +161,15 @@ function App() {
               </LayoutAdminDashboard>
             }
           ></Route>
+          <Route
+            path="/blocked"
+            element={
+              <LayoutCentered>
+                <UserBlocked />
+              </LayoutCentered>
+            }
+          >
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppContext.Provider>
