@@ -17,19 +17,26 @@ import {
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
-import Button from "react-bootstrap/Button";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
+import { getLikedPosts } from "../../services/users.service";
+import { likePost, dislikePost } from "../../services/posts.service";
+import { getAllPosts } from "../../services/posts.service";
+import { comment } from "../../services/posts.service";
+
 export default function RenderSinglePost({}) {
+  const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
+
+  console.log(currentPost);
+  const url = window.location.href;
+  const match = url.match(/\/post\/([^\/]+)$/);
+  const postId = match ? match[1] : null;
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const url = window.location.href;
-        const match = url.match(/\/post\/([^\/]+)$/);
-        const postId = match ? match[1] : null;
-
         const snapshot = await get(ref(db, `posts/${postId}`));
 
         if (!snapshot.val())
@@ -47,7 +54,7 @@ export default function RenderSinglePost({}) {
         // const snapshot = await getPostById(postId);
         // console.log(`snapshot: ${snapshot}`);
         // const postData = snapshot.data();
-        setCurrentPost(dataPost);
+        setCurrentPost(snapshot.val());
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -61,7 +68,6 @@ export default function RenderSinglePost({}) {
   }
 
   //////////
-  const { user, userData } = useContext(AppContext);
 
   const addComment = async (e) => {
     if (e.key === "Enter") {
@@ -76,9 +82,19 @@ export default function RenderSinglePost({}) {
 
       e.target.value = "";
 
-      const postsData = await getAllPosts();
-      onUpdate(postsData);
+      // const postsData = await getAllPosts();
+      const postsData = await getPostById(postId);
+      setCurrentPost(postsData);
+      // onUpdate(postsData);
     }
+  };
+
+  const isLiked = async () => {
+    console.log(userData);
+    if (Object.keys(currentPost.likedBy).contains(userData.handle)) {
+      return true;
+    }
+    return false;
   };
 
   const handleLike = async () => {
@@ -98,8 +114,11 @@ export default function RenderSinglePost({}) {
       await likePost(postId, userData.handle);
     }
 
-    const postsData = await getAllPosts();
-    onUpdate(postsData);
+    const postsData = await getPostById(postId);
+    setCurrentPost(postsData);
+    // location.reload();
+    // const postsData = await getAllPosts();
+    // onUpdate(postsData);
   };
   return (
     <Container
@@ -126,8 +145,19 @@ export default function RenderSinglePost({}) {
             </Row>
             <Row className="mb-1">
               <Col>
-                <Heart className="heart-icon me-2" onClick={handleLike} />
-                <span className="fs-5">{currentPost.likes}</span>
+                {/* <Heart className="heart-icon me-2" onClick={handleLike} /> */}
+                {isLiked() ? (
+                  <HeartFill
+                    className="heart-icon me-2 text-danger"
+                    onClick={handleLike}
+                  />
+                ) : (
+                  <Heart className="heart-icon me-2" onClick={handleLike} />
+                )}
+                {/* <span className="fs-5">{currentPost.likes}</span> */}
+                <span className="fs-5">
+                  {Object.keys(currentPost.likedBy).length}
+                </span>
               </Col>
             </Row>
             <Row>
@@ -136,7 +166,10 @@ export default function RenderSinglePost({}) {
                   icon={cilCommentSquare}
                   className="comment-bubble me-2"
                 />
-                <span className="fs-5">{currentPost.comments.length}</span>
+                {/* <span className="fs-5">{currentPost.comments.length}</span> */}
+                <span className="fs-5">
+                  {Object.keys(currentPost.comments).length}
+                </span>
               </Col>
               {user && (
                 <Col xs={10}>
