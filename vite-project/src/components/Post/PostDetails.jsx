@@ -146,7 +146,7 @@ export default function RenderSinglePost({}) {
                 </span>
               </Col>
             </Row>
-            <Row className="mt-5">
+            <Row className="mt-4">
               <Col>
                 <p>
                   <i>
