@@ -1,25 +1,106 @@
 import Modal from "react-bootstrap/Modal";
 import { Heart } from "react-bootstrap-icons";
+import { useContext } from "react";
+
+import AppContext from "../../context/AppContext";
+import {
+  ref,
+  push,
+  get,
+  set,
+  update,
+  query,
+  equalTo,
+  orderByChild,
+  orderByKey,
+} from "firebase/database";
+import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
 import Button from "react-bootstrap/Button";
 import { Card, Row, Col, Container } from "react-bootstrap";
-export default function RenderSinglePost({
-  author,
-  showDetails,
-  handleShowDetails,
-  handleCloseDetails,
-  title,
-  content,
-  likes,
-  comments,
-  createdOn,
-  postId,
-  handleLike,
-  addComment,
-  user,
-  userData,
-}) {
+import { getPostById } from "../../services/posts.service";
+import { useEffect, useState } from "react";
+export default function RenderSinglePost({}) {
+  const [currentPost, setCurrentPost] = useState(null);
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const url = window.location.href;
+        const match = url.match(/\/post\/([^\/]+)$/);
+        const postId = match ? match[1] : null;
+
+        const snapshot = await get(ref(db, `posts/${postId}`));
+
+        if (!snapshot.val())
+          throw new Error("Post with this id does not exist!");
+
+        const dataPost = {
+          ...snapshot.val(),
+          postId,
+          likedBy: snapshot.val().likedBy
+            ? Object.keys(snapshot.val().likedBy)
+            : [],
+          createdOn: new Date(snapshot.val().createdOn).toString(),
+        };
+
+        // const snapshot = await getPostById(postId);
+        // console.log(`snapshot: ${snapshot}`);
+        // const postData = snapshot.data();
+        setCurrentPost(dataPost);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+
+    fetchPost();
+  }, []);
+
+  if (!currentPost) {
+    return <div>Loading...</div>;
+  }
+
+  //////////
+  const { user, userData } = useContext(AppContext);
+
+  const addComment = async (e) => {
+    if (e.key === "Enter") {
+      console.log(postId);
+      e.preventDefault();
+
+      if (!userData) {
+        return alert("You must be signed in to comment");
+      }
+
+      await comment(postId, userData.handle, e.target.value);
+
+      e.target.value = "";
+
+      const postsData = await getAllPosts();
+      onUpdate(postsData);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!userData) {
+      return alert("You must be signed in to like a post");
+    }
+
+    const likedPosts = (await getLikedPosts(userData.handle)).val();
+
+    if (likedPosts) {
+      if (Object.keys(likedPosts).includes(postId)) {
+        await dislikePost(postId, userData.handle);
+      } else {
+        await likePost(postId, userData.handle);
+      }
+    } else {
+      await likePost(postId, userData.handle);
+    }
+
+    const postsData = await getAllPosts();
+    onUpdate(postsData);
+  };
   return (
     <Container
       className="d-flex flex-row justify-content-center align-items-center mb-2"
@@ -32,22 +113,48 @@ export default function RenderSinglePost({
       >
         <Card.Body className="p-5 fs-5 fw-light">
           <Card.Title className="fs-3 mb-1 fw-bold">
-            Author: {author}
+            Author: {currentPost.author}
           </Card.Title>
           <Card.Title className="fs-3 mb-4 fw-normal">
-            Title: {title}
+            Title: {currentPost.title}
           </Card.Title>
           <div>
             <Row className="mb-1">
               <Col>
-                <p>{content}</p>
+                <p>{currentPost.content}</p>
               </Col>
+            </Row>
+            <Row className="mb-1">
+              <Col>
+                <Heart className="heart-icon me-2" onClick={handleLike} />
+                <span className="fs-5">{currentPost.likes}</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={2}>
+                <CIcon
+                  icon={cilCommentSquare}
+                  className="comment-bubble me-2"
+                />
+                <span className="fs-5">{currentPost.comments.length}</span>
+              </Col>
+              {user && (
+                <Col xs={10}>
+                  <input
+                    type="text"
+                    placeholder="Leave a comment"
+                    className="form-control border border-secondary rounded"
+                    onKeyDown={addComment}
+                  />
+                </Col>
+              )}
             </Row>
             <Row className="mt-1">
               <Col>
                 <p>
                   <i>
-                    Created on: {new Date(createdOn).toLocaleString("en-US")}
+                    Created on:{" "}
+                    {new Date(currentPost.createdOn).toLocaleString("en-US")}
                   </i>
                 </p>
               </Col>
@@ -72,66 +179,5 @@ export default function RenderSinglePost({
         userData={userData}
       /> */}
     </Container>
-    // <>
-    //   <Modal
-    //     show={showDetails}
-    //     onHide={handleCloseDetails}
-    //     backdrop="static"
-    //     keyboard={false}
-    //     scrollable={true}
-    //   >
-    //     <Modal.Header closeButton>
-    //       <Modal.Title>{title}</Modal.Title>
-    //     </Modal.Header>
-    //     <Modal.Body>
-    //       <div>
-    //         <Row className="mb-1">
-    //           <Col>
-    //             <p>{content}</p>
-    //           </Col>
-    //         </Row>
-    //         <Row className="mb-1">
-    //           <Col>
-    //             <Heart className="heart-icon me-2" onClick={handleLike} />
-    //             <span className="fs-5">{likes}</span>
-    //           </Col>
-    //         </Row>
-    //         <Row>
-    //           <Col xs={2}>
-    //             <CIcon
-    //               icon={cilCommentSquare}
-    //               className="comment-bubble me-2"
-    //             />
-    //             <span className="fs-5">{comments.length}</span>
-    //           </Col>
-    //           {user && (
-    //             <Col xs={10}>
-    //               <input
-    //                 type="text"
-    //                 placeholder="Leave a comment"
-    //                 className="form-control border border-secondary rounded"
-    //                 onKeyDown={addComment}
-    //               />
-    //             </Col>
-    //           )}
-    //         </Row>
-    //         <Row className="mt-5">
-    //           <Col>
-    //             <p>
-    //               <i>
-    //                 Created on: {new Date(createdOn).toLocaleString("en-US")}
-    //               </i>
-    //             </p>
-    //           </Col>
-    //         </Row>
-    //       </div>
-    //     </Modal.Body>
-    //     <Modal.Footer>
-    //       <Button variant="secondary" onClick={handleCloseDetails}>
-    //         Close
-    //       </Button>
-    //     </Modal.Footer>
-    //   </Modal>
-    // </>
   );
 }
