@@ -185,6 +185,7 @@ export default function RenderSinglePost() {
                       content={Object.values(comment)[0]}
                       createdOn={Number(Object.keys(currentPost.comments)[index])}
                       likes={Object.values(comment)[1] ? Object.values(comment)[1] : {}}
+                      index={index}
                     />
                   );
                 })}

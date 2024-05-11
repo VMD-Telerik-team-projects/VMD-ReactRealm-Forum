@@ -1,22 +1,29 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import AppContext from "../../context/AppContext";
 import EditCommentModal from "../EditCommentModal/EditCommentModal";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { Heart, Trash, Pencil, Reply, HeartFill } from "react-bootstrap-icons";
+import { Heart, Trash, Pencil, HeartFill, ChevronRight, ChevronDown } from "react-bootstrap-icons";
 import {
   isCommentLiked,
   likeComment,
   disLikeComment,
   deleteComment,
   getCommentLikesNumber,
+  replyToComment,
+  getAllCommentReplies,
+  getCommentRepliesNumber
 } from "../../services/posts.service";
 import PropTypes from "prop-types";
 import "./Comment.css";
 
-export default function Comment({ postId, author, createdOn, content, likes }) {
+export default function Comment({ postId, author, createdOn, content, likes, index }) {
   const { user, userData } = useContext(AppContext);
   const [numberOfLikes, setNumberOfLikes] = useState(Object.keys(likes).length);
   const [isLiked, setIsLiked] = useState(false);
+  const [commentReplies, setCommentReplies] = useState({});
+  const [commentRepliesNumber, setCommentRepliesNumber] = useState(0);
+  const [showReplies, setShowReplies] = useState(false);
+  const ref = useRef();
 
   useEffect(() => {
     const checkIfLiked = async () => {
@@ -28,6 +35,24 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
 
     checkIfLiked();
   }, [numberOfLikes, user, userData, postId, createdOn, likes]);
+
+  useEffect(() => {
+    const fetchReplies = async () => {
+      const replies = await getAllCommentReplies(postId, createdOn);
+      setCommentReplies(replies);
+    };
+
+    fetchReplies();
+  });
+
+  useEffect(() => {
+    const fetchRepliesNumber = async () => {
+      const repliesNumber = await getCommentRepliesNumber(postId, createdOn);
+      setCommentRepliesNumber(repliesNumber);
+    };
+
+    fetchRepliesNumber();
+  }, [commentReplies, postId, createdOn])
 
   const handleLikeComment = async () => {
     if (!user) {
@@ -48,6 +73,19 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
     return;
   };
 
+  const handleCommentReply = async (e) => {
+    if (e.key === "Enter") {
+      if (!user) {
+        return alert("You must be signed in to reply to a comment");
+      }
+
+      ref.current = document.getElementById(`commentReply${index}`).value;
+      await replyToComment(postId, createdOn, userData.handle, ref.current);
+
+      setCommentReplies(await getAllCommentReplies(postId, createdOn));
+    }
+  }
+
   const handleDeleteComment = async () => {
     await deleteComment(postId, createdOn, userData.handle);
     location.reload();
@@ -65,6 +103,17 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
 
   const handleCloseEditModal = () => {
     setShowEditModal(false);
+  };
+
+  const handleViewRepliesClick = () => {
+    setShowReplies(!showReplies);
+
+    Object.values(commentReplies).forEach((reply) => {
+      Object.values(reply).map(replyContent => {
+        console.log(replyContent)
+      })
+      
+    })
   };
 
   return (
@@ -107,7 +156,7 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
           <Row className="mt-0">
             <Card.Text className="mt-0">{content}</Card.Text>
           </Row>
-          <Row className="mt-3">
+          <Row className="mt-4">
             <Col xs={2}>
               <Button
                 className="bg-transparent border-0 text-secondary d-flex flex-row justify-content-center align-items-center fs-5 p-0 m-0"
@@ -123,21 +172,44 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
                 </span>
               </Button>
             </Col>
-          </Row>
-          <Row>
-            <Col xs={1}>
-              <Button className="bg-transparent border-0 fs-5 p-0 m-0">
-                <Reply className="text-secondary reply-icon" />
-              </Button>
-            </Col>
-            <Col xs={11}>
+            <Col xs={10}>
               <input
                 type="text"
                 className="form-control border-1 border-secondary"
                 placeholder="Leave a reply"
+                id={`commentReply${index}`}
+                onKeyDown={handleCommentReply}
               />
             </Col>
           </Row>
+          <Row>
+            <Col xs={2}></Col>
+            {commentRepliesNumber ? <Col xs={10}>
+              <div
+                className="d-flex flex-row justify-content-center align-items-center text-center mt-4"
+                onClick={handleViewRepliesClick}  
+              >
+                View {commentRepliesNumber} replies {!showReplies ? <ChevronRight className="ms-1" /> : <ChevronDown className="ms-1" />}
+              </div>
+            </Col> : <div className="mt-4" />}
+          </Row>
+          {showReplies && (
+            <Row className="mt-4">
+              <Col xs={2}></Col>
+              <Col xs={10} style={{backgroundColor: 'rgba(220, 220, 220, 0.5)'}} className="d-flex flex-column p-4">
+                {Object.values(commentReplies).map((reply, index) => {
+                  const author = Object.keys(commentReplies)[+index];
+
+                  return Object.values(reply).map((replyContent, index) => {
+                    return (
+                    <div key={index} className="m-0">
+                      <p>{author}: {replyContent}</p>
+                    </div>)
+                  })
+                })}
+              </Col>
+            </Row>
+          )}
         </Card.Body>
       </Card>
       <EditCommentModal isShown={showEditModal} closeHandler={handleCloseEditModal} author={author} postId={postId} commentTimeStamp={createdOn} />
@@ -150,5 +222,6 @@ Comment.propTypes = {
   author: PropTypes.string.isRequired,
   createdOn: PropTypes.number.isRequired,
   content: PropTypes.string.isRequired,
-  likes: PropTypes.any,
+  likes: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired
 };
