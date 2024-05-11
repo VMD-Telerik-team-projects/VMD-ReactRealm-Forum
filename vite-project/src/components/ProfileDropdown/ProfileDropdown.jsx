@@ -5,24 +5,31 @@ import {
   DropdownItem,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import AppContext from "../../context/AppContext";
+import { getProfilePic } from "../../services/users.service";
+import ProfilePic from "../ProfilePic/ProfilePic";
+import PropTypes from "prop-types";
 
-export default function ProfileDropdown() {
-  const { userData } = useContext(AppContext);
+export default function ProfileDropdown({ className }) {
+  const { user, userData } = useContext(AppContext);
+  const [profilePic, setProfilePic] = useState("img/default.jpg");
+
+  useEffect(() => {
+    if (user && userData) {
+      getProfilePic(userData.handle).then((url) => {
+        setProfilePic(url);
+      });
+    }
+  }, [userData])
 
   return (
-    <Dropdown>
+    <Dropdown className={className}>
       <DropdownToggle
         aria-expanded={false}
         className="bg-transparent border-0 p-0 mx-4"
       >
-        <img
-          src="img/logo-color.png"
-          style={{ width: "50px", height: "50px", margin: 0, padding: 0 }}
-          className="rounded-circle"
-          alt="pic"
-        />
+        <ProfilePic profilePic={profilePic} widthAndHeight='2.6dvw'></ProfilePic>
       </DropdownToggle>
       <DropdownMenu className="mt-2">
         <DropdownItem className="mb-1">
@@ -50,3 +57,7 @@ export default function ProfileDropdown() {
     </Dropdown>
   );
 }
+
+ProfileDropdown.propTypes = {
+  className: PropTypes.string,
+};

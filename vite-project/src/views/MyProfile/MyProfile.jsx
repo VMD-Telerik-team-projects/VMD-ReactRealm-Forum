@@ -1,11 +1,23 @@
+import { useState, useEffect } from "react";
 import { useContext, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { updateUserData } from "../../services/users.service";
+import { getProfilePic, updateUserData } from "../../services/users.service";
+import { uploadProfilePic } from "../../services/users.service";
+import ProfilePic from "../../components/ProfilePic/ProfilePic";
 
 export default function MyProfile() {
   const { user, userData } = useContext(AppContext);
   const ref = useRef();
+  const [profilePic, setProfilePic] = useState("img/default.jpg");
+
+  useEffect(() => {
+    if (user && userData) {
+      getProfilePic(userData.handle).then((url) => {
+        setProfilePic(url);
+      });
+    }
+  }, [])
 
   const handleChanges = async () => {
     let newData;
@@ -29,15 +41,36 @@ export default function MyProfile() {
     }
   };
 
+  const handleUploadImage = async (e) => {
+    const file = e.target.files[0];
+    const fileExtension = file.name.split(".").pop();
+    
+    await uploadProfilePic(fileExtension, userData.handle, file);
+    location.replace("/");
+  };
+
   return (
     <Card className="p-4">
       <Row>
         <Col xs={4}>
-          <img
-            src="img/logo-color.png"
-            style={{ width: "120px" }}
-            className="rounded-circle m-0"
-          />
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <ProfilePic profilePic={profilePic} widthAndHeight='120px'></ProfilePic>
+          <Button
+            className="rounded-circle"
+            style={{
+              position: "absolute",
+              bottom: "0",
+              right: "0",
+            }}
+          >
+            <label htmlFor="img-upload" className="custom-file-upload">
+              +
+              <input id="img-upload" type="file" style={{ display: "none" }} onChange={async (e) => {
+                await handleUploadImage(e)
+              }} />
+            </label>
+          </Button>
+        </div>
         </Col>
         <Col className="d-flex flex-column h-full justify-content-end">
           <h2>Update your profile</h2>
@@ -83,7 +116,7 @@ export default function MyProfile() {
             type="text"
             className="form-control"
             id="new-last-name"
-            placeholder="Last name" 
+            placeholder="Last name"
           />
         </Col>
       </Row>

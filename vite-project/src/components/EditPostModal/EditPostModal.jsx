@@ -65,7 +65,7 @@ export default function EditPostModal({ postId, isShown, closeHandler }) {
   }
 
   return (
-    <Modal show={isShown} onHide={closeHandler}>
+    <Modal show={isShown} onHide={closeHandler} className="fade">
       <Modal.Dialog className="py-0 px-3">
         <Modal.Header>
           <Modal.Title>Edit post or press ESC to close</Modal.Title>

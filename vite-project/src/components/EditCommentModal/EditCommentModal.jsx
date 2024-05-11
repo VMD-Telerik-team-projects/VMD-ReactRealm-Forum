@@ -28,7 +28,7 @@ export default function EditCommentModal({ isShown, closeHandler, author, postId
   }
   
   return (
-    <Modal show={isShown} onHide={closeHandler}>
+    <Modal show={isShown} onHide={closeHandler} className="fade">
       <Modal.Dialog>
         <Modal.Header closeButton>
           <Modal.Title>Edit Comment</Modal.Title>

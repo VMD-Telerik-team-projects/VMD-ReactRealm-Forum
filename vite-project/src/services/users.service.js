@@ -1,5 +1,5 @@
-import { getDownloadURL } from "firebase/storage";
 import { get, set, ref, query, equalTo, orderByChild, remove, update, getDatabase } from "firebase/database";
+import * as fbStorage from "firebase/storage";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
 import { Navigate } from "react-router-dom";
@@ -66,11 +66,23 @@ export const updateUserData = async (handle, userData) => {
   return alert(`User ${handle}'s data updated successfully`);
 };
 
-// //  TODO: Retrieve profile pictures from firebase storage
-// export const getProfilePic = (handle) => {
-//   const pathRef = ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
-//   const gsRef = ref(storage, `gs://vmd-reactrealm-forum.appspot.com/${pathRef}`);
-// }
+export const uploadProfilePic = async (fileExtension, handle, image) => {
+  const pathRef = fbStorage.ref(storage, `profile-pictures/${handle}/profile-pic.${fileExtension}`);
+
+  try {
+    await fbStorage.uploadBytes(pathRef, image);
+    alert("Profile picture uploaded successfully");
+  } catch (e) {
+    alert(`Failed to upload profile picture: ${e.message}`);
+  }
+};
+
+export const getProfilePic = async (handle) => {
+  const pathRef = fbStorage.ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
+
+  const image = await fbStorage.getDownloadURL(pathRef);
+  return image;
+}
 
 // 
 
