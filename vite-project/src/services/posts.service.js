@@ -4,12 +4,7 @@ import {
   get,
   set,
   update,
-  query,
-  equalTo,
-  orderByChild,
-  orderByKey,
   remove,
-  onValue
 } from "firebase/database";
 import { db } from "../config/firebase-config";
 
@@ -124,6 +119,23 @@ export const disLikeComment = async (postId, commentTimeStamp, handle) => {
   updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] = null;
 
   update(ref(db), updateVal);
+}
+
+export const deleteComment = async (postId, commentTimeStamp, handle) => {
+  const updateVal = {};
+  updateVal[`posts/${postId}/comments/${commentTimeStamp}`] = null;
+  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] = null;
+
+  update(ref(db), updateVal);
+
+  const users = (await get(ref(db, `users/`))).val();
+  users &&
+    Object.keys(users).forEach((userHandle) => {
+      const likedCommentRef = ref(db, `users/${userHandle}/likedComments/${postId}/${commentTimeStamp}`)
+      remove(likedCommentRef);
+    });
+  
+  return alert('Comment deleted!');
 }
 
 export const isCommentLiked = async (postId, commentTimeStamp, handle) => {

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { Heart, Trash, Pencil, Reply, HeartFill } from "react-bootstrap-icons";
-import { isCommentLiked, likeComment, disLikeComment, getCommentLikesNumber } from "../../services/posts.service";
+import { isCommentLiked, likeComment, disLikeComment, deleteComment, getCommentLikesNumber } from "../../services/posts.service";
 import PropTypes from "prop-types";
 import "./Comment.css";
 
@@ -41,6 +41,11 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
     return;
   };
 
+  const handleDeleteComment = async () => {
+    await deleteComment(postId, createdOn, userData.handle);
+    location.reload(); 
+  }
+
   return (
     <Card className="p-4 my-3 rounded border-1 border-secondary">
       <Card.Title className="fw-light fs-3 ms-3 mb-0">
@@ -53,9 +58,11 @@ export default function Comment({ postId, author, createdOn, content, likes }) {
               <Button className="bg-transparent border-0">
                 <Pencil className="text-secondary" />
               </Button>
-              <Button className="bg-transparent border-0">
-                <Trash className="text-danger" />
-              </Button>
+              {(user && (userData.handle === author || userData.privileges === 0)) && (
+                <Button className="bg-transparent border-0" onClick={handleDeleteComment}>
+                  <Trash className="text-danger" />
+                </Button>
+              )}
             </div>
           </Col>
         </Row>
