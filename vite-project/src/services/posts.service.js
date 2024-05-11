@@ -138,6 +138,14 @@ export const deleteComment = async (postId, commentTimeStamp, handle) => {
   return alert('Comment deleted!');
 }
 
+export const editComment = async (postId, commentTimeStamp, handle, content) => {
+  const updateVal = {};
+  updateVal[`posts/${postId}/comments/${commentTimeStamp}/${handle}`] = content;
+  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] = content;
+
+  update(ref(db), updateVal);
+}
+
 export const isCommentLiked = async (postId, commentTimeStamp, handle) => {
   const snapshot = await get(ref(db, `users/${handle}/likedComments/${postId}/${commentTimeStamp}`));
   return snapshot.val() ? true : false;

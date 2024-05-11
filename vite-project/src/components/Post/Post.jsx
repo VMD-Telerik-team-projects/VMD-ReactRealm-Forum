@@ -33,6 +33,7 @@ export default function Post({
 }) {
   const { userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
@@ -68,9 +69,6 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
-
-  const [showEditModal, setShowEditModal] = useState(false);
-  
   
   const handleShowEditModal = (e) => {
     if (e.key === "Escape") {
