@@ -97,6 +97,32 @@ export const comment = async (postId, handle, content) => {
   update(ref(db), updateVal);
 };
 
+export const likeComment = async (postId, commentTimeStamp, handle) => {
+  const updateVal = {};
+  updateVal[`users/${handle}/likedComments/${postId}/${commentTimeStamp}`] = true;
+  updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] = true;
+
+  update(ref(db), updateVal);
+}
+
+export const disLikeComment = async (postId, commentTimeStamp, handle) => {
+  const updateVal = {};
+  updateVal[`users/${handle}/likedComments/${postId}/${commentTimeStamp}`] = null;
+  updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] = null;
+
+  update(ref(db), updateVal);
+}
+
+export const isCommentLiked = async (postId, commentTimeStamp, handle) => {
+  const snapshot = await get(ref(db, `users/${handle}/likedComments/${postId}/${commentTimeStamp}`));
+  return snapshot.val() ? true : false;
+}
+
+export const getCommentLikesNumber = async (postId, commentTimeStamp) => {
+  const snapshot = await get(ref(db, `posts/${postId}/comments/${commentTimeStamp}/likes`));
+  return snapshot.val() ? Object.keys(snapshot.val()).length : 0;
+}
+
 export async function getNumberOfPosts() {
   const postsRef = ref(db, 'posts');
 

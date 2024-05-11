@@ -60,30 +60,34 @@ export default function Posts() {
     <>
       {user ? (
         <>
-          <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
-          <select className="select-dropdown" value={sortOption} onChange={handleSortChange}>
-          <option value="date">Oldest posts</option>
-          <option value="title">Alphabetical order</option>
-        </select>
-          <div className="posts-container">
-          {filteredPosts.map((post) => {
-            return (
-              <Post
-                key={post.id}
-                author={post.author}
-                title={post.title}
-                content={post.content}
-                comments={post.comments ? Object.values(post.comments) : []}
-                likes={post.likedBy ? post.likedBy.length : 0}
-                createdOn={post.createdOn}
-                postId={post.id}
-                onUpdate={setPosts}
-                onDelete={() => handleDeletePost(post.author, post.id)}
-                userPriviliges={userData.priviliges}
-              />
-            );
-          })}
-          </div>
+          {posts.length > 0 ? (
+            <>
+              <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
+              <select className="select-dropdown" value={sortOption} onChange={handleSortChange}>
+                <option value="date">Oldest posts</option>
+                <option value="title">Alphabetical order</option>
+              </select>
+              <div className="posts-container">
+              {filteredPosts.map((post) => {
+                return (
+                  <Post
+                    key={post.id}
+                    author={post.author}
+                    title={post.title}
+                    content={post.content}
+                    comments={post.comments ? Object.values(post.comments) : []}
+                    likes={post.likedBy ? post.likedBy.length : 0}
+                    createdOn={post.createdOn}
+                    postId={post.id}
+                    onUpdate={setPosts}
+                    onDelete={() => handleDeletePost(post.author, post.id)}
+                    userPriviliges={userData.priviliges}
+                  />
+                );
+              })}
+              </div>
+            </>
+          ) : (<h1>No posts found!</h1>)}
         </>
       ) : (
         <h1 className="fs-1 fw-light">Login to see all posts!</h1>

@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import { cilCommentSquare } from "@coreui/icons";
 import {
   getAllPosts,
-  comment,
   likePost,
   dislikePost,
 } from "../../services/posts.service";
@@ -32,7 +31,7 @@ export default function Post({
   onDelete,
   userPriviliges,
 }) {
-  const { user, userData } = useContext(AppContext);
+  const { userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
@@ -45,23 +44,6 @@ export default function Post({
       fetchLikedPosts();
     }
   }, [userData, postId]);
-
-  const addComment = async (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-
-      if (!userData) {
-        return alert("You must be signed in to comment");
-      }
-
-      await comment(postId, userData.handle, e.target.value);
-
-      e.target.value = "";
-
-      const postsData = await getAllPosts();
-      onUpdate(postsData);
-    }
-  };
 
   const handleLike = async () => {
     if (!userData) {
@@ -86,18 +68,6 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
-
-  ///////////////////////////////////////////////////////////////////////
-  // const [showDetails, setShowDetails] = useState(false);
-
-  // const handleShowDetails = () => {
-  //   setShowDetails(true);
-  // };
-
-  // const handleCloseDetails = () => {
-  //   setShowDetails(false);
-  // };
-  //////////////////////////////////////////////////////////////////////////
 
   const [showEditModal, setShowEditModal] = useState(false);
   
@@ -168,16 +138,6 @@ export default function Post({
                 )}
                 <span className="fs-5">{likes}</span>
               </Col>
-              {/* {user && (
-                <Col xs={10}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
-              )} */}
             </Row>
             <Row>
               <Col xs={2}>
@@ -226,4 +186,6 @@ Post.propTypes = {
   createdOn: PropTypes.string,
   postId: PropTypes.string,
   onUpdate: PropTypes.func,
+  onDelete: PropTypes.func,
+  userPriviliges: PropTypes.number,
 };

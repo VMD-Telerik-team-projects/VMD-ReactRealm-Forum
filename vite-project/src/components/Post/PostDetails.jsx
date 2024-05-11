@@ -1,19 +1,9 @@
-import Modal from "react-bootstrap/Modal";
+// import Modal from "react-bootstrap/Modal";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import { useContext } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
-import {
-  ref,
-  push,
-  get,
-  set,
-  update,
-  query,
-  equalTo,
-  orderByChild,
-  orderByKey,
-} from "firebase/database";
+import { ref, get } from "firebase/database";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
@@ -22,18 +12,17 @@ import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
 import { getLikedPosts } from "../../services/users.service";
 import { likePost, dislikePost } from "../../services/posts.service";
-import { getAllPosts } from "../../services/posts.service";
+// import { getAllPosts } from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
 
-export default function RenderSinglePost({}) {
+export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
 
- 
   const url = window.location.href;
-  const match = url.match(/\/post\/([^\/]+)$/);
+  const match = url.match(/\/post\/([^/]+)$/);
   const postId = match ? match[1] : null;
 
   useEffect(() => {
@@ -186,11 +175,19 @@ export default function RenderSinglePost({}) {
               )}
             </Row>
             <Row className="mt-4">
-              {currentPost.comments && Object.values(currentPost.comments).map((comment, index) => {
-                return (
-                  <Comment key={index} author={Object.keys(comment)[0]} content={Object.values(comment)[0]} likes={0} />
-                );
-              })}
+              {currentPost.comments &&
+                Object.values(currentPost.comments).map((comment, index) => {
+                  return (
+                    <Comment
+                      key={index}
+                      postId={postId}
+                      author={Object.keys(comment)[0]}
+                      content={Object.values(comment)[0]}
+                      createdOn={Number(Object.keys(currentPost.comments)[index])}
+                      likes={Object.values(comment)[1] ? Object.values(comment)[1] : {}}
+                    />
+                  );
+                })}
             </Row>
           </div>
         </Card.Body>
