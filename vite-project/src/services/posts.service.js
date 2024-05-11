@@ -70,6 +70,19 @@ export const deletePostById = async (author, id) => {
   const userPostsRef = ref(db, `users/${author}/posts/${id}`);
   await remove(userPostsRef);
 
+  const users = (await get(ref(db, `users/`))).val();
+  users &&
+    Object.keys(users).forEach((user) => {
+      const likedPostsRef = ref(db, `users/${user}/likedPosts/${id}`);
+      remove(likedPostsRef);
+
+      const commentedPostsRef = ref(db, `users/${user}/commentedPosts/${id}`);
+      remove(commentedPostsRef);
+
+      const likedCommentsRef = ref(db, `users/${user}/likedComments/${id}`);
+      remove(likedCommentsRef);
+    });
+
   alert("Post deleted!");
 };
 
