@@ -13,7 +13,7 @@ export default function Posts() {
   const [mostLikedPosts, setMostLikedPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOption, setSortOption] = useState("date");
+  const [sortOption, setSortOption] = useState("date-newest");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -76,13 +76,17 @@ export default function Posts() {
   };
 
   const sortedPosts = filteredPosts.sort((a, b) => {
-    if (sortOption === 'date') {
-      return new Date(b.date) - new Date(a.date);
-    } else if (sortOption === 'title') {
-      const titleA = a.title || "";
-      const titleB = b.title || "";
-      return titleA.localeCompare(titleB);
-  } });
+    switch(sortOption) {
+      case 'date-newest':
+        return new Date(b.createdOn) - new Date(a.createdOn);
+      case 'date-oldest':
+        return new Date(a.createdOn) - new Date(b.createdOn);
+      case 'title':
+        return a.title?.toLowerCase().localeCompare(b.title?.toLowerCase());
+      case 'likes':
+        return b.likedBy.length - a.likedBy.length;
+    }
+});
 
   return (
     <>
@@ -101,7 +105,9 @@ export default function Posts() {
                   value={sortOption}
                   onChange={handleSortChange}
                 >
-                  <option value="date">Oldest posts</option>
+                  <option value="date-newest">Newest posts</option>
+                  <option value="date-oldest">Oldest posts</option>
+                  <option value="likes">Most liked posts</option>
                   <option value="title">Alphabetical order</option>
                 </select>
               </div>
