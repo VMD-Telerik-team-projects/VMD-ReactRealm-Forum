@@ -84,12 +84,12 @@ export default function Post({
   
   return (
     <Container
-      className="d-flex flex-row justify-content-center align-items-center mb-2"
+      className="d-flex flex-row justify-content-center align-items-center m-0"
       style={{ width: "90dvw" }}
       fluid
     >
       <Card
-        className="post-card border-3 border-info"
+        className="post-card border-0 border-bottom border-secondary rounded-0"
         style={{ width: "90dvw" }}
       >
         <Card.Body className="p-5 fs-5 fw-light">
@@ -101,11 +101,11 @@ export default function Post({
             </Col>
             <Col xs={3} md={1}>
               <div className="d-flex flex-row gap-3">
-                {userData.handle === author && (
+                {userData.handle === author ? (
                   <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
                     <Pencil className="text-secondary" />
                   </Button>
-                )}
+                ) : <div className="p-1 bg-transparent border-0 fs-6" style={{ cursor: "normal" }}>⠀</div>}
                 {(userData.handle === author || userPriviliges === 0) && (
                   <Button
                     title="Delete Post"
@@ -148,10 +148,8 @@ export default function Post({
             </Row>
             <Row className="mt-4">
               <div className="d-flex flex-row w-full justify-content-center align-items-center">
-                <p>
-                  <i>
-                    Created on: {new Date(createdOn).toLocaleString("en-US")}
-                  </i>
+                <p className="fs-5">
+                  Created on: {new Date(createdOn).toLocaleString("en-US")}
                 </p>
               </div>
             </Row>

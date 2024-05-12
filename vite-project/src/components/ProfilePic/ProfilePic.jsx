@@ -17,7 +17,7 @@ export default function ProfilePic({profilePic, widthAndHeight }) {
         src={profilePic}
         style={{ objectFit: "cover", width: "100%", height: "100%" }}
         alt="img"
-        className="border border-2 border-muted rounded-circle"
+        className="rounded-circle"
       />
     </div>
   );

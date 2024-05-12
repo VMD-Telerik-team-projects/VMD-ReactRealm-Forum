@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getNumberOfPosts, getNumberOfUsers } from '../../services/posts.service';
+import { Row, Col } from 'react-bootstrap';
 
 export default function About() {
   const [numberOfPosts, setNumberOfPosts] = useState(0);
@@ -11,19 +12,27 @@ export default function About() {
   }, []);
 
 return (
-  <div className="container py-4">
-    <h1 className="mb-4">Welcome to ReactReal Forum!</h1>
-
+  <div className="container py-4 text-black fw-light fs-6">
+    <div className='rounded py-5 px-5 border-1 border-muted' style={{backgroundColor: 'rgba(230, 230, 230, 0.5)'}}>
+    <Row>
+      <Col xs={11}>
+        <h1 className="mb-4">Welcome to ReactRealm Forum!</h1>
+      </Col>
+      <Col xs={1} className='py-1 h-25 d-flex flex-column align-items-center justify-content-center rounded' style={{backgroundColor: 'rgba(230, 230, 230, 0.55)'}}>
+        <p className='my-0'><b>Posts:</b> {numberOfPosts}</p>
+        <p className='my-0'><b>Users:</b> {numberOfUsers}</p>
+      </Col>
+    </Row>
     <section className="mb-4">
       <h2>About Us</h2>
       <p>
-        At ReactReal Forum, we believe in fostering vibrant online communities
+        At ReactRealm, we believe in fostering vibrant online communities
         where people can connect, engage, and share knowledge. Our platform is
         designed to provide a welcoming space for enthusiasts, learners, and
         experts alike to discuss all things related to React.js and beyond.
-         Whether you're just
-        starting your journey into web development or you're a seasoned
-        professional, ReactReal Forum is here to support you every step of the
+        Whether you&apos;re just
+        starting your journey into web development or you&apos;re a seasoned
+        professional, ReactRealm Forum is here to support you every step of the
         way.
       </p>
     </section>
@@ -49,12 +58,12 @@ return (
         <li>
           <strong>Community-driven:</strong> Our platform is driven by the
           contributions of our vibrant community members. Your voice matters,
-          and we're here to amplify it.
+          and we&apos;re here to amplify it.
         </li>
       </ul>
-
+{/* 
     <p>Number of posts: {numberOfPosts}</p>
-    <p>Number of users: {numberOfUsers}</p>
+    <p>Number of users: {numberOfUsers}</p> */}
     </section>
 
     <section className="mb-4">
@@ -62,8 +71,8 @@ return (
       <p>
         Ready to join the conversation? Sign up for a free account today and
         become part of our growing community of developers and enthusiasts.
-        Whether you're here to ask questions, share your experiences, or
-        connect with like-minded individuals, ReactReal Forum is the place to
+        Whether you&apos;re here to ask questions, share your experiences, or
+        connect with like-minded individuals, ReactRealm Forum is the place to
         be.
       </p>
     </section>
@@ -71,11 +80,12 @@ return (
     <section className="mb-4">
       <h2>Get in Touch</h2>
       <p>
-        Have questions, feedback, or suggestions? We'd love to hear from you!
+        Have questions, feedback, or suggestions? We&apos;d love to hear from you!
         Reach out to us via email 
         or connect with us on social media
       </p>
     </section>
+    </div>
   </div>
 );
 }

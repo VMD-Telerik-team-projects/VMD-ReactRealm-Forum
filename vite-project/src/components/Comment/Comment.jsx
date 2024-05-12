@@ -118,7 +118,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
 
   return (
     <>
-      <Card className="p-4 my-3 rounded border-1 border-secondary">
+      <Card className="p-4 rounded-0 border-0 border-bottom border-secondary" style={{backgroundColor: 'rgba(255, 255, 255, 0.3)'}}>
         <Card.Title className="fw-light fs-3 ms-3 mb-0">
           <Row>
             <Col xs={12} md={3}>
@@ -222,6 +222,7 @@ Comment.propTypes = {
   author: PropTypes.string.isRequired,
   createdOn: PropTypes.number.isRequired,
   content: PropTypes.string.isRequired,
-  likes: PropTypes.number.isRequired,
-  index: PropTypes.number.isRequired
+  likes: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  refreshComments: PropTypes.func.isRequired,
 };

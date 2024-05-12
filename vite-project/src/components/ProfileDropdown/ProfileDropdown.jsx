@@ -21,9 +21,9 @@ export default function ProfileDropdown({ className }) {
         setProfilePic(url);
       });
     }
-  }, [userData])
+  }, [user, userData])
 
-  return (
+  return (  
     <Dropdown className={className}>
       <DropdownToggle
         aria-expanded={false}

@@ -52,7 +52,13 @@ export default function RenderSinglePost() {
     };
 
     fetchPost();
-  }, []);
+  }, [postId]);
+
+  useEffect(() => {
+    if (currentPost) {
+      setComments(currentPost.comments);
+    }
+  }, [currentPost])
 
   if (!currentPost) {
     return <Loader />;
@@ -162,17 +168,15 @@ export default function RenderSinglePost() {
             <Row className="mt-4">
               <Col>
                 <p>
-                  <i>
-                    Created on:{" "}
+                    <b>Created on:{" "}</b>
                     {new Date(currentPost.createdOn).toLocaleString("en-US")}
-                  </i>
                 </p>
               </Col>
             </Row>
             <Row className="mt-3">
               {user && (
                 <Col xs={12}>
-                  <textarea
+                  <input
                     type="text"
                     placeholder="Leave a comment"
                     className="form-control border border-secondary rounded"

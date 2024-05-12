@@ -78,7 +78,7 @@ export const uploadProfilePic = async (fileExtension, handle, image) => {
 };
 
 export const getProfilePic = async (handle) => {
-  const pathRef = fbStorage.ref(storage, `profile-pictures/${handle}/profile-pic.jpg`);
+  const pathRef = fbStorage.ref(storage, `profile-pictures/${handle}/profile-pic.${'jpg' || 'png' || 'jpeg'}`);
 
   const image = await fbStorage.getDownloadURL(pathRef);
   return image;
