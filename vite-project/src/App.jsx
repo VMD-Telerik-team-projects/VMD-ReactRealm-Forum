@@ -25,6 +25,7 @@ import RenderSinglePost from "./components/Post/PostDetails";
 import UserBlocked from "./views/UserBlocked/UserBlocked";
 import { updateUserOnlineStatus } from "./services/auth.service";
 import DeleteAccount from "./views/DeleteAccount/DeleteAccount";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -32,6 +33,8 @@ function App() {
     userData: null,
   });
 
+  const navigate = useNavigate();
+  
   //  comment
   useEffect(() => {
     if (!appState.user) return;
@@ -62,6 +65,13 @@ function App() {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const isBlocked = appState.user && appState.userData && appState.userData.isBlocked;
+    if (isBlocked) {
+      navigate("/blocked");
+    }
+  }, [appState.user, appState.userData, navigate]);
 
   return (
     <>
