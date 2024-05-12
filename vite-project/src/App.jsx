@@ -24,6 +24,7 @@ import LayoutAdminDashboard from "./hoc/LayoutAdminDashboard/LayoutAdminDashboar
 import RenderSinglePost from "./components/Post/PostDetails";
 import UserBlocked from "./views/UserBlocked/UserBlocked";
 import { updateUserOnlineStatus } from "./services/auth.service";
+import DeleteAccount from "./views/DeleteAccount/DeleteAccount";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -176,8 +177,17 @@ function App() {
                 <UserBlocked />
               </LayoutCentered>
             }
-          >
-          </Route>
+          ></Route>
+          <Route
+          path="/delete-account"
+          element={
+          <LayoutCentered>
+            <Authenticated>
+              <DeleteAccount />
+            </Authenticated>
+          </LayoutCentered>
+          }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppContext.Provider>

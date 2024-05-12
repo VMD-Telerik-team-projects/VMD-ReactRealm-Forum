@@ -165,7 +165,7 @@ export default function RenderSinglePost() {
             <Row className="mt-3">
               {user && (
                 <Col xs={12}>
-                  <input
+                  <textarea
                     type="text"
                     placeholder="Leave a comment"
                     className="form-control border border-secondary rounded"

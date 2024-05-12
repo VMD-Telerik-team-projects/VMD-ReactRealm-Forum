@@ -53,6 +53,15 @@ export default function ProfileDropdown({ className }) {
             <p className="fs-6 fw-light m-0">My posts</p>
           </Link>
         </DropdownItem>
+
+        <DropdownItem as="div">
+          <Link
+           to="/delete-account"
+           className="link-underline link-underline-opacity-0 text-black"
+          >
+            <p className="fs-6 fw-light m-0">Delete Account</p>
+          </Link>
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );

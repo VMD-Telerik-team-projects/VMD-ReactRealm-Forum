@@ -173,7 +173,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
               </Button>
             </Col>
             <Col xs={10}>
-              <input
+              <textarea
                 type="text"
                 className="form-control border-1 border-secondary"
                 placeholder="Leave a reply"
