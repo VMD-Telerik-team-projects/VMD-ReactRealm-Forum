@@ -84,6 +84,14 @@ export const getProfilePic = async (handle) => {
   return image;
 }
 
+export const getActiveUsers = async () => {
+  const usersRef = ref(db, "onlineUsers");
+  const userData = (await get(usersRef)).val();
+  const activeUsers = Object.keys(userData).filter(user => userData[user].isOnline === true);
+  
+  return activeUsers;
+}
+
 // 
 
 //Add isBlocked field to all the users in the database
