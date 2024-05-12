@@ -1,25 +1,48 @@
-import { useContext, useEffect, useState } from "react"
-import { getAllPosts } from "../../services/posts.service"
-import AppContext from "../../context/AppContext"
+import { useContext, useEffect, useState } from "react";
+import { getAllPosts, getMostLikedPosts } from "../../services/posts.service";
+import AppContext from "../../context/AppContext";
 import Post from "../../components/Post/Post";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { deletePostById } from "../../services/posts.service";
-import './Posts.css';
+import "./Posts.css";
 
 export default function Posts() {
   const { user, userData } = useContext(AppContext);
   const [posts, setPosts] = useState([]);
+  const [mostLikedPosts, setMostLikedPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOption, setSortOption] = useState('date');
+  const [sortOption, setSortOption] = useState("date");
 
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
-      const postsData = await getAllPosts();
-      setPosts(postsData);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const postsData = await getAllPosts();
+        setPosts(postsData);
+        setLoading(false);
+      } catch (e) {
+        alert(`Something went wrong: ${e.message}`);
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const postsData = await getMostLikedPosts();
+        console.log(postsData);
+        setMostLikedPosts(postsData);
+        setLoading(false);
+      } catch (e) {
+        alert(`Something went wrong: ${e.message}`);
+        setLoading(false);
+      }
     };
 
     fetchPosts();
@@ -28,20 +51,25 @@ export default function Posts() {
   const handleDeletePost = async (author, id) => {
     try {
       await deletePostById(author, id);
-      setPosts(posts.filter(post => post.id !== id));
+      setPosts(posts.filter((post) => post.id !== id));
     } catch (error) {
-      console.error('Failed to delete post:', error);
+      console.error("Failed to delete post:", error);
     }
-  }; 
-  
+  };
+
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
-  
-  const filteredPosts = posts ? posts.filter(post =>
-    (post.title && post.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (post.content && post.content.toLowerCase().includes(searchTerm.toLowerCase()))
-  ) : [];
+
+  const filteredPosts = posts
+    ? posts.filter(
+        (post) =>
+          (post.title &&
+            post.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (post.content &&
+            post.content.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : [];
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
@@ -53,7 +81,7 @@ export default function Posts() {
   //   } else if (sortOption === 'title') {
   //     const titleA = a.title || "";
   //     const titleB = b.title || "";
-  //     return titleA.localeCompare(titleB); 
+  //     return titleA.localeCompare(titleB);
   // } });
 
   return (
@@ -63,36 +91,69 @@ export default function Posts() {
           {posts.length > 0 ? (
             <>
               <div className="d-flex flex-row justify-content-center align-items-center">
-                <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
-                <select className="select-dropdown mt-4" value={sortOption} onChange={handleSortChange}>
+                <SearchBar
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  className="mt-4"
+                />
+                <select
+                  className="select-dropdown mt-4"
+                  value={sortOption}
+                  onChange={handleSortChange}
+                >
                   <option value="date">Oldest posts</option>
                   <option value="title">Alphabetical order</option>
                 </select>
               </div>
               <div className="posts-container">
-              {filteredPosts.map((post) => {
-                return (
-                  <Post
-                    key={post.id}
-                    author={post.author}
-                    title={post.title}
-                    content={post.content}
-                    comments={post.comments ? Object.values(post.comments) : []}
-                    likes={post.likedBy ? post.likedBy.length : 0}
-                    createdOn={post.createdOn}
-                    postId={post.id}
-                    onUpdate={setPosts}
-                    onDelete={() => handleDeletePost(post.author, post.id)}
-                    userPriviliges={userData.priviliges}
-                  />
-                );
-              })}
+                {filteredPosts.map((post) => {
+                  return (
+                    <Post
+                      key={post.id}
+                      author={post.author}
+                      title={post.title}
+                      content={post.content}
+                      comments={
+                        post.comments ? Object.values(post.comments) : []
+                      }
+                      likes={post.likedBy ? post.likedBy.length : 0}
+                      createdOn={post.createdOn}
+                      postId={post.id}
+                      onUpdate={setPosts}
+                      onDelete={() => handleDeletePost(post.author, post.id)}
+                      userPriviliges={userData ? userData.priviliges : null}
+                    />
+                  );
+                })}
               </div>
             </>
-          ) : (<h1>No posts found!</h1>)}
+          ) : (
+            <h1>No posts found!</h1>
+          )}
         </>
       ) : (
-        <h1 className="fs-1 fw-light">Login to see all posts!</h1>
+        <div className="d-flex flex-column justify-content-start">
+          <h1 className="fw-normal fs-1 mt-2 mb-5 ms-3 text-black">Our {mostLikedPosts.length} most liked posts</h1>
+          <div className="posts-container">
+            {mostLikedPosts.map((post) => {
+              return (
+                <Post
+                  key={post.id}
+                  author={post.author}
+                  title={post.title}
+                  content={post.content}
+                  comments={post.comments ? Object.values(post.comments) : []}
+                  likes={post.likedBy ? post.likedBy.length : 0}
+                  createdOn={post.createdOn}
+                  postId={post.id}
+                  onUpdate={setPosts}
+                  onDelete={() => handleDeletePost(post.author, post.id)}
+                  userPriviliges={userData ? userData.priviliges : null}
+                />
+              );
+            })}
+          </div>
+        </div>
       )}
     </>
   );
