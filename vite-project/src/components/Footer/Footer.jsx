@@ -31,15 +31,15 @@ export default function Footer() {
 
   return (
     <div className="d-flex flex-nowrap w-full flex-row justify-content-center text-white gap-4 mt-auto py-3 fs-5 fw-light bg-black">
-      <Button onClick={handleShow} className='bg-transparent border-0' id="gh-link">
+      <Button onClick={handleShow} className='bg-white border-0' id="gh-link">
         <SocialsModal isShown={show} closeHandler={handleClose} />
-        <CIcon icon={cibGithub} className='icon-styles' />
+        <CIcon icon={cibGithub} className='icon-styles' color='white' />
       </Button>
-      <Button onClick={handleShow} className='bg-transparent border-0' id="gm-link">
+      <Button onClick={handleShow} className='bg-white border-0' id="gm-link">
         <SocialsModal isShown={show} closeHandler={handleClose} />
         <CIcon icon={cibGmail} className='icon-styles' />
       </Button>
-      <Button onClick={handleShow} className='bg-transparent border-0' id="fb-link">
+      <Button onClick={handleShow} className='bg-white border-0' id="fb-link">
         <SocialsModal isShown={show} closeHandler={handleClose} />
         <CIcon icon={cibFacebook} className='icon-styles' />
       </Button>

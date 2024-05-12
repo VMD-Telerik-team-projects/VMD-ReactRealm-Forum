@@ -62,11 +62,13 @@ export default function Posts() {
         <>
           {posts.length > 0 ? (
             <>
-              <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
-              <select className="select-dropdown" value={sortOption} onChange={handleSortChange}>
-                <option value="date">Oldest posts</option>
-                <option value="title">Alphabetical order</option>
-              </select>
+              <div className="d-flex flex-row justify-content-center align-items-center">
+                <SearchBar value={searchTerm} onChange={setSearchTerm} className='mt-4' />
+                <select className="select-dropdown mt-4" value={sortOption} onChange={handleSortChange}>
+                  <option value="date">Oldest posts</option>
+                  <option value="title">Alphabetical order</option>
+                </select>
+              </div>
               <div className="posts-container">
               {filteredPosts.map((post) => {
                 return (

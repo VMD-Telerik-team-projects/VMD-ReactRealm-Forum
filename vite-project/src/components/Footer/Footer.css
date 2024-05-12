@@ -1,25 +1,15 @@
-.icon-github {
-    width: 26px;
-}
-
-.icon-gmail {
-    width: 48px;
-    height: 24px;
-}
-
-.icon-phone {
-    width: 18px;
-    height: 24px;
-}
-
 .icon-styles {
     width: 32px;
     background-color: white;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     border-radius: 4px;
     padding: 4px;
 }
 
+/* #gh-link:hover {
+    scale: 1.2;
+}
+
 .icon-styles:hover {
     opacity: 0.5;
-}
+} */

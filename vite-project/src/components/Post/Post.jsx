@@ -3,20 +3,20 @@ import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import "./Post.css";
 import PropTypes from "prop-types";
-import { cilCommentSquare } from "@coreui/icons";
+// import { cilCommentSquare } from "@coreui/icons";
 import {
   getAllPosts,
   likePost,
   dislikePost,
 } from "../../services/posts.service";
 import { Heart, HeartFill } from "react-bootstrap-icons";
-import CIcon from "@coreui/icons-react";
+// import CIcon from "@coreui/icons-react";
 import { getLikedPosts } from "../../services/users.service";
 // import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 // import RenderSinglePost from "./PostDetails";
-import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
+import { Trash, Pencil, ForwardFill, Chat } from "react-bootstrap-icons";
 import EditPostModal from "../EditPostModal/EditPostModal";
 
 export default function Post({
@@ -139,11 +139,17 @@ export default function Post({
             </Row>
             <Row>
               <Col xs={2}>
-                <CIcon
-                  icon={cilCommentSquare}
-                  className="comment-bubble me-2"
-                />
-                <span className="fs-5">{comments.length}</span>
+                <Link
+                  to={`/post/${postId}`}
+                  className="link-underline link-underline-opacity-0 text-black"
+                >
+                  {/* <CIcon
+                    icon={cilCommentSquare}
+                    className="comment-bubble me-2"
+                  /> */}
+                  <Chat className="comment-bubble me-2 ms-1 fs-6" />
+                </Link>
+                <span className="fs-5 ms-1">{comments.length}</span>
               </Col>
             </Row>
             <Row className="mt-4">

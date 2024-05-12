@@ -10,12 +10,14 @@ export default function Navigation() {
   return (
     <Navbar expand="xl" bg="dark" variant="dark" className="py-3 bg-black">
       <Navbar.Brand className="me-4">
-        <img
-          src="/img/logo-no-background.png"
-          width="160px"
-          className="ms-4"
-          alt="Logo"
-        />
+        <Link to='/'>
+          <img
+            src="/img/logo-no-background.png"
+            width="160px"
+            className="ms-4"
+            alt="Logo"
+          />
+        </Link>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="navcol-1" className="me-4">
         <span className="visually-hidden">Toggle navigation</span>

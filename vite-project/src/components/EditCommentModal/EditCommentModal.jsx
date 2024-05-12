@@ -62,5 +62,5 @@ EditCommentModal.propTypes = {
   closeHandler: PropTypes.func.isRequired,
   author: PropTypes.string.isRequired,
   postId: PropTypes.string.isRequired,
-  commentTimeStamp: PropTypes.string.isRequired,
+  commentTimeStamp: PropTypes.number.isRequired,
 }
