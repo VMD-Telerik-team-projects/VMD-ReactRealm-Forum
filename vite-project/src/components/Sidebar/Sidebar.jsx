@@ -59,7 +59,7 @@ export default function Sidebar() {
                 </div>
               </Col>
               <Col xs={10} className="d-flex justify-content-start align-items-center">
-                <p>{activeUsers[index]}</p>
+              <p style={{ color: 'linen'}}>{activeUsers[index]}</p>
               </Col>
             </Row>
           );
