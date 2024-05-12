@@ -126,7 +126,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
             </Col>
             <Col xs={8} md={9}>
               <div className="d-flex flex-row justify-content-end align-items-end gap-1">
-                {user && userData.handle === author && (
+                {(user && userData.handle === author) && (
                   <Button
                     className="bg-transparent border-0"
                     onClick={handleShowEditModal}
@@ -134,8 +134,8 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
                     <Pencil className="text-secondary" />
                   </Button>
                 )}
-                {((user && userData.handle === author) ||
-                  userData.priviliges === 0) && (
+                {(user && (userData.handle === author ||
+                  userData.priviliges === 0)) && (
                   <Button
                     className="bg-transparent border-0"
                     onClick={handleDeleteComment}

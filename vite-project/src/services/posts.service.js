@@ -214,3 +214,10 @@ export async function getNumberOfUsers() {
     console.error(error);
   }
 }
+
+export const getMostLikedPosts = async () => {
+  const posts = await getAllPosts();
+  const sortedPosts = posts.sort((a, b) => b.likedBy.length - a.likedBy.length);
+  
+  return sortedPosts.slice(0, 10);
+}

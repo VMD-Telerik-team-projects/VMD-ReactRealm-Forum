@@ -3,20 +3,18 @@ import AppContext from "../../context/AppContext";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import "./Post.css";
 import PropTypes from "prop-types";
-// import { cilCommentSquare } from "@coreui/icons";
+import { cilCommentSquare } from "@coreui/icons";
 import {
   getAllPosts,
   likePost,
   dislikePost,
 } from "../../services/posts.service";
 import { Heart, HeartFill } from "react-bootstrap-icons";
-// import CIcon from "@coreui/icons-react";
+import CIcon from "@coreui/icons-react";
 import { getLikedPosts } from "../../services/users.service";
-// import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-// import RenderSinglePost from "./PostDetails";
-import { Trash, Pencil, ForwardFill, Chat } from "react-bootstrap-icons";
+import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
 import EditPostModal from "../EditPostModal/EditPostModal";
 
 export default function Post({
@@ -101,12 +99,12 @@ export default function Post({
             </Col>
             <Col xs={3} md={1}>
               <div className="d-flex flex-row gap-3">
-                {userData.handle === author ? (
+                {(userData && userData.handle === author) ? (
                   <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
                     <Pencil className="text-secondary" />
                   </Button>
                 ) : <div className="p-1 bg-transparent border-0 fs-6" style={{ cursor: "normal" }}>⠀</div>}
-                {(userData.handle === author || userPriviliges === 0) && (
+                {(userData && (userData.handle === author || userPriviliges === 0)) && (
                   <Button
                     title="Delete Post"
                     className="bg-transparent border-0 p-0 fs-6"
@@ -143,11 +141,11 @@ export default function Post({
                   to={`/post/${postId}`}
                   className="link-underline link-underline-opacity-0 text-black"
                 >
-                  {/* <CIcon
+                  <CIcon
                     icon={cilCommentSquare}
                     className="comment-bubble me-2"
-                  /> */}
-                  <Chat className="comment-bubble me-2 ms-1 fs-6" />
+                  /> 
+                  { /* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */ }
                 </Link>
                 <span className="fs-5 ms-1">{comments.length}</span>
               </Col>
