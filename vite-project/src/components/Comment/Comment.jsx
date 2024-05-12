@@ -16,7 +16,7 @@ import {
 import PropTypes from "prop-types";
 import "./Comment.css";
 
-export default function Comment({ postId, author, createdOn, content, likes, index }) {
+export default function Comment({ postId, author, createdOn, content, likes, index, refreshComments }) {
   const { user, userData } = useContext(AppContext);
   const [numberOfLikes, setNumberOfLikes] = useState(Object.keys(likes).length);
   const [isLiked, setIsLiked] = useState(false);
@@ -88,7 +88,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
 
   const handleDeleteComment = async () => {
     await deleteComment(postId, createdOn, userData.handle);
-    location.reload();
+    await refreshComments();
   };
 
   const [showEditModal, setShowEditModal] = useState(false);

@@ -20,6 +20,7 @@ export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
+  const [comments, setComments] = useState([]);
 
   const url = window.location.href;
   const match = url.match(/\/post\/([^/]+)$/);
@@ -72,6 +73,7 @@ export default function RenderSinglePost() {
 
       const postsData = await getPostById(postId);
       setCurrentPost(postsData);
+      setComments(postsData.comments);
     }
   };
 
@@ -98,6 +100,11 @@ export default function RenderSinglePost() {
     const postsData = await getPostById(postId);
     setCurrentPost(postsData);
   };
+
+  const refreshComments = async () => {
+    const postsData = await getPostById(postId);
+    setComments(postsData.comments);
+  }
 
   return (
     <Container
@@ -175,17 +182,18 @@ export default function RenderSinglePost() {
               )}
             </Row>
             <Row className="mt-4">
-              {currentPost.comments &&
-                Object.values(currentPost.comments).map((comment, index) => {
+              {comments &&
+                Object.values(comments).map((comment, index) => {
                   return (
                     <Comment
                       key={index}
                       postId={postId}
                       author={Object.keys(comment)[0]}
                       content={Object.values(comment)[0]}
-                      createdOn={Number(Object.keys(currentPost.comments)[index])}
+                      createdOn={Number(Object.keys(comments)[index])}
                       likes={Object.values(comment)[1] ? Object.values(comment)[1] : {}}
                       index={index}
+                      refreshComments={refreshComments}
                     />
                   );
                 })}
