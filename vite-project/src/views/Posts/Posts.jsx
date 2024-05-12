@@ -75,14 +75,14 @@ export default function Posts() {
     setSortOption(e.target.value);
   };
 
-  // const sortedPosts = filteredPosts.sort((a, b) => {
-  //   if (sortOption === 'date') {
-  //     return new Date(b.date) - new Date(a.date);
-  //   } else if (sortOption === 'title') {
-  //     const titleA = a.title || "";
-  //     const titleB = b.title || "";
-  //     return titleA.localeCompare(titleB);
-  // } });
+  const sortedPosts = filteredPosts.sort((a, b) => {
+    if (sortOption === 'date') {
+      return new Date(b.date) - new Date(a.date);
+    } else if (sortOption === 'title') {
+      const titleA = a.title || "";
+      const titleB = b.title || "";
+      return titleA.localeCompare(titleB);
+  } });
 
   return (
     <>
