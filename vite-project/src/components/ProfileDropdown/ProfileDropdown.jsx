@@ -16,9 +16,17 @@ export default function ProfileDropdown({ className }) {
   const [profilePic, setProfilePic] = useState("img/default.jpg");
 
   useEffect(() => {
-    if (user && userData) {
+    if (user && userData && userData.handle) {
       getProfilePic(userData.handle).then((url) => {
         setProfilePic(url);
+      }).catch((error) => {
+        if (error.code === 'storage/object-not-found') {
+          // Use default picture if the user does not have a profile picture
+          setProfilePic('img/default.jpg');
+        } else {
+          // Re-throw any other errors
+          throw error;
+        }
       });
     }
   }, [user, userData])
