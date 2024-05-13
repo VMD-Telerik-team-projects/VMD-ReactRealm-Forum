@@ -4,6 +4,8 @@ import { useContext, useRef } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
@@ -22,6 +24,7 @@ export default function RenderSinglePost() {
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const [highlightedContent, setHighlightedContent] = useState("");
   const [highlightedContent, setHighlightedContent] = useState("");
   const refHook = useRef();
 
@@ -79,25 +82,25 @@ export default function RenderSinglePost() {
 
   const addComment = async () => {
     if (!userData) {
-      return alert("You must be signed in to comment");
+      return toast.error("You must be signed in to comment");
     }
-  
+
     refHook.current = document.getElementById("comment");
-    
+
     const content = refHook.current.value;
     await comment(postId, userData.handle, content);
-    
+
     const postsData = await getPostById(postId);
-    
+
     setCurrentPost(postsData);
     setComments(postsData.comments);
-  
+
     refHook.current.value = "";
   };
 
   const handleLike = async () => {
     if (!userData) {
-      return alert("You must be signed in to like a post");
+      return toast.error("You must be signed in to like a post");
     }
 
     const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -144,6 +147,7 @@ export default function RenderSinglePost() {
           <div>
             <Row className="mb-1">
               <Col>
+                <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
                 <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
               </Col>
             </Row>
@@ -202,7 +206,12 @@ export default function RenderSinglePost() {
                   </Row>
                   <Row>
                     <Col xs={12} className="w-100">
-                      <Button onClick={addComment} className="w-100 bg-success p-2 border-1 border-success mt-2 h-100">Add comment</Button>
+                      <Button
+                        onClick={addComment}
+                        className="w-100 bg-success p-2 border-1 border-success mt-2 h-100"
+                      >
+                        Add comment
+                      </Button>
                     </Col>
                   </Row>
                 </>
