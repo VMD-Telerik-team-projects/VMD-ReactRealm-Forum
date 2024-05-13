@@ -11,16 +11,18 @@ import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
 import { getLikedPosts } from "../../services/users.service";
-import { likePost, dislikePost } from "../../services/posts.service";
-// import { getAllPosts } from "../../services/posts.service";
+import { likePost, dislikePost, detectCode } from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css'; // choose a style
 
 export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const [highlightedContent, setHighlightedContent] = useState("");
   const refHook = useRef();
 
   const url = window.location.href;
@@ -46,7 +48,17 @@ export default function RenderSinglePost() {
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        setCurrentPost(snapshot.val());
+        const value = snapshot.val()
+
+        if (detectCode(value.content)) {
+          const highlightedVal = hljs.highlightAuto(value.content).value
+
+          setCurrentPost(value);
+          setHighlightedContent(highlightedVal);
+        } else {
+          setCurrentPost(value);
+          setHighlightedContent(value.content);
+        }
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -132,7 +144,7 @@ export default function RenderSinglePost() {
           <div>
             <Row className="mb-1">
               <Col>
-                <p>{currentPost.content}</p>
+                <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
               </Col>
             </Row>
             <Row className="mb-1">
