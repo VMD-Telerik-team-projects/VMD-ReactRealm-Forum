@@ -1,13 +1,13 @@
 // import Modal from "react-bootstrap/Modal";
 import { Heart, HeartFill } from "react-bootstrap-icons";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
-import { Card, Row, Col, Container } from "react-bootstrap";
+import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
 import { getLikedPosts } from "../../services/users.service";
@@ -21,6 +21,7 @@ export default function RenderSinglePost() {
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const refHook = useRef();
 
   const url = window.location.href;
   const match = url.match(/\/post\/([^/]+)$/);
@@ -58,29 +59,28 @@ export default function RenderSinglePost() {
     if (currentPost) {
       setComments(currentPost.comments);
     }
-  }, [currentPost])
+  }, [currentPost]);
 
   if (!currentPost) {
     return <Loader />;
   }
 
-  const addComment = async (e) => {
-    if (e.key === "Enter") {
-      console.log(postId);
-      e.preventDefault();
-
-      if (!userData) {
-        return alert("You must be signed in to comment");
-      }
-
-      await comment(postId, userData.handle, e.target.value);
-
-      e.target.value = "";
-
-      const postsData = await getPostById(postId);
-      setCurrentPost(postsData);
-      setComments(postsData.comments);
+  const addComment = async () => {
+    if (!userData) {
+      return alert("You must be signed in to comment");
     }
+  
+    refHook.current = document.getElementById("comment");
+    
+    const content = refHook.current.value;
+    await comment(postId, userData.handle, content);
+    
+    const postsData = await getPostById(postId);
+    
+    setCurrentPost(postsData);
+    setComments(postsData.comments);
+  
+    refHook.current.value = "";
   };
 
   const handleLike = async () => {
@@ -110,7 +110,7 @@ export default function RenderSinglePost() {
   const refreshComments = async () => {
     const postsData = await getPostById(postId);
     setComments(postsData.comments);
-  }
+  };
 
   return (
     <Container
@@ -168,21 +168,32 @@ export default function RenderSinglePost() {
             <Row className="mt-4">
               <Col>
                 <p>
-                    <b>Created on:{" "}</b>
-                    {new Date(currentPost.createdOn).toLocaleString("en-US")}
+                  <b>Created on: </b>
+                  {new Date(currentPost.createdOn).toLocaleString("en-US")}
                 </p>
               </Col>
             </Row>
             <Row className="mt-3">
               {user && (
-                <Col xs={12}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
+                <>
+                  <Row>
+                    <Col xs={12}>
+                      <textarea
+                        id="comment"
+                        type="text"
+                        rows={5}
+                        cols={10}
+                        placeholder="Leave a comment"
+                        className="form-control border border-secondary rounded"
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={12} className="w-100">
+                      <Button onClick={addComment} className="w-100 bg-success p-2 border-1 border-success mt-2 h-100">Add comment</Button>
+                    </Col>
+                  </Row>
+                </>
               )}
             </Row>
             <Row className="mt-4">
@@ -195,7 +206,11 @@ export default function RenderSinglePost() {
                       author={Object.keys(comment)[0]}
                       content={Object.values(comment)[0]}
                       createdOn={Number(Object.keys(comments)[index])}
-                      likes={Object.values(comment)[1] ? Object.values(comment)[1] : {}}
+                      likes={
+                        Object.values(comment)[1]
+                          ? Object.values(comment)[1]
+                          : {}
+                      }
                       index={index}
                       refreshComments={refreshComments}
                     />
