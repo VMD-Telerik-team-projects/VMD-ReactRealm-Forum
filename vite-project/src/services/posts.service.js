@@ -267,4 +267,8 @@ export const getMostLikedPosts = async () => {
   const sortedPosts = posts.sort((a, b) => b.likedBy.length - a.likedBy.length);
 
   return sortedPosts.slice(0, 10);
-};
+}
+
+export function detectCode(str) {
+  return /;[\s\n]|{[^}]*}|<[^>]*>|\(.*\)/.test(str);
+}

@@ -1,6 +1,6 @@
 // import Modal from "react-bootstrap/Modal";
 import { Heart, HeartFill } from "react-bootstrap-icons";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
@@ -9,20 +9,27 @@ import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
-import { Card, Row, Col, Container } from "react-bootstrap";
+import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
 import { getLikedPosts } from "../../services/users.service";
-import { likePost, dislikePost } from "../../services/posts.service";
-// import { getAllPosts } from "../../services/posts.service";
+import {
+  likePost,
+  dislikePost,
+  detectCode,
+} from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css"; // choose a style
 
 export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
+  const [highlightedContent, setHighlightedContent] = useState("");
+  const refHook = useRef();
 
   const url = window.location.href;
   const match = url.match(/\/post\/([^/]+)$/);
@@ -47,7 +54,17 @@ export default function RenderSinglePost() {
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        setCurrentPost(snapshot.val());
+        const value = snapshot.val();
+
+        if (detectCode(value.content)) {
+          const highlightedVal = hljs.highlightAuto(value.content).value;
+
+          setCurrentPost(value);
+          setHighlightedContent(highlightedVal);
+        } else {
+          setCurrentPost(value);
+          setHighlightedContent(value.content);
+        }
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -66,23 +83,22 @@ export default function RenderSinglePost() {
     return <Loader />;
   }
 
-  const addComment = async (e) => {
-    if (e.key === "Enter") {
-      console.log(postId);
-      e.preventDefault();
-
-      if (!userData) {
-        return toast.error("You must be signed in to comment");
-      }
-
-      await comment(postId, userData.handle, e.target.value);
-
-      e.target.value = "";
-
-      const postsData = await getPostById(postId);
-      setCurrentPost(postsData);
-      setComments(postsData.comments);
+  const addComment = async () => {
+    if (!userData) {
+      return toast.error("You must be signed in to comment");
     }
+
+    refHook.current = document.getElementById("comment");
+
+    const content = refHook.current.value;
+    await comment(postId, userData.handle, content);
+
+    const postsData = await getPostById(postId);
+
+    setCurrentPost(postsData);
+    setComments(postsData.comments);
+
+    refHook.current.value = "";
   };
 
   const handleLike = async () => {
@@ -134,7 +150,7 @@ export default function RenderSinglePost() {
           <div>
             <Row className="mb-1">
               <Col>
-                <p>{currentPost.content}</p>
+                <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
               </Col>
             </Row>
             <Row className="mb-1">
@@ -177,14 +193,30 @@ export default function RenderSinglePost() {
             </Row>
             <Row className="mt-3">
               {user && (
-                <Col xs={12}>
-                  <input
-                    type="text"
-                    placeholder="Leave a comment"
-                    className="form-control border border-secondary rounded"
-                    onKeyDown={addComment}
-                  />
-                </Col>
+                <>
+                  <Row>
+                    <Col xs={12}>
+                      <textarea
+                        id="comment"
+                        type="text"
+                        rows={5}
+                        cols={10}
+                        placeholder="Leave a comment"
+                        className="form-control border border-secondary rounded"
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={12} className="w-100">
+                      <Button
+                        onClick={addComment}
+                        className="w-100 bg-success p-2 border-1 border-success mt-2 h-100"
+                      >
+                        Add comment
+                      </Button>
+                    </Col>
+                  </Row>
+                </>
               )}
             </Row>
             <Row className="mt-4">
