@@ -3,6 +3,8 @@ import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import { registerUser } from "../../services/auth.service";
 import AppContext from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getUserByHandle,
   createUserHandle,
@@ -40,24 +42,24 @@ export default function SignIn() {
     setLoading(true);
 
     if (form.firstName.length < 4 || form.firstName.length > 32) {
-      alert("First name should be between 4 and 32 characters long!");
+      toast.error("First name should be between 4 and 32 characters long!");
       return;
     }
 
     if (form.lastName.length < 4 || form.lastName.length > 32) {
-      alert("Last name should be between 4 and 32 characters long!");
+      toast.error("Last name should be between 4 and 32 characters long!");
       return;
     }
 
     if (form.password.length < 6) {
-      alert("Password should be at least 6 characters long");
+      toast.error("Password should be at least 6 characters long");
       return;
     }
 
     try {
       const user = await getUserByHandle(form.username);
       if (user.exists()) {
-        alert("User with this username already exists!");
+        toast.error("User with this username already exists!");
         return setLoading(false);
       }
       const credential = await registerUser(form.email, form.password);
@@ -74,8 +76,8 @@ export default function SignIn() {
       // console.log("about to redirect");
       navigate("/Home" || "/");
     } catch (error) {
-        alert(error.message);
-        setLoading(false);
+      toast.error(error.message);
+      setLoading(false);
     }
 
     return setLoading(false);

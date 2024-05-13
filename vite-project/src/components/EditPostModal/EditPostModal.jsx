@@ -4,6 +4,8 @@ import { Modal, Row, Button } from "react-bootstrap";
 import Loader from "../Loader/Loader";
 import { editPost } from "../../services/posts.service";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   POST_CONTENT_MAX_LENGTH,
   POST_CONTENT_MIN_LENGTH,
@@ -33,7 +35,7 @@ export default function EditPostModal({ postId, isShown, closeHandler }) {
       post.title.length < POST_TITLE_MIN_LENGTH ||
       post.title.length > POST_TITLE_MAX_LENGTH
     ) {
-      alert("The title must be 16-64 characters long!");
+      toast.error("The title must be 16-64 characters long!");
       return setLoading(false);
     }
 
@@ -41,7 +43,7 @@ export default function EditPostModal({ postId, isShown, closeHandler }) {
       post.content.length < POST_CONTENT_MIN_LENGTH ||
       post.content.length > POST_CONTENT_MAX_LENGTH
     ) {
-      alert("The content must contain 32-8196 characters!");
+      toast.error("The content must contain 32-8196 characters!");
       return setLoading(false);
     }
 
@@ -101,7 +103,10 @@ export default function EditPostModal({ postId, isShown, closeHandler }) {
             </small>
           </Row>
           <Row>
-            <Button className="create-post-button mt-3" onClick={handlePostUpdate}>
+            <Button
+              className="create-post-button mt-3"
+              onClick={handlePostUpdate}
+            >
               Update Post
             </Button>
           </Row>

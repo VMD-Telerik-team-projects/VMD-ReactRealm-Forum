@@ -3,18 +3,18 @@ import { getNumberOfPosts, getNumberOfUsers } from '../../services/posts.service
 import { Row, Col } from 'react-bootstrap';
 
 export default function About() {
-  const [numberOfPosts, setNumberOfPosts] = useState(0);
-  const [numberOfUsers, setNumberOfUsers] = useState(0);
+  // const [numberOfPosts, setNumberOfPosts] = useState(0);
+  // const [numberOfUsers, setNumberOfUsers] = useState(0);
 
-  useEffect(() => {
-    getNumberOfPosts().then(setNumberOfPosts).catch(console.error);
-    getNumberOfUsers().then(setNumberOfUsers).catch(console.error);
-  }, []);
+  // useEffect(() => {
+  //   getNumberOfPosts().then(setNumberOfPosts).catch(console.error);
+  //   getNumberOfUsers().then(setNumberOfUsers).catch(console.error);
+  // }, []);
 
 return (
   <div className="container py-4 text-black fw-light fs-6">
     <div className='rounded py-5 px-5 border-1 border-muted' style={{backgroundColor: 'rgba(230, 230, 230, 0.5)'}}>
-    <Row>
+    {/* <Row>
       <Col xs={11}>
         <h1 className="mb-4">Welcome to ReactRealm Forum!</h1>
       </Col>
@@ -22,7 +22,7 @@ return (
         <p className='my-0'><b>Posts:</b> {numberOfPosts}</p>
         <p className='my-0'><b>Users:</b> {numberOfUsers}</p>
       </Col>
-    </Row>
+    </Row> */}
     <section className="mb-4">
       <h2>About Us</h2>
       <p>

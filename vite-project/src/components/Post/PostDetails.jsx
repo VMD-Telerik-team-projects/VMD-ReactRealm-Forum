@@ -4,6 +4,8 @@ import { useContext, useRef } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
@@ -11,11 +13,15 @@ import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
 import { getLikedPosts } from "../../services/users.service";
-import { likePost, dislikePost, detectCode } from "../../services/posts.service";
+import {
+  likePost,
+  dislikePost,
+  detectCode,
+} from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // choose a style
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css"; // choose a style
 
 export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
@@ -48,10 +54,10 @@ export default function RenderSinglePost() {
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        const value = snapshot.val()
+        const value = snapshot.val();
 
         if (detectCode(value.content)) {
-          const highlightedVal = hljs.highlightAuto(value.content).value
+          const highlightedVal = hljs.highlightAuto(value.content).value;
 
           setCurrentPost(value);
           setHighlightedContent(highlightedVal);
@@ -79,25 +85,25 @@ export default function RenderSinglePost() {
 
   const addComment = async () => {
     if (!userData) {
-      return alert("You must be signed in to comment");
+      return toast.error("You must be signed in to comment");
     }
-  
+
     refHook.current = document.getElementById("comment");
-    
+
     const content = refHook.current.value;
     await comment(postId, userData.handle, content);
-    
+
     const postsData = await getPostById(postId);
-    
+
     setCurrentPost(postsData);
     setComments(postsData.comments);
-  
+
     refHook.current.value = "";
   };
 
   const handleLike = async () => {
     if (!userData) {
-      return alert("You must be signed in to like a post");
+      return toast.error("You must be signed in to like a post");
     }
 
     const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -202,7 +208,12 @@ export default function RenderSinglePost() {
                   </Row>
                   <Row>
                     <Col xs={12} className="w-100">
-                      <Button onClick={addComment} className="w-100 bg-success p-2 border-1 border-success mt-2 h-100">Add comment</Button>
+                      <Button
+                        onClick={addComment}
+                        className="w-100 bg-success p-2 border-1 border-success mt-2 h-100"
+                      >
+                        Add comment
+                      </Button>
                     </Col>
                   </Row>
                 </>

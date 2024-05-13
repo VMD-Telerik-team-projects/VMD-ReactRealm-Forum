@@ -13,6 +13,8 @@ import {
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import CIcon from "@coreui/icons-react";
 import { getLikedPosts } from "../../services/users.service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
@@ -60,7 +62,7 @@ export default function Post({
 
   const handleLike = async () => {
     if (!userData) {
-      return alert("You must be signed in to like a post");
+      return toast.error("You must be signed in to like a post");
     }
 
     const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -81,7 +83,7 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
-  
+
   const handleShowEditModal = (e) => {
     if (e.key === "Escape") {
       setShowEditModal(false);
@@ -89,11 +91,11 @@ export default function Post({
       setShowEditModal(true);
     }
   };
-  
+
   const handleCloseEditModal = () => {
     setShowEditModal(false);
   };
-  
+
   return (
     <Container
       className="d-flex flex-row justify-content-center align-items-center m-0"
@@ -113,20 +115,31 @@ export default function Post({
             </Col>
             <Col xs={3} md={1}>
               <div className="d-flex flex-row gap-3">
-                {(userData && userData.handle === author) ? (
-                  <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
+                {userData && userData.handle === author ? (
+                  <Button
+                    className="bg-transparent border-0 p-0 fs-6"
+                    onClick={handleShowEditModal}
+                  >
                     <Pencil className="text-secondary" />
                   </Button>
-                ) : <div className="p-1 bg-transparent border-0 fs-6" style={{ cursor: "normal" }}>⠀</div>}
-                {(userData && (userData.handle === author || userPriviliges === 0)) && (
-                  <Button
-                    title="Delete Post"
-                    className="bg-transparent border-0 p-0 fs-6"
-                    onClick={() => onDelete(postId)}
+                ) : (
+                  <div
+                    className="p-1 bg-transparent border-0 fs-6"
+                    style={{ cursor: "normal" }}
                   >
-                    <Trash className="trash-icon text-danger" />
-                  </Button>
+                    ⠀
+                  </div>
                 )}
+                {userData &&
+                  (userData.handle === author || userPriviliges === 0) && (
+                    <Button
+                      title="Delete Post"
+                      className="bg-transparent border-0 p-0 fs-6"
+                      onClick={() => onDelete(postId)}
+                    >
+                      <Trash className="trash-icon text-danger" />
+                    </Button>
+                  )}
               </div>
             </Col>
           </Row>
@@ -142,7 +155,10 @@ export default function Post({
             <Row className="mb-1">
               <Col>
                 {isLiked ? (
-                  <HeartFill className="heart-icon me-2 text-danger" onClick={handleLike} />
+                  <HeartFill
+                    className="heart-icon me-2 text-danger"
+                    onClick={handleLike}
+                  />
                 ) : (
                   <Heart className="heart-icon me-2" onClick={handleLike} />
                 )}
@@ -158,8 +174,8 @@ export default function Post({
                   <CIcon
                     icon={cilCommentSquare}
                     className="comment-bubble me-2"
-                  /> 
-                  { /* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */ }
+                  />
+                  {/* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */}
                 </Link>
                 <span className="fs-5 ms-1">{comments.length}</span>
               </Col>
@@ -186,7 +202,11 @@ export default function Post({
           </>
         </Card.Body>
       </Card>
-      <EditPostModal isShown={showEditModal} closeHandler={handleCloseEditModal} postId={postId} />
+      <EditPostModal
+        isShown={showEditModal}
+        closeHandler={handleCloseEditModal}
+        postId={postId}
+      />
     </Container>
   );
 }
