@@ -1,8 +1,17 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import AppContext from "../../context/AppContext";
 import EditCommentModal from "../EditCommentModal/EditCommentModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { Heart, Trash, Pencil, HeartFill, ChevronRight, ChevronDown } from "react-bootstrap-icons";
+import {
+  Heart,
+  Trash,
+  Pencil,
+  HeartFill,
+  ChevronRight,
+  ChevronDown,
+} from "react-bootstrap-icons";
 import {
   isCommentLiked,
   likeComment,
@@ -11,12 +20,20 @@ import {
   getCommentLikesNumber,
   replyToComment,
   getAllCommentReplies,
-  getCommentRepliesNumber
+  getCommentRepliesNumber,
 } from "../../services/posts.service";
 import PropTypes from "prop-types";
 import "./Comment.css";
 
-export default function Comment({ postId, author, createdOn, content, likes, index, refreshComments }) {
+export default function Comment({
+  postId,
+  author,
+  createdOn,
+  content,
+  likes,
+  index,
+  refreshComments,
+}) {
   const { user, userData } = useContext(AppContext);
   const [numberOfLikes, setNumberOfLikes] = useState(Object.keys(likes).length);
   const [isLiked, setIsLiked] = useState(false);
@@ -52,11 +69,11 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
     };
 
     fetchRepliesNumber();
-  }, [commentReplies, postId, createdOn])
+  }, [commentReplies, postId, createdOn]);
 
   const handleLikeComment = async () => {
     if (!user) {
-      return alert("You must be signed in to like a comment");
+      return toast.error("You must be signed in to like a comment");
     }
 
     const isLiked = await isCommentLiked(postId, createdOn, userData.handle);
@@ -76,7 +93,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
   const handleCommentReply = async (e) => {
     if (e.key === "Enter") {
       if (!user) {
-        return alert("You must be signed in to reply to a comment");
+        return toast.error("You must be signed in to reply to a comment");
       }
 
       ref.current = document.getElementById(`commentReply${index}`).value;
@@ -84,7 +101,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
 
       setCommentReplies(await getAllCommentReplies(postId, createdOn));
     }
-  }
+  };
 
   const handleDeleteComment = async () => {
     await deleteComment(postId, createdOn, userData.handle);
@@ -109,16 +126,18 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
     setShowReplies(!showReplies);
 
     Object.values(commentReplies).forEach((reply) => {
-      Object.values(reply).map(replyContent => {
-        console.log(replyContent)
-      })
-      
-    })
+      Object.values(reply).map((replyContent) => {
+        console.log(replyContent);
+      });
+    });
   };
 
   return (
     <>
-      <Card className="p-4 rounded-0 border-0 border-bottom border-secondary" style={{backgroundColor: 'rgba(255, 255, 255, 0.3)'}}>
+      <Card
+        className="p-4 rounded-0 border-0 border-bottom border-secondary"
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }}
+      >
         <Card.Title className="fw-light fs-3 ms-3 mb-0">
           <Row>
             <Col xs={12} md={3}>
@@ -126,7 +145,7 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
             </Col>
             <Col xs={8} md={9}>
               <div className="d-flex flex-row justify-content-end align-items-end gap-1">
-                {(user && userData.handle === author) && (
+                {user && userData.handle === author && (
                   <Button
                     className="bg-transparent border-0"
                     onClick={handleShowEditModal}
@@ -134,15 +153,15 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
                     <Pencil className="text-secondary" />
                   </Button>
                 )}
-                {(user && (userData.handle === author ||
-                  userData.priviliges === 0)) && (
-                  <Button
-                    className="bg-transparent border-0"
-                    onClick={handleDeleteComment}
-                  >
-                    <Trash className="text-danger" />
-                  </Button>
-                )}
+                {user &&
+                  (userData.handle === author || userData.priviliges === 0) && (
+                    <Button
+                      className="bg-transparent border-0"
+                      onClick={handleDeleteComment}
+                    >
+                      <Trash className="text-danger" />
+                    </Button>
+                  )}
               </div>
             </Col>
           </Row>
@@ -184,35 +203,57 @@ export default function Comment({ postId, author, createdOn, content, likes, ind
           </Row>
           <Row>
             <Col xs={2}></Col>
-            {commentRepliesNumber ? <Col xs={10}>
-              <div
-                className="d-flex flex-row justify-content-center align-items-center text-center mt-4"
-                onClick={handleViewRepliesClick}  
-              >
-                View {commentRepliesNumber} replies {!showReplies ? <ChevronRight className="ms-1" /> : <ChevronDown className="ms-1" />}
-              </div>
-            </Col> : <div className="mt-4" />}
+            {commentRepliesNumber ? (
+              <Col xs={10}>
+                <div
+                  className="d-flex flex-row justify-content-center align-items-center text-center mt-4"
+                  onClick={handleViewRepliesClick}
+                >
+                  View {commentRepliesNumber} replies{" "}
+                  {!showReplies ? (
+                    <ChevronRight className="ms-1" />
+                  ) : (
+                    <ChevronDown className="ms-1" />
+                  )}
+                </div>
+              </Col>
+            ) : (
+              <div className="mt-4" />
+            )}
           </Row>
           {showReplies && (
             <Row className="mt-4">
               <Col xs={2}></Col>
-              <Col xs={10} style={{backgroundColor: 'rgba(220, 220, 220, 0.5)'}} className="d-flex flex-column p-4">
+              <Col
+                xs={10}
+                style={{ backgroundColor: "rgba(220, 220, 220, 0.5)" }}
+                className="d-flex flex-column p-4"
+              >
                 {Object.values(commentReplies).map((reply, index) => {
                   const author = Object.keys(commentReplies)[+index];
 
                   return Object.values(reply).map((replyContent, index) => {
                     return (
-                    <div key={index} className="m-0">
-                      <p>{author}: {replyContent}</p>
-                    </div>)
-                  })
+                      <div key={index} className="m-0">
+                        <p>
+                          {author}: {replyContent}
+                        </p>
+                      </div>
+                    );
+                  });
                 })}
               </Col>
             </Row>
           )}
         </Card.Body>
       </Card>
-      <EditCommentModal isShown={showEditModal} closeHandler={handleCloseEditModal} author={author} postId={postId} commentTimeStamp={createdOn} />
+      <EditCommentModal
+        isShown={showEditModal}
+        closeHandler={handleCloseEditModal}
+        author={author}
+        postId={postId}
+        commentTimeStamp={createdOn}
+      />
     </>
   );
 }

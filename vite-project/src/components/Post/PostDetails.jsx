@@ -4,6 +4,8 @@ import { useContext } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
 import { cilCommentSquare } from "@coreui/icons";
@@ -58,7 +60,7 @@ export default function RenderSinglePost() {
     if (currentPost) {
       setComments(currentPost.comments);
     }
-  }, [currentPost])
+  }, [currentPost]);
 
   if (!currentPost) {
     return <Loader />;
@@ -70,7 +72,7 @@ export default function RenderSinglePost() {
       e.preventDefault();
 
       if (!userData) {
-        return alert("You must be signed in to comment");
+        return toast.error("You must be signed in to comment");
       }
 
       await comment(postId, userData.handle, e.target.value);
@@ -85,7 +87,7 @@ export default function RenderSinglePost() {
 
   const handleLike = async () => {
     if (!userData) {
-      return alert("You must be signed in to like a post");
+      return toast.error("You must be signed in to like a post");
     }
 
     const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -110,7 +112,7 @@ export default function RenderSinglePost() {
   const refreshComments = async () => {
     const postsData = await getPostById(postId);
     setComments(postsData.comments);
-  }
+  };
 
   return (
     <Container
@@ -168,8 +170,8 @@ export default function RenderSinglePost() {
             <Row className="mt-4">
               <Col>
                 <p>
-                    <b>Created on:{" "}</b>
-                    {new Date(currentPost.createdOn).toLocaleString("en-US")}
+                  <b>Created on: </b>
+                  {new Date(currentPost.createdOn).toLocaleString("en-US")}
                 </p>
               </Col>
             </Row>
@@ -195,7 +197,11 @@ export default function RenderSinglePost() {
                       author={Object.keys(comment)[0]}
                       content={Object.values(comment)[0]}
                       createdOn={Number(Object.keys(comments)[index])}
-                      likes={Object.values(comment)[1] ? Object.values(comment)[1] : {}}
+                      likes={
+                        Object.values(comment)[1]
+                          ? Object.values(comment)[1]
+                          : {}
+                      }
                       index={index}
                       refreshComments={refreshComments}
                     />

@@ -7,6 +7,8 @@ import LayoutCentered from "./hoc/LayoutCentered/LayoutCentered";
 import LayoutPosts from "./hoc/LayoutPosts/LayoutPosts";
 import Home from "./views/Home/Home";
 import Posts from "./views/Posts/Posts";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import About from "./views/About/About";
 import SignIn from "./views/SignIn/SignIn";
 import { AppContext } from "./context/AppContext";
@@ -34,7 +36,7 @@ function App() {
   });
 
   const navigate = useNavigate();
-  
+
   //  comment
   useEffect(() => {
     if (!appState.user) return;
@@ -67,7 +69,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const isBlocked = appState.user && appState.userData && appState.userData.isBlocked;
+    const isBlocked =
+      appState.user && appState.userData && appState.userData.isBlocked;
     if (isBlocked) {
       navigate("/blocked");
     }
@@ -189,18 +192,30 @@ function App() {
             }
           ></Route>
           <Route
-          path="/delete-account"
-          element={
-          <LayoutCentered>
-            <Authenticated>
-              <DeleteAccount />
-            </Authenticated>
-          </LayoutCentered>
-          }
+            path="/delete-account"
+            element={
+              <LayoutCentered>
+                <Authenticated>
+                  <DeleteAccount />
+                </Authenticated>
+              </LayoutCentered>
+            }
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppContext.Provider>
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }
