@@ -1,0 +1,55 @@
+fixed bugs on reload for some components
+import Loader from "./components/Loader/Loader";
+
+function App() {
+  const [appState, setAppState] = useState({
+    user: null,
+    userData: null,
+    loading: true,
+  });
+  const navigate = useNavigate;
+  //  comment
+  useEffect(() => {
+    if (!appState.user) return;
+
+    setAppState(prevState => ({ ...prevState, loading: true })); // Set loading to true when you start fetching userData
+    getUserData(appState.user.uid).then((snapshot) => {
+      const userData = Object.values(snapshot.val())[0];
+      setAppState(prevState => ({ ...prevState, userData, loading: false })); // Set loading to false when you finish fetching userData
+    });
+  }, [appState.user]);
+
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setAppState(prevState => ({ ...prevState, loading: true }));
+        const userDataSnapshot = await getUserData(user.uid);
+        const userData = userDataSnapshot.val();
+        setAppState(prevState => ({ ...prevState, user, userData, loading: false }));
+
+        await updateUserOnlineStatus(Object.values(userData)[0].handle, true);
+      } else {
+        if (appState.userData) {
+          await updateUserOnlineStatus(appState.userData.handle, false);
+        }
+        setAppState(prevState => ({ ...prevState, user: null, userData: null, loading: false }));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const isBlocked = appState.user && appState.userData && appState.userData.isBlocked;
+    if (isBlocked) {
+      navigate("/blocked");
+    }
+  }, [appState.user, appState.userData, navigate]);
+
+  if (appState.loading) {
+    return (
+    <LayoutCentered><Loader /></LayoutCentered>
+   ); 
+  }
