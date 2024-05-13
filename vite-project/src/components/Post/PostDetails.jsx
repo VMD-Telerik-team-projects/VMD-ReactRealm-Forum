@@ -12,12 +12,17 @@ import { cilCommentSquare } from "@coreui/icons";
 import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import { getPostById } from "../../services/posts.service";
 import { useEffect, useState } from "react";
-import { getLikedPosts } from "../../services/users.service";
-import { likePost, dislikePost, detectCode } from "../../services/posts.service";
+import { getLikedPosts, getProfilePic } from "../../services/users.service";
+import {
+  likePost,
+  dislikePost,
+  detectCode,
+} from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // choose a style
+import ProfilePic from "../ProfilePic/ProfilePic";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css"; // choose a style
 
 export default function RenderSinglePost() {
   const { user, userData } = useContext(AppContext);
@@ -26,6 +31,7 @@ export default function RenderSinglePost() {
   const [comments, setComments] = useState([]);
   const [highlightedContent, setHighlightedContent] = useState("");
   const refHook = useRef();
+  const [profilePic, setProfilePic] = useState("img/default.jpg");
 
   const url = window.location.href;
   const match = url.match(/\/post\/([^/]+)$/);
@@ -50,10 +56,10 @@ export default function RenderSinglePost() {
         if (!snapshot.val())
           throw new Error("Post with this id does not exist!");
 
-        const value = snapshot.val()
+        const value = snapshot.val();
 
         if (detectCode(value.content)) {
-          const highlightedVal = hljs.highlightAuto(value.content).value
+          const highlightedVal = hljs.highlightAuto(value.content).value;
 
           setCurrentPost(value);
           setHighlightedContent(highlightedVal);
@@ -73,6 +79,20 @@ export default function RenderSinglePost() {
     if (currentPost) {
       setComments(currentPost.comments);
     }
+  }, [currentPost]);
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      if (!currentPost) return;
+
+      const pic = await getProfilePic(currentPost.author);
+      console.log(pic);
+      if (pic) {
+        setProfilePic(pic);
+      }
+    };
+
+    fetchProfilePic();
   }, [currentPost]);
 
   if (!currentPost) {
@@ -137,17 +157,24 @@ export default function RenderSinglePost() {
         style={{ width: "90dvw" }}
       >
         <Card.Body className="p-5 fs-5 fw-light">
-          <Card.Title className="fs-3 mb-1 fw-bold">
-            Author: {currentPost.author}
-          </Card.Title>
+          <Row className="mb-3">
+            <Col xs={1} className="me-3" style={{maxWidth: '90px'}}>
+              <ProfilePic profilePic={profilePic} widthAndHeight="72px" />
+            </Col>
+            <Col xs={10} className="m-0 p-0">
+              <Card.Title className="fs-3 my-2 m-0 p-0 fw-bold">
+                {currentPost.author}
+              </Card.Title>
+            </Col>
+          </Row>
           <Card.Title className="fs-3 mb-4 fw-normal">
             {currentPost.title}
           </Card.Title>
           <div>
-            <Row className="mb-1">
+            <Row className="mb-3">
               <Col>
                 <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
-                <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
+                {/* <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} /> */}
               </Col>
             </Row>
             <Row className="mb-1">
@@ -172,6 +199,7 @@ export default function RenderSinglePost() {
                 <CIcon
                   icon={cilCommentSquare}
                   className="comment-bubble me-2"
+                  onClick={() => addComment()}
                 />
                 <span className="fs-5">
                   {currentPost.comments
@@ -240,6 +268,7 @@ export default function RenderSinglePost() {
           </div>
         </Card.Body>
       </Card>
+      <ToastContainer />
     </Container>
   );
 }

@@ -12,13 +12,14 @@ import {
 } from "../../services/posts.service";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import CIcon from "@coreui/icons-react";
-import { getLikedPosts } from "../../services/users.service";
+import { getLikedPosts, getProfilePic } from "../../services/users.service";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
 import EditPostModal from "../EditPostModal/EditPostModal";
+import ProfilePic from "../ProfilePic/ProfilePic";
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // choose a style
+import 'highlight.js/styles/github.css';
 
 export default function Post({
   author,
@@ -36,7 +37,9 @@ export default function Post({
   const [isLiked, setIsLiked] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [highlightedContent, setHighlightedContent] = useState("");
+  const [profilePic, setProfilePic] = useState('img/default.jpg');
 
+  //  Fetch user's liked posts
   useEffect(() => {
     const fetchLikedPosts = async () => {
       const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -48,6 +51,7 @@ export default function Post({
     }
   }, [userData, postId]);
 
+  //  Syntax highlighting
   useEffect(() => {
     if (detectCode(content)) {
       setHighlightedContent(hljs.highlightAuto(content).value);
@@ -56,7 +60,18 @@ export default function Post({
     }
   }, [content])
 
-  
+  //  Fetch user's profile picture
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      const pic = (await getProfilePic(author));
+      console.log(pic);
+      if (pic) {
+        setProfilePic(pic);
+      }
+    };
+
+    fetchProfilePic();
+  }, [])
 
   const handleLike = async () => {
     if (!userData) {
@@ -105,13 +120,16 @@ export default function Post({
         style={{ width: "90dvw" }}
       >
         <Card.Body className="p-5 fs-5 fw-light">
-          <Row>
-            <Col xs={9} md={11}>
-              <Card.Title className="fs-3 mb-1 fw-bold">
+          <Row className="mb-3">
+            <Col xs={2} md={1} className="me-0" style={{maxWidth: '90px'}}>
+              <ProfilePic profilePic={profilePic} widthAndHeight='72px' />
+            </Col>
+            <Col xs={9} md={10}>
+              <Card.Title className="fs-3 my-2 ms-0 fw-bold">
                 {author}
               </Card.Title>
             </Col>
-            <Col xs={3} md={1}>
+            <Col xs={1} md={1}>
               <div className="d-flex flex-row gap-3">
                 {(userData && userData.handle === author) ? (
                   <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
@@ -130,7 +148,7 @@ export default function Post({
               </div>
             </Col>
           </Row>
-          <Card.Title className="fs-3 mb-4 fw-normal">
+          <Card.Title className="fs-3 mb-5 fw-normal">
             {title}
           </Card.Title>
           <>
