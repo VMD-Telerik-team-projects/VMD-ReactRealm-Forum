@@ -6,6 +6,7 @@ import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { deletePostById } from "../../services/posts.service";
 import "./Posts.css";
+import { ExclamationTriangleFill} from "react-bootstrap-icons";
 
 export default function Posts() {
   const { user, userData } = useContext(AppContext);
@@ -88,61 +89,31 @@ export default function Posts() {
     }
 });
 
-  return (
-    <>
-      {user ? (
-        <>
-          {posts.length > 0 ? (
-            <>
-              <div className="d-flex flex-row justify-content-center align-items-center">
-                <SearchBar
-                  value={searchTerm}
-                  onChange={setSearchTerm}
-                  className="mt-4"
-                />
-                <select
-                  className="select-dropdown mt-4"
-                  value={sortOption}
-                  onChange={handleSortChange}
-                >
-                  <option value="date-newest">Newest posts</option>
-                  <option value="date-oldest">Oldest posts</option>
-                  <option value="likes">Most liked posts</option>
-                  <option value="title">Alphabetical order</option>
-                </select>
-              </div>
-              <div className="posts-container">
-                {filteredPosts.map((post) => {
-                  return (
-                    <Post
-                      key={post.id}
-                      author={post.author}
-                      title={post.title}
-                      content={post.content}
-                      comments={
-                        post.comments ? Object.values(post.comments) : []
-                      }
-                      likes={post.likedBy ? post.likedBy.length : 0}
-                      createdOn={post.createdOn}
-                      postId={post.id}
-                      onUpdate={setPosts}
-                      onDelete={() => handleDeletePost(post.author, post.id)}
-                      userPriviliges={userData ? userData.priviliges : null}
-                    />
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <h1>No posts found!</h1>
-          )}
-        </>
-      ) : (
-        <div className="d-flex flex-column justify-content-start">
-          <h1 className="fw-normal fs-1 mt-2 mb-5 ms-3 text-black">Our {mostLikedPosts.length} most liked posts</h1>
+return (
+  <>
+    {user ? (
+      <>
+        <div className="d-flex flex-row justify-content-center align-items-center">
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            className="mt-4"
+          />
+          <select
+            className="select-dropdown mt-4"
+            value={sortOption}
+            onChange={handleSortChange}
+          >
+            <option value="date-newest">Newest posts</option>
+            <option value="date-oldest">Oldest posts</option>
+            <option value="likes">Most liked posts</option>
+            <option value="title">Alphabetical order</option>
+          </select>
+        </div>
+        {posts.length > 0 ? (
           <div className="posts-container">
-            {mostLikedPosts.map((post) => {
-              return (
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
                 <Post
                   key={post.id}
                   author={post.author}
@@ -156,11 +127,41 @@ export default function Posts() {
                   onDelete={() => handleDeletePost(post.author, post.id)}
                   userPriviliges={userData ? userData.priviliges : null}
                 />
-              );
-            })}
+              ))
+            ) : (
+              <div className="no-posts-found" style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+                <ExclamationTriangleFill size={32} color="red" />
+                <h2>No posts found</h2>
+                <p>Try adjusting your search to find what you're looking for.</p>
+              </div>
+            )}
           </div>
+        ) : (
+          <h1>No posts found!</h1>
+        )}
+      </>
+    ) : (
+      <div className="d-flex flex-column justify-content-start">
+        <h1 className="fw-normal fs-1 mt-2 mb-5 ms-3 text-black">Our {mostLikedPosts.length} most liked posts</h1>
+        <div className="posts-container">
+          {mostLikedPosts.map((post) => (
+            <Post
+              key={post.id}
+              author={post.author}
+              title={post.title}
+              content={post.content}
+              comments={post.comments ? Object.values(post.comments) : []}
+              likes={post.likedBy ? post.likedBy.length : 0}
+              createdOn={post.createdOn}
+              postId={post.id}
+              onUpdate={setPosts}
+              onDelete={() => handleDeletePost(post.author, post.id)}
+              userPriviliges={userData ? userData.priviliges : null}
+            />
+          ))}
         </div>
-      )}
-    </>
-  );
+      </div>
+    )}
+  </>
+);
 }

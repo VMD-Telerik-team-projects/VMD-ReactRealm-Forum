@@ -3,7 +3,7 @@ import { getAllUsers } from "../../services/admin.service";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { Card, Row, Col } from "react-bootstrap";
-import { Ban, Trash } from "react-bootstrap-icons";
+import { Ban, ExclamationTriangleFill, Trash } from "react-bootstrap-icons";
 import { deleteUserByHandle, blockUserByHandle, unblockUserByHandle } from "../../services/admin.service";
 import './AdminDashboard.css';
 
@@ -79,7 +79,8 @@ export default function AdminDashboard() {
       <SearchBar value={searchTerm} onChange={handleSearchChange} />
       <div className="content-container">
       <div className="bg-white my-4">
-        {filteredUsers.map((user) => {
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => {
           return (
             <Card key={user.uid} className="p-4 my-3">
               <Card.Title className="text-muted fs-2">{user.handle}</Card.Title>
@@ -116,7 +117,14 @@ export default function AdminDashboard() {
               </Card.Body>
             </Card>
           );
-        })}
+        })
+          ) : (
+            <div className="no-users-found" style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
+        <ExclamationTriangleFill size={32} color="red" />
+        <h2>No users found</h2>
+        <p>Try adjusting your search to find what you&apos;re looking for.</p>
+      </div>
+          )}
         </div>
       </div>
     </>
