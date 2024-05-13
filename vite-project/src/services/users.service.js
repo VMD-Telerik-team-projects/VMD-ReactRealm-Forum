@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, remove, update, getDatabase } from "firebase/database";
+import { get, set, ref, query, equalTo, orderByChild, remove, update, getDatabase, onValue } from "firebase/database";
 import * as fbStorage from "firebase/storage";
 import { getAuth, updateEmail, updatePassword } from "firebase/auth";
 import { db, storage } from "../config/firebase-config";
@@ -94,13 +94,21 @@ export const getProfilePic = async (handle) => {
 
   return image;
 }
-
-export const getActiveUsers = async () => {
+export const getActiveUsers = (callback) => {
   const usersRef = ref(db, "onlineUsers");
-  const userData = (await get(usersRef)).val();
-  const activeUsers = Object.keys(userData).filter(user => userData[user].isOnline === true);
-  
-  return activeUsers;
+
+  onValue(usersRef, (snapshot) => {
+    const userData = snapshot.val();
+    const activeUsers = [];
+
+    for (const user in userData) {
+      if (userData[user].isOnline) {
+        activeUsers.push(user);
+      }
+    }
+
+    callback(activeUsers);
+  });
 }
 
 // 

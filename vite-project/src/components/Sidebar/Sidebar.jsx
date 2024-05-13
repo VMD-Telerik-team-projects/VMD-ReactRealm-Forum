@@ -8,17 +8,12 @@ export default function Sidebar() {
   const [profilePics, setProfilePics] = useState([]);
 
   useEffect(() => {
-    const fetchActiveUsers = async () => {
-      const users = await getActiveUsers();
-      setActiveUsers(users);
-    }
-
-    fetchActiveUsers();
+    getActiveUsers(setActiveUsers);
   }, []);
 
   useEffect(() => {
     const fetchProfilePics = async () => {
-      console.log(activeUsers);
+
       const pics = await Promise.all(activeUsers.map(async user => {
         try {
           const pic = await getProfilePic(user);
@@ -34,6 +29,7 @@ export default function Sidebar() {
       }));
       setProfilePics(pics.filter(pic => pic !== null)); // Filter out null values
     }
+    
     fetchProfilePics();
   }, [activeUsers])
 
