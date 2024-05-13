@@ -26,11 +26,13 @@ import UserBlocked from "./views/UserBlocked/UserBlocked";
 import { updateUserOnlineStatus } from "./services/auth.service";
 import DeleteAccount from "./views/DeleteAccount/DeleteAccount";
 import { useNavigate } from "react-router-dom";
+import Loader from "./components/Loader/Loader";
 
 function App() {
   const [appState, setAppState] = useState({
     user: null,
     userData: null,
+    loading: true,
   });
 
   const navigate = useNavigate();
@@ -39,9 +41,10 @@ function App() {
   useEffect(() => {
     if (!appState.user) return;
 
+    setAppState(prevState => ({ ...prevState, loading: true }));
     getUserData(appState.user.uid).then((snapshot) => {
       const userData = Object.values(snapshot.val())[0];
-      setAppState({ ...appState, userData });
+      setAppState(prevState => ({ ...prevState, userData, loading: false })); 
     });
   }, [appState.user]);
 
@@ -49,9 +52,10 @@ function App() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        setAppState(prevState => ({ ...prevState, loading: true }));
         const userDataSnapshot = await getUserData(user.uid);
         const userData = userDataSnapshot.val();
-        setAppState({ user, userData });
+        setAppState(prevState => ({ ...prevState, user, userData, loading: false }));
 
         // console.log(userData.values());
 
@@ -60,7 +64,7 @@ function App() {
         if (appState.userData) {
           await updateUserOnlineStatus(appState.userData.handle, false); // Update the online status using the correct user data
         }
-        setAppState({ user: null, userData: null });
+        setAppState(prevState => ({ ...prevState, user: null, userData: null, loading: false }));
       }
     });
     return () => unsubscribe();
@@ -72,6 +76,12 @@ function App() {
       navigate("/blocked");
     }
   }, [appState.user, appState.userData, navigate]);
+
+  if (appState.loading) {
+    return (
+    <LayoutCentered><Loader /></LayoutCentered>
+   ); 
+  }
 
   return (
     <>
