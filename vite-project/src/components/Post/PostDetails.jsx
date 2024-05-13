@@ -25,7 +25,6 @@ export default function RenderSinglePost() {
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
   const [highlightedContent, setHighlightedContent] = useState("");
-  const [highlightedContent, setHighlightedContent] = useState("");
   const refHook = useRef();
 
   const url = window.location.href;
