@@ -1,11 +1,4 @@
-import {
-  ref,
-  push,
-  get,
-  set,
-  update,
-  remove,
-} from "firebase/database";
+import { ref, push, get, set, update, remove } from "firebase/database";
 import { db } from "../config/firebase-config";
 
 export const addPost = async (author, title, content, comments) => {
@@ -101,7 +94,8 @@ export const comment = async (postId, handle, content) => {
   const updateVal = {};
   const currentDate = Date.now();
 
-  updateVal[`users/${handle}/commentedPosts/${postId}/${currentDate}`] = content;
+  updateVal[`users/${handle}/commentedPosts/${postId}/${currentDate}`] =
+    content;
   updateVal[`posts/${postId}/comments/${currentDate}/${handle}`] = content;
 
   update(ref(db), updateVal);
@@ -109,88 +103,124 @@ export const comment = async (postId, handle, content) => {
 
 export const likeComment = async (postId, commentTimeStamp, handle) => {
   const updateVal = {};
-  updateVal[`users/${handle}/likedComments/${postId}/${commentTimeStamp}`] = true;
-  updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] = true;
+  updateVal[
+    `users/${handle}/likedComments/${postId}/${commentTimeStamp}`
+  ] = true;
+  updateVal[
+    `posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`
+  ] = true;
 
   update(ref(db), updateVal);
-}
+};
 
 export const disLikeComment = async (postId, commentTimeStamp, handle) => {
   const updateVal = {};
-  updateVal[`users/${handle}/likedComments/${postId}/${commentTimeStamp}`] = null;
-  updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] = null;
+  updateVal[`users/${handle}/likedComments/${postId}/${commentTimeStamp}`] =
+    null;
+  updateVal[`posts/${postId}/comments/${commentTimeStamp}/likes/${handle}`] =
+    null;
 
   update(ref(db), updateVal);
-}
+};
 
 export const deleteComment = async (postId, commentTimeStamp, handle) => {
   const updateVal = {};
   updateVal[`posts/${postId}/comments/${commentTimeStamp}`] = null;
-  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] = null;
+  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] =
+    null;
 
   update(ref(db), updateVal);
 
   const users = (await get(ref(db, `users/`))).val();
-  
+
   users &&
     Object.keys(users).forEach((userHandle) => {
-      const likedCommentRef = ref(db, `users/${userHandle}/likedComments/${postId}/${commentTimeStamp}`)
+      const likedCommentRef = ref(
+        db,
+        `users/${userHandle}/likedComments/${postId}/${commentTimeStamp}`
+      );
       remove(likedCommentRef);
 
-      const commentRepliesRef = ref(db, `users/${userHandle}/commentReplies/${commentTimeStamp}`);
+      const commentRepliesRef = ref(
+        db,
+        `users/${userHandle}/commentReplies/${commentTimeStamp}`
+      );
       remove(commentRepliesRef);
     });
-  
-  return alert('Comment deleted!');
-}
 
-export const editComment = async (postId, commentTimeStamp, handle, content) => {
+  return alert("Comment deleted!");
+};
+
+export const editComment = async (
+  postId,
+  commentTimeStamp,
+  handle,
+  content
+) => {
   const updateVal = {};
   updateVal[`posts/${postId}/comments/${commentTimeStamp}/${handle}`] = content;
-  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] = content;
+  updateVal[`users/${handle}/commentedPosts/${postId}/${commentTimeStamp}`] =
+    content;
 
   update(ref(db), updateVal);
-}
+};
 
 export const isCommentLiked = async (postId, commentTimeStamp, handle) => {
-  const snapshot = await get(ref(db, `users/${handle}/likedComments/${postId}/${commentTimeStamp}`));
+  const snapshot = await get(
+    ref(db, `users/${handle}/likedComments/${postId}/${commentTimeStamp}`)
+  );
   return snapshot.val() ? true : false;
-}
+};
 
 export const getCommentLikesNumber = async (postId, commentTimeStamp) => {
-  const snapshot = await get(ref(db, `posts/${postId}/comments/${commentTimeStamp}/likes`));
+  const snapshot = await get(
+    ref(db, `posts/${postId}/comments/${commentTimeStamp}/likes`)
+  );
   return snapshot.val() ? Object.keys(snapshot.val()).length : 0;
-}
+};
 
-export const replyToComment = async (postId, commentTimeStamp, handle, content) => {
+export const replyToComment = async (
+  postId,
+  commentTimeStamp,
+  handle,
+  content
+) => {
   const updateVal = {};
   const currentDate = Date.now();
 
-  updateVal[`posts/${postId}/comments/${commentTimeStamp}/replies/${handle}/${currentDate}`] = content;
-  updateVal[`users/${handle}/commentReplies/${commentTimeStamp}/${currentDate}`] = content;
+  updateVal[
+    `posts/${postId}/comments/${commentTimeStamp}/replies/${handle}/${currentDate}`
+  ] = content;
+  updateVal[
+    `users/${handle}/commentReplies/${commentTimeStamp}/${currentDate}`
+  ] = content;
 
   update(ref(db), updateVal);
-}
+};
 
 export const getAllCommentReplies = async (postId, commentTimeStamp) => {
-  const snapshot = await get(ref(db, `posts/${postId}/comments/${commentTimeStamp}/replies`));
+  const snapshot = await get(
+    ref(db, `posts/${postId}/comments/${commentTimeStamp}/replies`)
+  );
   return snapshot.val() ? snapshot.val() : {};
-}
+};
 
 export const getCommentRepliesNumber = async (postId, commentTimeStamp) => {
-  const data = (await get(ref(db, `posts/${postId}/comments/${commentTimeStamp}/replies`))).val();
+  const data = (
+    await get(ref(db, `posts/${postId}/comments/${commentTimeStamp}/replies`))
+  ).val();
   const replies = [];
-  
-  data && 
+
+  data &&
     Object.values(data).forEach((key) => {
       replies.push(...Object.keys(key));
     });
 
   return replies.length;
-}
+};
 
 export async function getNumberOfPosts() {
-  const postsRef = ref(db, 'posts');
+  const postsRef = ref(db, "posts");
 
   try {
     const snapshot = await get(postsRef);
@@ -203,7 +233,7 @@ export async function getNumberOfPosts() {
 }
 
 export async function getNumberOfUsers() {
-  const usersRef = ref(db, 'users');
+  const usersRef = ref(db, "users");
 
   try {
     const snapshot = await get(usersRef);
@@ -214,10 +244,25 @@ export async function getNumberOfUsers() {
     console.error(error);
   }
 }
+export async function getNumberOnlineUsers() {
+  const usersRef = ref(db, "onlineUsers");
+
+  try {
+    const snapshot = await get(usersRef);
+    const onlineUsers = snapshot.val();
+    const numberOnlineUsers = onlineUsers
+      ? Object.values(onlineUsers).filter((user) => user.isOnline === true)
+          .length
+      : 0;
+    return numberOnlineUsers;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const getMostLikedPosts = async () => {
   const posts = await getAllPosts();
   const sortedPosts = posts.sort((a, b) => b.likedBy.length - a.likedBy.length);
-  
+
   return sortedPosts.slice(0, 10);
-}
+};

@@ -1,14 +1,46 @@
-import { Button } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { NavLink, Navigate, Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
+import {
+  getNumberOfPosts,
+  getNumberOfUsers,
+  getNumberOnlineUsers,
+} from "../../services/posts.service";
+
 import AppContext from "../../context/AppContext";
 import "./Home.css";
 
 export default function Home() {
   const { user } = useContext(AppContext);
+  const [numberOfPosts, setNumberOfPosts] = useState(0);
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [numberOnlineUsers, setNumberOnlineUsers] = useState(0);
+
+  useEffect(() => {
+    getNumberOfPosts().then(setNumberOfPosts).catch(console.error);
+    getNumberOfUsers().then(setNumberOfUsers).catch(console.error);
+    getNumberOnlineUsers().then(setNumberOnlineUsers).catch(console.error);
+  }, []);
 
   return (
     <div className="container d-flex flex-column justify-content-xl-center align-items-xl-center justify-content-xxl-center align-items-xxl-center main-container">
+      <Row>
+        <Col
+          xs={20}
+          className="py-1 h-25 d-flex flex-column align-items-center justify-content-center rounded"
+          style={{ backgroundColor: "rgba(230, 230, 230, 0.55)" }}
+        >
+          <p className="my-0">
+            <b>Posts:</b> {numberOfPosts}
+          </p>
+          <p className="my-0">
+            <b>Users:</b> {numberOfUsers}
+          </p>
+          <p className="my-0">
+            <b>Online Users:</b> {numberOnlineUsers}
+          </p>
+        </Col>
+      </Row>
       <h1 className="fs-1 mb-5" style={{ color: "rgb(0, 0, 0)" }}>
         {user
           ? "You can now freely browse our ReactRealm!"
@@ -16,7 +48,10 @@ export default function Home() {
       </h1>
       {!user && (
         <div className="d-flex align-items-center">
-          <NavLink to="/signin" className="link-underline link-underline-opacity-0 text-black">
+          <NavLink
+            to="/signin"
+            className="link-underline link-underline-opacity-0 text-black"
+          >
             <Button
               variant="lg"
               className="me-4 bg-white text-black"
@@ -31,7 +66,10 @@ export default function Home() {
             style={{ marginRight: "20px" }}
             alt="Placeholder"
           />
-          <NavLink to="/signup" className="link-underline link-underline-opacity-0">
+          <NavLink
+            to="/signup"
+            className="link-underline link-underline-opacity-0"
+          >
             <Button
               variant="lg"
               style={{
