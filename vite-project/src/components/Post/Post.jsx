@@ -8,6 +8,7 @@ import {
   getAllPosts,
   likePost,
   dislikePost,
+  detectCode
 } from "../../services/posts.service";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import CIcon from "@coreui/icons-react";
@@ -16,6 +17,8 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
 import EditPostModal from "../EditPostModal/EditPostModal";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css'; // choose a style
 
 export default function Post({
   author,
@@ -32,6 +35,7 @@ export default function Post({
   const { userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [highlightedContent, setHighlightedContent] = useState("");
 
   useEffect(() => {
     const fetchLikedPosts = async () => {
@@ -43,6 +47,16 @@ export default function Post({
       fetchLikedPosts();
     }
   }, [userData, postId]);
+
+  useEffect(() => {
+    if (detectCode(content)) {
+      setHighlightedContent(hljs.highlightAuto(content).value);
+    } else {
+      setHighlightedContent(content);
+    }
+  }, [content])
+
+  
 
   const handleLike = async () => {
     if (!userData) {
@@ -94,7 +108,7 @@ export default function Post({
           <Row>
             <Col xs={9} md={11}>
               <Card.Title className="fs-3 mb-1 fw-bold">
-                Author: {author}
+                {author}
               </Card.Title>
             </Col>
             <Col xs={3} md={1}>
@@ -117,12 +131,12 @@ export default function Post({
             </Col>
           </Row>
           <Card.Title className="fs-3 mb-4 fw-normal">
-            Title: {title}
+            {title}
           </Card.Title>
           <>
             <Row className="mb-1">
               <Col>
-                <p>{content}</p>
+                <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
               </Col>
             </Row>
             <Row className="mb-1">

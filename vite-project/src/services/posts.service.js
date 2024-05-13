@@ -221,3 +221,7 @@ export const getMostLikedPosts = async () => {
   
   return sortedPosts.slice(0, 10);
 }
+
+export function detectCode(str) {
+  return /;[\s\n]|{[^}]*}|<[^>]*>|\(.*\)/.test(str);
+}
