@@ -52,20 +52,34 @@ export default function Post({
     }
   }, [userData, postId]);
 
-  //  Syntax highlighting
+  // //  Syntax highlighting
+  // useEffect(() => {
+  //   if (detectCode(content)) {
+  //     setHighlightedContent(hljs.highlightAuto(content).value);
+  //   } else {
+  //     setHighlightedContent(content);
+  //   }
+  // }, [content])
+
   useEffect(() => {
-    if (detectCode(content)) {
-      setHighlightedContent(hljs.highlightAuto(content).value);
-    } else {
-      setHighlightedContent(content);
+    const regex = /```([\s\S]*?)```/g;
+    let match;
+    let highlight = content;
+  
+    while ((match = regex.exec(content)) !== null) {
+      const code = match[1];
+      const highlightedCode = hljs.highlightAuto(code).value;
+      highlight = highlight.replace(code, highlightedCode);
     }
-  }, [content])
+  
+    setHighlightedContent(highlight);
+  }, [content]);
 
   //  Fetch user's profile picture
   useEffect(() => {
     const fetchProfilePic = async () => {
       const pic = (await getProfilePic(author));
-      console.log(pic);
+      // console.log(pic);
       if (pic) {
         setProfilePic(pic);
       }
