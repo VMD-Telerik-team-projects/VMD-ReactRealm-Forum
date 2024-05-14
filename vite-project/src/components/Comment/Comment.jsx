@@ -144,6 +144,11 @@ export default function Comment({
     }
 
     ref.current = document.getElementById(`reply${index}`).value;
+
+    if (ref.current.trim() === '') {
+      return toast.error("Reply cannot be empty");
+    }
+
     await replyToComment(postId, createdOn, userData.handle, ref.current);
 
     setCommentReplies(await getAllCommentReplies(postId, createdOn));

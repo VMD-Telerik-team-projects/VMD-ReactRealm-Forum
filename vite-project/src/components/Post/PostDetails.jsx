@@ -127,6 +127,11 @@ export default function RenderSinglePost() {
     refHook.current = document.getElementById("comment");
 
     const content = refHook.current.value;
+
+    if (content.trim() === '') {
+      return toast.error("Comment cannot be empty");
+    }
+    
     await comment(postId, userData.handle, content);
 
     const postsData = await getPostById(postId);
