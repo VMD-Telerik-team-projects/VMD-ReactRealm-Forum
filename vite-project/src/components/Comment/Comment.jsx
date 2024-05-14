@@ -21,7 +21,11 @@ import {
   getAllCommentReplies,
   getCommentRepliesNumber,
 } from "../../services/posts.service";
+import { getProfilePic } from "../../services/users.service";
+import ProfilePic from "../ProfilePic/ProfilePic";
 import PropTypes from "prop-types";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 import "./Comment.css";
 
 export default function Comment({
@@ -39,6 +43,8 @@ export default function Comment({
   const [commentReplies, setCommentReplies] = useState({});
   const [commentRepliesNumber, setCommentRepliesNumber] = useState(0);
   const [showReplies, setShowReplies] = useState(false);
+  const [highlightedContent, setHighlightedContent] = useState("");
+  const [profilePic, setProfilePic] = useState("img/default.jpg");
   const ref = useRef();
 
   useEffect(() => {
@@ -69,6 +75,49 @@ export default function Comment({
 
     fetchRepliesNumber();
   }, [commentReplies, postId, createdOn]);
+
+  useEffect(() => {
+    const fetchPic = async () => {
+      const url = await getProfilePic(author);
+      setProfilePic(url);
+    };
+
+    fetchPic();
+  }, [author]);
+
+  useEffect(() => {
+    //  Syntax highlighting from copilot
+    
+    const regex = /```([\s\S]*?)```/g;
+    const quoteRegex = /(["'])(?:\\.|[^\\])*?\1/g;
+    let match;
+    let highlight = content;
+    let placeholders = [];
+  
+    while ((match = regex.exec(content)) !== null) {
+      let code = match[1];
+      let quoteMatch;
+  
+      // Replace text between quotes with placeholders
+      while ((quoteMatch = quoteRegex.exec(code)) !== null) {
+        const placeholder = `PLACEHOLDER_${placeholders.length}_`;
+        placeholders.push(quoteMatch[0]);
+        code = code.replace(quoteMatch[0], placeholder);
+      }
+  
+      let highlightedCode = hljs.highlightAuto(code).value;
+  
+      // Replace placeholders with original text
+      for (let i = 0; i < placeholders.length; i++) {
+        const placeholder = `PLACEHOLDER_${i}_`;
+        highlightedCode = highlightedCode.replace(new RegExp(placeholder, 'g'), placeholders[i]);
+      }
+  
+      highlight = highlight.replace(`\`\`\`${match[1]}\`\`\``, `\`\`\`${highlightedCode}\`\`\``);
+    }
+  
+    setHighlightedContent(highlight);
+  }, [content]);
 
   const handleLikeComment = async () => {
     if (!user) {
@@ -139,11 +188,14 @@ export default function Comment({
         style={{ backgroundColor: "rgba(255, 255, 255, 0.3)" }}
       >
         <Card.Title className="fw-light fs-3 ms-3 mb-0">
-          <Row>
-            <Col xs={12} md={3}>
+          <Row className="mb-1">
+            <Col xs={1} style={{maxWidth: '90px'}}>
+              <ProfilePic profilePic={profilePic} widthAndHeight='72px'/>
+            </Col>
+            <Col xs={1}>
               <span className="fs-4">{author}</span>
             </Col>
-            <Col xs={8} md={9}>
+            <Col xs={10}>
               <div className="d-flex flex-row justify-content-end align-items-end gap-1">
                 {user && userData.handle === author && (
                   <Button
@@ -173,7 +225,8 @@ export default function Comment({
         </Card.Title>
         <Card.Body className="mt-0">
           <Row className="mt-0">
-            <Card.Text className="mt-0">{content}</Card.Text>
+            <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
+            {/* <Card.Text className="mt-0">{content}</Card.Text> */}
           </Row>
           <Row className="mt-4">
             <Col xs={2}>
@@ -201,8 +254,8 @@ export default function Comment({
                 />
               </Col>
             </Row>
-            <Row>
-              <Col xs={12} className="w-100">
+            <Row className="d-flex flex-row justify-content-center align-items-center mt-3">
+              <Col xs={12} className="w-25">
                 <Button
                   onClick={addCommentReply}
                   className="w-100 bg-success p-2 border-1 border-success mt-2 h-100"
@@ -242,7 +295,7 @@ export default function Comment({
 
                   return Object.values(reply).map((replyContent, index) => {
                     return (
-                      <Card key={index} className="m-0 p-2" style={{backgroundColor: 'rgba(255, 255, 255, 0.3)'}}>
+                      <Card key={index} className="m-0 p-2 border-0 border-bottom border-secondary" style={{backgroundColor: 'rgba(255, 255, 255, 0.3)'}}>
                         <Card.Title className="mt-3 ms-3 mb-0">
                           {author}
                         </Card.Title>

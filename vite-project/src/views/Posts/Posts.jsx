@@ -133,7 +133,7 @@ return (
               <div className="no-posts-found" style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
                 <ExclamationTriangleFill size={32} color="red" />
                 <h2>No posts found</h2>
-                <p>Try adjusting your search to find what you're looking for.</p>
+                <p>Try adjusting your search to find what you&apos;re looking for.</p>
               </div>
             )}
           </div>

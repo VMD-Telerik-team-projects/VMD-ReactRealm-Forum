@@ -16,7 +16,6 @@ import { getLikedPosts, getProfilePic } from "../../services/users.service";
 import {
   likePost,
   dislikePost,
-  detectCode,
 } from "../../services/posts.service";
 import { comment } from "../../services/posts.service";
 import Loader from "../Loader/Loader";
@@ -57,16 +56,37 @@ export default function RenderSinglePost() {
           throw new Error("Post with this id does not exist!");
 
         const value = snapshot.val();
+        setCurrentPost(value);
 
-        if (detectCode(value.content)) {
-          const highlightedVal = hljs.highlightAuto(value.content).value;
-
-          setCurrentPost(value);
-          setHighlightedContent(highlightedVal);
-        } else {
-          setCurrentPost(value);
-          setHighlightedContent(value.content);
+        const regex = /```([\s\S]*?)```/g;
+        const quoteRegex = /(["'])(?:\\.|[^\\])*?\1/g;
+        let match;
+        let highlight = value.content;
+        let placeholders = [];
+      
+        while ((match = regex.exec(value.content)) !== null) {
+          let code = match[1];
+          let quoteMatch;
+      
+          // Replace text between quotes with placeholders
+          while ((quoteMatch = quoteRegex.exec(code)) !== null) {
+            const placeholder = `PLACEHOLDER_${placeholders.length}_`;
+            placeholders.push(quoteMatch[0]);
+            code = code.replace(quoteMatch[0], placeholder);
+          }
+      
+          let highlightedCode = hljs.highlightAuto(code).value;
+      
+          // Replace placeholders with original text
+          for (let i = 0; i < placeholders.length; i++) {
+            const placeholder = `PLACEHOLDER_${i}_`;
+            highlightedCode = highlightedCode.replace(new RegExp(placeholder, 'g'), placeholders[i]);
+          }
+      
+          highlight = highlight.replace(`\`\`\`${match[1]}\`\`\``, `\`\`\`${highlightedCode}\`\`\``);
         }
+      
+        setHighlightedContent(highlight);
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -174,7 +194,6 @@ export default function RenderSinglePost() {
             <Row className="mb-3">
               <Col>
                 <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} />
-                {/* <pre dangerouslySetInnerHTML={{ __html: highlightedContent }} /> */}
               </Col>
             </Row>
             <Row className="mb-1">
@@ -232,10 +251,10 @@ export default function RenderSinglePost() {
                     </Col>
                   </Row>
                   <Row>
-                    <Col xs={12} className="w-100">
+                    <Col xs={12} className="mt-3 d-flex flex-row justify-content-center align-items-center">
                       <Button
                         onClick={addComment}
-                        className="w-100 bg-success p-2 border-1 border-success mt-2 h-100"
+                        className="w-25 bg-success p-2 border-1 border-success mt-2 h-100"
                       >
                         Add comment
                       </Button>
