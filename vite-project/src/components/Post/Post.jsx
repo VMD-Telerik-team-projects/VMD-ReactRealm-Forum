@@ -62,14 +62,34 @@ export default function Post({
   // }, [content])
 
   useEffect(() => {
+    //  Syntax highlighting from copilot
+    
     const regex = /```([\s\S]*?)```/g;
+    const quoteRegex = /(["'])(?:\\.|[^\\])*?\1/g;
     let match;
     let highlight = content;
+    let placeholders = [];
   
     while ((match = regex.exec(content)) !== null) {
-      const code = match[1];
-      const highlightedCode = hljs.highlightAuto(code).value;
-      highlight = highlight.replace(code, highlightedCode);
+      let code = match[1];
+      let quoteMatch;
+  
+      // Replace text between quotes with placeholders
+      while ((quoteMatch = quoteRegex.exec(code)) !== null) {
+        const placeholder = `PLACEHOLDER_${placeholders.length}_`;
+        placeholders.push(quoteMatch[0]);
+        code = code.replace(quoteMatch[0], placeholder);
+      }
+  
+      let highlightedCode = hljs.highlightAuto(code).value;
+  
+      // Replace placeholders with original text
+      for (let i = 0; i < placeholders.length; i++) {
+        const placeholder = `PLACEHOLDER_${i}_`;
+        highlightedCode = highlightedCode.replace(new RegExp(placeholder, 'g'), placeholders[i]);
+      }
+  
+      highlight = highlight.replace(`\`\`\`${match[1]}\`\`\``, `\`\`\`${highlightedCode}\`\`\``);
     }
   
     setHighlightedContent(highlight);
