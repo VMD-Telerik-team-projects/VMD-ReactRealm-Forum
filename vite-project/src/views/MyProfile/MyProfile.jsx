@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { getProfilePic, updateUserData } from "../../services/users.service";

@@ -27,6 +27,7 @@ import { updateUserOnlineStatus } from "./services/auth.service";
 import DeleteAccount from "./views/DeleteAccount/DeleteAccount";
 import { useNavigate } from "react-router-dom";
 import Loader from "./components/Loader/Loader";
+import Profile from "./views/Profile/Profile";
 
 function App() {
   const [appState, setAppState] = useState({
@@ -160,26 +161,15 @@ function App() {
               </LayoutCentered>
             }
           ></Route>
-          <Route
-            path="/my-posts"
-            element={
-              <LayoutCentered>
-                <Authenticated>
-                  <CreatePost />
-                </Authenticated>
-              </LayoutCentered>
-            }
-          ></Route>
-          <Route
-            path="/my-profile"
-            element={
-              <LayoutCentered>
-                <Authenticated>
-                  <MyProfile />
-                </Authenticated>
-              </LayoutCentered>
-            }
-          ></Route>
+          <Route 
+            path='/profile/:handle'
+            element={<LayoutCentered>
+              <Authenticated>
+                <Profile />
+              </Authenticated>
+            </LayoutCentered>
+          } />
+          
           <Route
             path="/dashboard"
             element={

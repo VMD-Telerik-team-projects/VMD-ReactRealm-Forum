@@ -32,6 +32,7 @@ export default function Post({
   onUpdate,
   onDelete,
   userPriviliges,
+  style
 }) {
   const { userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
@@ -111,13 +112,13 @@ export default function Post({
   
   return (
     <Container
-      className="d-flex flex-row justify-content-center align-items-center m-0"
+      className={`d-flex flex-row justify-content-center align-items-center m-0 `}
       style={{ width: "90dvw" }}
       fluid
     >
       <Card
-        className="post-card border-0 border-bottom border-secondary rounded-0"
-        style={{ width: "90dvw" }}
+        className={`post-card border-0 border-bottom border-secondary rounded-0`}
+        style={{ width: "90dvw", ...style }} // Add the style prop here
       >
         <Card.Body className="p-5 fs-5 fw-light">
           <Row className="mb-3">
@@ -179,7 +180,7 @@ export default function Post({
                   /> 
                   { /* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */ }
                 </Link>
-                <span className="fs-5 ms-1">{comments.length}</span>
+                <span className="fs-5 ms-1">{comments && comments.length}</span>
               </Col>
             </Row>
             <Row className="mt-4">
@@ -220,4 +221,5 @@ Post.propTypes = {
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func,
   userPriviliges: PropTypes.number,
+  style: PropTypes.object
 };
