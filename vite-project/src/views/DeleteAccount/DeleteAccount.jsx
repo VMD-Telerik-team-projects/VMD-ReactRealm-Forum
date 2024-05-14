@@ -6,8 +6,6 @@ import { auth } from "../../config/firebase-config";
 import { toast } from "react-toastify";
 
 export default function DeleteAccount() {
-  //TODO: edit the deleteUserData
-
   const { user, setUser } = useContext(AppContext);
 
   const deleteAccount = async () => {
@@ -40,19 +38,15 @@ export default function DeleteAccount() {
       <p className="text-black fs-2 fw-light">
         Please note that this action is irreversible.
       </p>
-      <p>If you wish to delete your profile, chose one option: </p>
+      <p>If you wish to delete your profile, click on the button below: </p>
       <Card.Body className="d-flex flex-column align-items-center">
         <Button variant="danger" className="mb-3" onClick={deleteAccount}>
-          Delete Account
-        </Button>
-        <Button
-          variant="warning"
-          className="mb-3"
-          // onClick={deleteUserData}
-        >
-          Delete Account and User Data from Forum
+          Disable Account
         </Button>
       </Card.Body>
+      <p className="text-muted fs-6">
+  <span style={{ color: 'red' }}>Important!</span> Forum and post data will remain intact unless a deletion is specifically requested by the user.
+      </p>
     </Card>
   );
 }
