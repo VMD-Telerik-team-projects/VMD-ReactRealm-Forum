@@ -47,7 +47,7 @@ export default function ProfileDropdown({ className }) {
       <DropdownMenu className="mt-2">
         <DropdownItem className="mb-1">
           <Link
-            to={`/profile/${userData.handle || "/error"}`}
+            to={`/profile/${userData ? userData.handle : "/error"}`}
             className="link-underline link-underline-opacity-0 text-black"
           >
             <h3>{userData ? userData.handle : ""}</h3>
@@ -57,7 +57,7 @@ export default function ProfileDropdown({ className }) {
 
         <DropdownItem as="div">
           <Link
-            to={`/profile/${userData.handle || "/error"}`}
+            to={`/profile/${userData ? userData.handle : "/error"}`}
             className="link-underline link-underline-opacity-0 text-black"
           >
             <p className="fs-6 fw-light m-0">My profile</p>
