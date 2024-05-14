@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import AppContext from "../../context/AppContext";
 import { addPost } from "../../services/posts.service";
 import { Card, Row, Button } from "react-bootstrap";
+import { toast } from "react-toastify";
 import "./CreatePost.css";
 import Loader from "../../components/Loader/Loader";
 import {
@@ -31,14 +32,14 @@ export default function CreatePost() {
     setLoading(true);
 
     if (!userData) {
-      return alert("You must be signed in to create a post");
+      return toast.error("You must be signed in to create a post");
     }
 
     if (
       post.title.length < POST_TITLE_MIN_LENGTH ||
       post.title.length > POST_TITLE_MAX_LENGTH
     ) {
-      alert("The title must be 16-64 characters long!");
+      toast.error("The title must be 16-64 characters long!");
       return setLoading(false);
     }
 
@@ -46,7 +47,7 @@ export default function CreatePost() {
       post.content.length < POST_CONTENT_MIN_LENGTH ||
       post.content.length > POST_CONTENT_MAX_LENGTH
     ) {
-      alert("The content must contain 32-8196 characters!");
+      toast.error("The content must contain 32-8196 characters!");
       return setLoading(false);
     }
 

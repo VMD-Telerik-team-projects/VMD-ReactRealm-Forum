@@ -5,6 +5,7 @@ import Post from "../../components/Post/Post";
 import Loader from "../../components/Loader/Loader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { deletePostById } from "../../services/posts.service";
+import { toast } from "react-toastify";
 import "./Posts.css";
 import { ExclamationTriangleFill} from "react-bootstrap-icons";
 
@@ -24,7 +25,7 @@ export default function Posts() {
         setPosts(postsData);
         setLoading(false);
       } catch (e) {
-        alert(`Something went wrong: ${e.message}`);
+        toast.error(`Something went wrong: ${e.message}`);
         setLoading(false);
       }
     };
@@ -41,7 +42,7 @@ export default function Posts() {
         setMostLikedPosts(postsData);
         setLoading(false);
       } catch (e) {
-        alert(`Something went wrong: ${e.message}`);
+        toast.error(`Something went wrong: ${e.message}`);
         setLoading(false);
       }
     };

@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import AppContext from "../../context/AppContext";
 import EditCommentModal from "../EditCommentModal/EditCommentModal";
+import { toast } from "react-toastify";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import {
   Heart,
@@ -71,7 +72,7 @@ export default function Comment({
 
   const handleLikeComment = async () => {
     if (!user) {
-      return alert("You must be signed in to like a comment");
+      return toast.error("You must be signed in to like a comment");
     }
 
     const isLiked = await isCommentLiked(postId, createdOn, userData.handle);
@@ -90,7 +91,7 @@ export default function Comment({
 
   const addCommentReply = async () => {
     if (!user) {
-      return alert("You must be signed in to reply to a comment");
+      return toast.error("You must be signed in to reply to a comment");
     }
 
     ref.current = document.getElementById(`reply${index}`).value;

@@ -8,7 +8,7 @@ import {
   getAllPosts,
   likePost,
   dislikePost,
-  detectCode
+  detectCode,
 } from "../../services/posts.service";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import CIcon from "@coreui/icons-react";
@@ -18,8 +18,9 @@ import { Link } from "react-router-dom";
 import { Trash, Pencil, ForwardFill } from "react-bootstrap-icons";
 import EditPostModal from "../EditPostModal/EditPostModal";
 import ProfilePic from "../ProfilePic/ProfilePic";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+import { toast } from "react-toastify";
 
 export default function Post({
   author,
@@ -32,13 +33,13 @@ export default function Post({
   onUpdate,
   onDelete,
   userPriviliges,
-  style
+  style,
 }) {
   const { userData } = useContext(AppContext);
   const [isLiked, setIsLiked] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [highlightedContent, setHighlightedContent] = useState("");
-  const [profilePic, setProfilePic] = useState('img/default.jpg');
+  const [profilePic, setProfilePic] = useState("img/default.jpg");
 
   //  Fetch user's liked posts
   useEffect(() => {
@@ -63,42 +64,48 @@ export default function Post({
 
   useEffect(() => {
     //  Syntax highlighting from copilot
-    
+
     const regex = /```([\s\S]*?)```/g;
     const quoteRegex = /(["'])(?:\\.|[^\\])*?\1/g;
     let match;
     let highlight = content;
     let placeholders = [];
-  
+
     while ((match = regex.exec(content)) !== null) {
       let code = match[1];
       let quoteMatch;
-  
+
       // Replace text between quotes with placeholders
       while ((quoteMatch = quoteRegex.exec(code)) !== null) {
         const placeholder = `PLACEHOLDER_${placeholders.length}_`;
         placeholders.push(quoteMatch[0]);
         code = code.replace(quoteMatch[0], placeholder);
       }
-  
+
       let highlightedCode = hljs.highlightAuto(code).value;
-  
+
       // Replace placeholders with original text
       for (let i = 0; i < placeholders.length; i++) {
         const placeholder = `PLACEHOLDER_${i}_`;
-        highlightedCode = highlightedCode.replace(new RegExp(placeholder, 'g'), placeholders[i]);
+        highlightedCode = highlightedCode.replace(
+          new RegExp(placeholder, "g"),
+          placeholders[i]
+        );
       }
-  
-      highlight = highlight.replace(`\`\`\`${match[1]}\`\`\``, `\`\`\`${highlightedCode}\`\`\``);
+
+      highlight = highlight.replace(
+        `\`\`\`${match[1]}\`\`\``,
+        `\`\`\`${highlightedCode}\`\`\``
+      );
     }
-  
+
     setHighlightedContent(highlight);
   }, [content]);
 
   //  Fetch user's profile picture
   useEffect(() => {
     const fetchProfilePic = async () => {
-      const pic = (await getProfilePic(author));
+      const pic = await getProfilePic(author);
       // console.log(pic);
       if (pic) {
         setProfilePic(pic);
@@ -106,11 +113,11 @@ export default function Post({
     };
 
     fetchProfilePic();
-  }, [])
+  }, []);
 
   const handleLike = async () => {
     if (!userData) {
-      return alert("You must be signed in to like a post");
+      return toast.error("You must be signed in to like a post");
     }
 
     const likedPosts = (await getLikedPosts(userData.handle)).val();
@@ -131,7 +138,7 @@ export default function Post({
     const postsData = await getAllPosts();
     onUpdate(postsData);
   };
-  
+
   const handleShowEditModal = (e) => {
     if (e.key === "Escape") {
       setShowEditModal(false);
@@ -139,11 +146,11 @@ export default function Post({
       setShowEditModal(true);
     }
   };
-  
+
   const handleCloseEditModal = () => {
     setShowEditModal(false);
   };
-  
+
   return (
     <Container
       className={`d-flex flex-row justify-content-center align-items-center m-0 `}
@@ -156,8 +163,8 @@ export default function Post({
       >
         <Card.Body className="p-5 fs-5 fw-light">
           <Row className="mb-3">
-            <Col xs={2} md={1} className="me-0" style={{maxWidth: '90px'}}>
-              <ProfilePic profilePic={profilePic} widthAndHeight='72px' />
+            <Col xs={2} md={1} className="me-0" style={{ maxWidth: "90px" }}>
+              <ProfilePic profilePic={profilePic} widthAndHeight="72px" />
             </Col>
             <Col xs={9} md={10}>
               <Card.Title className="fs-3 my-2 ms-0 fw-bold">
@@ -166,26 +173,35 @@ export default function Post({
             </Col>
             <Col xs={1} md={1}>
               <div className="d-flex flex-row gap-3">
-                {(userData && userData.handle === author) ? (
-                  <Button className="bg-transparent border-0 p-0 fs-6" onClick={handleShowEditModal}>
+                {userData && userData.handle === author ? (
+                  <Button
+                    className="bg-transparent border-0 p-0 fs-6"
+                    onClick={handleShowEditModal}
+                  >
                     <Pencil className="text-secondary" />
                   </Button>
-                ) : <div className="p-1 bg-transparent border-0 fs-6" style={{ cursor: "normal" }}>⠀</div>}
-                {(userData && (userData.handle === author || userPriviliges === 0)) && (
-                  <Button
-                    title="Delete Post"
-                    className="bg-transparent border-0 p-0 fs-6"
-                    onClick={() => onDelete(postId)}
+                ) : (
+                  <div
+                    className="p-1 bg-transparent border-0 fs-6"
+                    style={{ cursor: "normal" }}
                   >
-                    <Trash className="trash-icon text-danger" />
-                  </Button>
+                    ⠀
+                  </div>
                 )}
+                {userData &&
+                  (userData.handle === author || userPriviliges === 0) && (
+                    <Button
+                      title="Delete Post"
+                      className="bg-transparent border-0 p-0 fs-6"
+                      onClick={() => onDelete(postId)}
+                    >
+                      <Trash className="trash-icon text-danger" />
+                    </Button>
+                  )}
               </div>
             </Col>
           </Row>
-          <Card.Title className="fs-3 mb-5 fw-normal">
-            {title}
-          </Card.Title>
+          <Card.Title className="fs-3 mb-5 fw-normal">{title}</Card.Title>
           <>
             <Row className="mb-1">
               <Col>
@@ -195,7 +211,10 @@ export default function Post({
             <Row className="mb-1">
               <Col>
                 {isLiked ? (
-                  <HeartFill className="heart-icon me-2 text-danger" onClick={handleLike} />
+                  <HeartFill
+                    className="heart-icon me-2 text-danger"
+                    onClick={handleLike}
+                  />
                 ) : (
                   <Heart className="heart-icon me-2" onClick={handleLike} />
                 )}
@@ -211,8 +230,8 @@ export default function Post({
                   <CIcon
                     icon={cilCommentSquare}
                     className="comment-bubble me-2"
-                  /> 
-                  { /* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */ }
+                  />
+                  {/* <Chat className="comment-bubble me-2 ms-1 fs-6" /> */}
                 </Link>
                 <span className="fs-5 ms-1">{comments && comments.length}</span>
               </Col>
@@ -239,7 +258,11 @@ export default function Post({
           </>
         </Card.Body>
       </Card>
-      <EditPostModal isShown={showEditModal} closeHandler={handleCloseEditModal} postId={postId} />
+      <EditPostModal
+        isShown={showEditModal}
+        closeHandler={handleCloseEditModal}
+        postId={postId}
+      />
     </Container>
   );
 }
@@ -255,5 +278,5 @@ Post.propTypes = {
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func,
   userPriviliges: PropTypes.number,
-  style: PropTypes.object
+  style: PropTypes.object,
 };

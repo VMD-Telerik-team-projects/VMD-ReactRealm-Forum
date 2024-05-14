@@ -4,7 +4,7 @@ import { useContext, useRef } from "react";
 import Comment from "../Comment/Comment";
 import AppContext from "../../context/AppContext";
 import { ref, get } from "firebase/database";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { db } from "../../config/firebase-config";
 import CIcon from "@coreui/icons-react";
@@ -268,7 +268,7 @@ export default function RenderSinglePost() {
           </div>
         </Card.Body>
       </Card>
-      <ToastContainer />
+      
     </Container>
   );
 }

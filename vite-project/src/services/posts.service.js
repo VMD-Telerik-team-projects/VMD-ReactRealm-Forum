@@ -7,6 +7,7 @@ import {
   remove,
 } from "firebase/database";
 import { db } from "../config/firebase-config";
+import { toast } from "react-toastify";
 
 export const addPost = async (author, title, content, comments) => {
   const post = {
@@ -78,7 +79,7 @@ export const deletePostById = async (author, id) => {
       remove(likedCommentsRef);
     });
 
-  alert("Post deleted!");
+  toast.success("Post deleted!");
 };
 
 export const likePost = async (postId, handle) => {
@@ -141,7 +142,7 @@ export const deleteComment = async (postId, commentTimeStamp, handle) => {
       remove(commentRepliesRef);
     });
   
-  return alert('Comment deleted!');
+  return toast.success('Comment deleted!');
 }
 
 export const editComment = async (postId, commentTimeStamp, handle, content) => {

@@ -25,6 +25,7 @@ import RenderSinglePost from "./components/Post/PostDetails";
 import UserBlocked from "./views/UserBlocked/UserBlocked";
 import { updateUserOnlineStatus } from "./services/auth.service";
 import DeleteAccount from "./views/DeleteAccount/DeleteAccount";
+import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Loader from "./components/Loader/Loader";
 import Profile from "./views/Profile/Profile";
@@ -37,15 +38,15 @@ function App() {
   });
 
   const navigate = useNavigate();
-  
+
   //  comment
   useEffect(() => {
     if (!appState.user) return;
 
-    setAppState(prevState => ({ ...prevState, loading: true }));
+    setAppState((prevState) => ({ ...prevState, loading: true }));
     getUserData(appState.user.uid).then((snapshot) => {
       const userData = Object.values(snapshot.val())[0];
-      setAppState(prevState => ({ ...prevState, userData, loading: false })); 
+      setAppState((prevState) => ({ ...prevState, userData, loading: false }));
     });
   }, [appState.user]);
 
@@ -53,10 +54,15 @@ function App() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setAppState(prevState => ({ ...prevState, loading: true }));
+        setAppState((prevState) => ({ ...prevState, loading: true }));
         const userDataSnapshot = await getUserData(user.uid);
         const userData = userDataSnapshot.val();
-        setAppState(prevState => ({ ...prevState, user, userData, loading: false }));
+        setAppState((prevState) => ({
+          ...prevState,
+          user,
+          userData,
+          loading: false,
+        }));
 
         // console.log(userData.values());
 
@@ -65,14 +71,20 @@ function App() {
         if (appState.userData) {
           await updateUserOnlineStatus(appState.userData.handle, false); // Update the online status using the correct user data
         }
-        setAppState(prevState => ({ ...prevState, user: null, userData: null, loading: false }));
+        setAppState((prevState) => ({
+          ...prevState,
+          user: null,
+          userData: null,
+          loading: false,
+        }));
       }
     });
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    const isBlocked = appState.user && appState.userData && appState.userData.isBlocked;
+    const isBlocked =
+      appState.user && appState.userData && appState.userData.isBlocked;
     if (isBlocked) {
       navigate("/blocked");
     }
@@ -80,8 +92,10 @@ function App() {
 
   if (appState.loading) {
     return (
-    <LayoutCentered><Loader /></LayoutCentered>
-   ); 
+      <LayoutCentered>
+        <Loader />
+      </LayoutCentered>
+    );
   }
 
   return (
@@ -161,15 +175,17 @@ function App() {
               </LayoutCentered>
             }
           ></Route>
-          <Route 
-            path='/profile/:handle'
-            element={<LayoutCentered>
-              <Authenticated>
-                <Profile />
-              </Authenticated>
-            </LayoutCentered>
-          } />
-          
+          <Route
+            path="/profile/:handle"
+            element={
+              <LayoutCentered>
+                <Authenticated>
+                  <Profile />
+                </Authenticated>
+              </LayoutCentered>
+            }
+          />
+
           <Route
             path="/dashboard"
             element={
@@ -189,18 +205,19 @@ function App() {
             }
           ></Route>
           <Route
-          path="/delete-account"
-          element={
-          <LayoutCentered>
-            <Authenticated>
-              <DeleteAccount />
-            </Authenticated>
-          </LayoutCentered>
-          }
+            path="/delete-account"
+            element={
+              <LayoutCentered>
+                <Authenticated>
+                  <DeleteAccount />
+                </Authenticated>
+              </LayoutCentered>
+            }
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppContext.Provider>
+      <ToastContainer />
     </>
   );
 }
