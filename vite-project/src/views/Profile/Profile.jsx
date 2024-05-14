@@ -25,8 +25,12 @@ export default function Profile() {
   // Extract profile pic
   useEffect(() => {
     const fetchPic = async () => {
-      const url = await getProfilePic(handle);
-      setProfilePic(url);
+      try {
+        const url = await getProfilePic(handle);
+        setProfilePic(url);
+      } catch (error) {
+        console.error("Error fetching profile picture:", error.message);
+      }
     };
 
     fetchPic();
@@ -35,11 +39,14 @@ export default function Profile() {
   //  Extract user data
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Handle:", handle);
-      const dataSnapshot = await getUserByHandle(handle);
-      const data = dataSnapshot.val();
-
-      setProfileData(data);
+      try {
+        console.log("Handle:", handle);
+        const dataSnapshot = await getUserByHandle(handle);
+        const data = dataSnapshot.val();
+        setProfileData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      }
     };
 
     fetchData();
@@ -48,23 +55,20 @@ export default function Profile() {
   //  Extract posts
   useEffect(() => {
     const fetchPosts = async () => {
-      const postPromises = Object.keys(profileData).map(async () => {
-        if (profileData && profileData.posts) {
+      try {
+        if (profileData.posts) {
           const postObject = profileData.posts;
+          const postPromises = Object.keys(postObject).map(async (postId) => {
+            const post = await getPostById(postId);
+            return post;
+          });
 
-          const posts = await Promise.all(
-            Object.keys(postObject).map(async (postId) => {
-              const post = await getPostById(postId);
-              return post;
-            })
-          );
-
-          return posts;
+          const userPosts = await Promise.all(postPromises);
+          setPosts(userPosts);
         }
-      });
-
-      const userPosts = await Promise.race(postPromises);
-      setPosts(userPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error.message);
+      }
     };
 
     fetchPosts();
@@ -87,8 +91,12 @@ export default function Profile() {
 
       ref.current = document.getElementById("new-last-name").value;
       if (ref.current) newData.lastName = ref.current;
-
-      await updateUserData(userData.handle, newData);
+      
+      try {
+        await updateUserData(userData.handle, newData);
+      } catch (error) {
+        console.error("Error updating user data:", error.message);
+      }
     }
   };
 
