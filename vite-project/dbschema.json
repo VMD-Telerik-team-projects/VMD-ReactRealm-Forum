@@ -9,20 +9,20 @@
       "[postId]": {
         "author": "string",
         "comments": {
-          "[timeStamp]": {
+          "[commentTimeStamp]": {
             "[userHandle]": "string",
             "likes": {
               "[userHandle]": "boolean"
             },
             "replies": {
               "[userHandle]": {
-                "[timeStamp]": "string"
+                "[replyTimeStamp]": "string"
               }
             }
           }
         },
         "content": "string",
-        "createdOn": "string",
+        "createdOn": "number",
         "likedBy": {
           "[userHandle]": "boolean"
         },
