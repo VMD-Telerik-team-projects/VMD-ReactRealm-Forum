@@ -215,6 +215,22 @@ export async function getNumberOfUsers() {
   }
 }
 
+export async function getNumberOnlineUsers() {
+  const usersRef = ref(db, "onlineUsers");
+
+  try {
+    const snapshot = await get(usersRef);
+    const onlineUsers = snapshot.val();
+    const numberOnlineUsers = onlineUsers
+      ? Object.values(onlineUsers).filter((user) => user.isOnline === true)
+          .length
+      : 0;
+    return numberOnlineUsers;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const getMostLikedPosts = async () => {
   const posts = await getAllPosts();
   const sortedPosts = posts.sort((a, b) => b.likedBy.length - a.likedBy.length);
