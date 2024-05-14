@@ -1,0 +1,61 @@
+{
+  "db": {
+    "onlineUsers": {
+      "[userHandle]": {
+        "isOnline": "boolean"
+      }
+    },
+    "posts": {
+      "[postId]": {
+        "author": "string",
+        "comments": {
+          "[timeStamp]": {
+            "[userHandle]": "string",
+            "likes": {
+              "[userHandle]": "boolean"
+            },
+            "replies": {
+              "[userHandle]": {
+                "[timeStamp]": "string"
+              }
+            }
+          }
+        },
+        "content": "string",
+        "createdOn": "string",
+        "likedBy": {
+          "[userHandle]": "boolean"
+        },
+        "title": "string"
+      }
+    },
+    "users": {
+      "[userHandle]": {
+        "commentReplies": {
+          "[commentTimeStamp]": {
+            "[replyTimeStamp]": "string"
+          }
+        },
+        "email": "string",
+        "firstName": "string",
+        "handle": "string",
+        "isBlocked": "string",
+        "isOnline": "string",
+        "lastName": "string",
+        "likedComments": {
+          "[postId]": {
+            "[commentTimeStamp]": "boolean"
+          }
+        },
+        "likedPosts": {
+          "[postId]": "boolean"
+        },
+        "posts": {
+          "[postId]": "boolean"
+        },
+        "priviliges": "number",
+        "uid": "string"
+      }
+    }
+  }
+}
