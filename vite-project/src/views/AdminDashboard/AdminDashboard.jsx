@@ -36,15 +36,23 @@ export default function AdminDashboard() {
     fetchUsers();
   }, []);
 
-  // const handleDeleteUser = async (handle) => {
-  //   try {
-  //     await deleteUserByHandle(handle);
-  //     setUsers(users.filter((u) => u.handle !== handle));
-  //     alert("Deleted user");
-  //   } catch (error) {
-  //     console.error("Deleting user: error", error);
-  //   }
-  // };
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      setLoading(true);
+      if (!users) return;
+
+      users.map(async (user) => {
+        const pic = await getProfilePic(user.handle);
+        setProfilePics((prevProfilePics) => {
+          return {...prevProfilePics, [user.handle]: pic}
+        });
+        setLoading(false);
+      });
+
+    };
+
+    fetchProfilePic();
+  }, [users]);
 
   const handleBlockUser = async (handle) => {
     try {
@@ -68,29 +76,7 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    const fetchProfilePic = async () => {
-      if (!users) return;
-
-      users.map(async (user) => {
-        const pic = await getProfilePic(user.handle);
-        setProfilePics((prevProfilePics) => {
-          return {...prevProfilePics, [user.handle]: pic}
-        });
-      });
-    };
-
-    fetchProfilePic();
-  }, [users]);
-
-  useEffect(() => {
-    console.log(profilePics);
-  }, [profilePics])
-
-  if (loading) {
-    return <Loader />;
-  }
-
+  
   const handleSearchChange = (search) => {
     setSearchTerm(search);
   };
@@ -98,9 +84,17 @@ export default function AdminDashboard() {
   const filteredUsers = users.filter(
     (user) =>
       user.handle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  
+  if (loading) {
+    return (
+      <div className="min-vw-100 min-vh-100 d-flex flex-row justify-content-center align-items-center">
+        <Loader />
+      </div>
+    );
+  }
+  
   return (
     <>
       <h1 className="my-4">Admin Dashboard</h1>
